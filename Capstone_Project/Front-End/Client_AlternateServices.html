@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alternate Services — Houston Badminton Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .hero { padding-bottom: 0.5rem; }
+    section.features { border-top: none; padding-top: 0.5rem; }
+    .alternate-images { display: flex; flex-direction: column; gap: 3rem; }
+    .alternate-images img { width: 100%; height: auto; display: block; }
+    .alternate-block { display: flex; flex-direction: column; gap: 1rem; text-align: center; }
+    .alternate-block h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); margin: 0; }
+    .alternate-block .desc { color: var(--text-muted); font-size: 0.9375rem; line-height: 1.55; margin: 0 auto; white-space: nowrap; }
+    .same-width-row { display: flex; flex-direction: column; gap: 2rem; }
+    .same-width-row img { width: 100%; max-width: 100%; height: auto; display: block; }
+    .minami-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .reach-out { margin-top: 1.5rem; padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; text-align: left; box-sizing: border-box; }
+    .reach-out p { margin: 0 0 1rem; color: var(--text-primary); font-size: 0.9375rem; text-align: center; }
+    .reach-out label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; }
+    .reach-out select, .reach-out input[readonly], .reach-out input[type="email"], .reach-out textarea { width: 100%; padding: 0.5rem 0.75rem; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 1rem; }
+    .reach-out input[readonly] { background: var(--bg-dark); color: var(--text-muted); }
+    .reach-out textarea { min-height: 100px; resize: vertical; }
+    .reach-out .btn-email { display: block; width: 100%; padding: 0.65rem 1rem; font-size: 0.9375rem; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; margin-top: 0.5rem; }
+    .reach-out .btn-email:hover { background: var(--accent-hover); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="Client_Dashboard.html" class="logo"><img src="images/HBC.png" alt="Placeholder" class="logo-img"></a>
+        <div class="nav-tabs">
+          <a href="Client_Dashboard.html" class="nav-tab">Dashboard</a>
+          <a href="Client_Reserve.html" class="nav-tab">Reserve Court</a>
+          <a href="Client_Bookings.html" class="nav-tab">My Bookings</a>
+          <a href="Client_Membership.html" class="nav-tab">Membership</a>
+          <a href="Client_AlternateServices.html" class="nav-tab active">Alternate Services</a>
+          <a href="Client_Profile.html" class="nav-tab">Profile</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Alternate <span class="highlight">Services</span></h1>
+        <p>Alternate services and offerings at the center</p>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="container">
+        <div class="alternate-images">
+          <div class="alternate-block">
+            <h2>Badminton Training</h2>
+            <p class="desc">Training academies and coaches at HBC. Book with Twin Tigers, Ooi Badminton, or Ram Kiran Badminton Academy — or bring your own coach.</p>
+            <div class="same-width-row">
+              <img src="images/Badminton-training.png" alt="Badminton Training at HBC">
+            </div>
+            <div class="reach-out">
+              <p>Interested? Feel free to reach out to one of the coaches!</p>
+              <label for="coach-select">Coach / Academy</label>
+              <select id="coach-select" aria-label="Select a coach">
+                <option value="">Choose a coach…</option>
+                <option value="TwinTigersSportsLLC@gmail.com" data-name="Twin Tigers Badminton Academy (Ben Yang)">Twin Tigers Badminton Academy — Ben Yang</option>
+                <option value="RachelOoi919@gmail.com" data-name="Ooi Badminton Academy (Rachel Ooi)">Ooi Badminton Academy — Rachel Ooi</option>
+                <option value="RRaguthu@gmail.com" data-name="Ram Kiran Badminton Academy">Ram Kiran Badminton Academy — Ram Kiran</option>
+              </select>
+              <label for="coach-email">To (prefilled)</label>
+              <input type="text" id="coach-email" readonly placeholder="Select a coach above" />
+              <label for="client-email">Your email</label>
+              <input type="email" id="client-email" placeholder="your@email.com" />
+              <label for="session-message">Your message (e.g. session request)</label>
+              <textarea id="session-message" placeholder="e.g. Hi, I’d like to schedule a training session. Please let me know your availability."></textarea>
+              <button type="button" class="btn-email" id="open-email">Send</button>
+            </div>
+          </div>
+          <div class="alternate-block">
+            <h2>Minami Massage</h2>
+            <p class="desc">Licensed massage therapy and Reiki at the center. Feel better, play better — full body and chair massage available.</p>
+            <div class="same-width-row">
+              <img src="images/Minami-info.png" alt="Minami Holistic Massage, PLLC">
+            </div>
+            <div class="minami-row">
+              <img src="images/Minami-massage.png" alt="Minami Massage">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Houston Badminton Center. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
