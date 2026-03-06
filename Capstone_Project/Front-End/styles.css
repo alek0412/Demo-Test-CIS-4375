@@ -113,6 +113,32 @@ header .nav-tab:hover {
   background: rgba(29, 78, 216, 0.12);
 }
 
+.nav-right {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  margin-right: -1rem;
+}
+
+/* Log in as a clickable box/button */
+.nav-right .nav-tab {
+  margin-left: 0;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid #111827;
+  border-radius: var(--radius-sm);
+  background: #111827;
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-right .nav-tab:hover {
+  background: #1f2937;
+  border-color: #1f2937;
+  color: var(--accent-hover);
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -273,6 +299,11 @@ footer {
   .nav-tabs {
     grid-column: 1;
     gap: 0.5rem;
+  }
+  .nav-right {
+    grid-column: 1;
+    justify-self: center;
+    margin-right: 0;
   }
   .hero {
     padding: 3rem 0 4rem;

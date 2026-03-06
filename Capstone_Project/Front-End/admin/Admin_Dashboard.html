@@ -105,5 +105,16 @@
       </div>
     </div>
   </div>
+  <script>
+    // If running on the backend server, redirect to login when not authenticated
+    fetch('/api/me', { credentials: 'same-origin' })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.loggedIn !== true) {
+          window.location.replace('Admin_Login.html');
+        }
+      })
+      .catch(function () { /* ignore: e.g. opening file directly */ });
+  </script>
 </body>
 </html>
