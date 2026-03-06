@@ -121,22 +121,22 @@ header .nav-tab:hover {
   margin-right: -1rem;
 }
 
-/* Log in as a clickable box/button */
+/* Log in as a clickable box/button — red and white to match admin Log Out */
 .nav-right .nav-tab {
   margin-left: 0;
   padding: 0.5rem 1.25rem;
-  border: 1px solid #111827;
+  border: 2px solid #b91c1c;
   border-radius: var(--radius-sm);
-  background: #111827;
-  color: var(--accent);
+  background: #b91c1c;
+  color: #ffffff;
   font-weight: 600;
   box-shadow: var(--shadow-sm);
 }
 
 .nav-right .nav-tab:hover {
-  background: #1f2937;
-  border-color: #1f2937;
-  color: var(--accent-hover);
+  background: #991b1b;
+  border-color: #991b1b;
+  color: #ffffff;
 }
 
 .btn {

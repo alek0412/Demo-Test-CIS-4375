@@ -92,6 +92,16 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // POST /api/logout — clear session and log out
+  if (req.method === 'POST' && req.url === '/api/logout') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Set-Cookie': 'admin_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
+    });
+    res.end(JSON.stringify({ success: true }));
+    return;
+  }
+
   // GET /api/me — check if admin is logged in (for dashboard redirect)
   if (req.method === 'GET' && req.url === '/api/me') {
     const cookie = req.headers.cookie || '';

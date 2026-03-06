@@ -9,13 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../admin.css">
+  <script src="../admin-theme.js" defer></script>
 </head>
 <body>
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <div class="admin-sidebar-header">
         <a href="Admin_Dashboard.html">
-          <img src="../images/HBC.png" alt="Houston Badminton Center">
+          <img src="../images/HBC.png" alt="Houston Badminton Center" class="admin-logo admin-logo-light">
+        <img src="../images/HBC-dark.png" alt="Houston Badminton Center" class="admin-logo admin-logo-dark">
         </a>
       </div>
       <nav class="admin-nav">
@@ -96,12 +98,8 @@
       </nav>
     </aside>
     <div class="admin-main">
-      <header class="admin-topbar"></header>
+      <header class="admin-topbar"><div id="admin-theme-container"></div></header>
       <div class="admin-content">
-        <section class="admin-welcome">
-          <h2>Point of Sale</h2>
-          <p>Process sales and transactions. Ring up purchases, manage payments, and view sales history.</p>
-        </section>
       </div>
     </div>
   </div>
