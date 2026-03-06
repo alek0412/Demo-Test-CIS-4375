@@ -13,7 +13,7 @@
 
 .login-card {
   background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(21, 128, 61, 0.6);
   border-radius: var(--radius);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   padding: 2.5rem;
@@ -50,7 +50,7 @@
   padding: 0.625rem 0.875rem;
   font-family: inherit;
   font-size: 0.9375rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(21, 128, 61, 0.55);
   border-radius: var(--radius-sm);
   margin-bottom: 1.25rem;
   background: #1f2937;
@@ -64,7 +64,7 @@
 .admin-login-page .login-form input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.3);
+  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.3);
 }
 
 .admin-login-page .btn-block {
@@ -89,7 +89,7 @@
   font-size: 0.8125rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid rgba(21, 128, 61, 0.6);
 }
 
 /* ========== Admin layout: sidebar on left + main content (dark theme) ========== */
@@ -103,14 +103,14 @@
 .admin-sidebar-header {
   padding: 1.25rem 1.25rem 1rem;
   padding-left: 3.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: #111827;
+  border-bottom: 2px solid rgba(21, 128, 61, 0.6);
+  background: #ffffff;
 }
 
 .admin-sidebar-header a {
   display: inline-block;
   text-decoration: none;
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 700;
   font-size: 1.1rem;
   cursor: pointer;
@@ -130,8 +130,8 @@
 .admin-sidebar {
   width: 280px;
   flex-shrink: 0;
-  background: #111827;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  background: #15803d;
+  border-right: 2px solid rgba(21, 128, 61, 0.6);
   display: flex;
   flex-direction: column;
   position: sticky;
@@ -168,7 +168,7 @@
 
 /* Line between Check In and Clients (7th link = Clients) – centered in the gap, extends to sidebar edge */
 .admin-nav-section .admin-nav-link:nth-child(7) {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid rgba(21, 128, 61, 0.6);
   padding-top: 0.5rem;
   margin-top: 0.5rem;
   margin-right: -16px;
@@ -250,7 +250,7 @@
 
 .admin-topbar {
   background: #0a0a0a;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 2px solid rgba(21, 128, 61, 0.55);
   padding: 0.75rem 1.5rem 0.75rem 0.5rem;
   flex-shrink: 0;
   min-height: 8px;
@@ -286,12 +286,13 @@
 }
 
 .admin-content table {
-  border-color: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(21, 128, 61, 0.55);
+  border-collapse: collapse;
 }
 
 .admin-content th,
 .admin-content td {
-  border-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(21, 128, 61, 0.5);
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -299,7 +300,7 @@
 .admin-content select,
 .admin-content textarea {
   background: #1f2937;
-  border-color: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(21, 128, 61, 0.55);
   color: #ffffff;
 }
 
@@ -310,7 +311,7 @@
 
 .admin-welcome {
   background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(21, 128, 61, 0.6);
   border-radius: var(--radius);
   padding: 2.5rem;
   max-width: 720px;
