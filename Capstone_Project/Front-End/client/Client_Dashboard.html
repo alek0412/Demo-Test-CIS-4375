@@ -8,7 +8,41 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
-  <style>.hero { padding-top: 1.5rem; padding-bottom: 0.5rem; } section.features { padding-top: 0.5rem; }</style>
+  <style>
+  .hero { padding-top: 1.5rem; padding-bottom: 0.5rem; }
+  section.features { padding-top: 0.5rem; }
+  .first-time-visitor {
+    margin-top: 2rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .first-time-visitor h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+  .first-time-visitor p {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+  .first-time-visitor p:last-child {
+    margin-bottom: 0;
+  }
+  .first-time-visitor a {
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .first-time-visitor a:hover {
+    color: var(--accent-hover);
+  }
+</style>
 </head>
 <body>
   <header>
@@ -38,6 +72,11 @@
         <div class="hero-actions">
           <a href="Client_Reserve.html" class="btn btn-primary">Make a reservation</a>
           <a href="Client_Availability.html" class="btn btn-ghost">View availability</a>
+        </div>
+        <div class="first-time-visitor">
+          <h3>First time visitor?</h3>
+          <p>Complete a waiver <a href="Client_Waiver.html">here</a>. Guardians must complete a waiver for minors under the age of 18.</p>
+          <p>Wear athletic clothing and non-marking shoes.</p>
         </div>
       </div>
     </section>

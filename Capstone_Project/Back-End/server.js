@@ -119,6 +119,21 @@ const server = http.createServer(async (req, res) => {
   }
 
   let urlPath = req.url.split('?')[0];
+
+  // Serve admin-theme.js from Back-End/static (organization: admin script lives with backend)
+  if (urlPath === '/admin-theme.js') {
+    const staticPath = path.join(__dirname, 'static', 'admin-theme.js');
+    fs.stat(staticPath, (err, stat) => {
+      if (err || !stat.isFile()) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not found');
+        return;
+      }
+      serveFile(staticPath, res);
+    });
+    return;
+  }
+
   const filePath = path.join(FRONT_END, path.normalize(urlPath));
 
   // Don't allow path traversal outside Front-End
