@@ -16,7 +16,8 @@ Then open **http://localhost:3000** in your browser. The server serves the Front
 - **controllers/** — Business logic for each route area; called from the route handlers.
 - **middleware/** — `auth.js` (protect admin routes, sessions), `errorHandler.js` (central error handling).
 - **db/connection.js** — Database connection (e.g. MongoDB, PostgreSQL, or SQLite) when you add persistence.
-- **Client_Alternative.js** — Client-side script for the Alternate Services form (mailto behavior). Consider moving to `Front-End/` or linking from your HTML.
+
+Client-side script for the Alternate Services form (`Client_Alternative.js`, mailto behavior) lives in `../Front-End/client/` and is loaded by `Client_AlternateServices.html`.
 
 ## Payments
 
