@@ -1,2 +1,7 @@
 # macOS
 .DS_Store
+
+# Environment (never commit secrets)
+.env
+.env.local
+.env.*.local
