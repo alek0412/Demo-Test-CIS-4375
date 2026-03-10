@@ -79,10 +79,6 @@
     if (container) {
       var topbarRight = document.createElement('div');
       topbarRight.className = 'admin-topbar-right';
-      var clientViewLink = document.createElement('a');
-      clientViewLink.href = '../client/Client_Dashboard.html';
-      clientViewLink.className = 'admin-client-view-btn';
-      clientViewLink.textContent = 'Client View';
       var logoutBtn = document.createElement('button');
       logoutBtn.type = 'button';
       logoutBtn.className = 'admin-logout-btn';
@@ -94,7 +90,6 @@
       });
       container.parentNode.insertBefore(topbarRight, container);
       topbarRight.appendChild(container);
-      topbarRight.appendChild(clientViewLink);
       topbarRight.appendChild(logoutBtn);
       renderDropdown(container);
       bindDropdown(container);

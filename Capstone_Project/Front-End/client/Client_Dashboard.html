@@ -13,20 +13,25 @@
   section.features { padding-top: 0.5rem; }
   .first-time-visitor {
     margin-top: 2rem;
+    margin-bottom: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 560px;
     padding: 1.25rem 1.5rem;
-    background: var(--bg-card);
+    background: #b91c1c;
     border-radius: var(--radius);
-    border: 1px solid var(--border);
+    border: 1px solid #991b1b;
+    text-align: center;
   }
   .first-time-visitor h3 {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: var(--text-primary);
+    color: #ffffff;
   }
   .first-time-visitor p {
     font-size: 0.9375rem;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.95);
     margin-bottom: 0.5rem;
     line-height: 1.5;
   }
@@ -34,13 +39,42 @@
     margin-bottom: 0;
   }
   .first-time-visitor a {
-    color: var(--accent);
-    font-weight: 500;
+    color: #ffffff;
+    font-weight: 600;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
   .first-time-visitor a:hover {
-    color: var(--accent-hover);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .first-time-visitor .first-time-list {
+    margin: 0.25rem auto 0;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+  }
+  .first-time-visitor .first-time-list li {
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 0.4rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .first-time-visitor .first-time-list li:last-child {
+    margin-bottom: 0;
+  }
+  .first-time-visitor .first-time-list li .list-dot {
+    flex-shrink: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ffffff;
+    margin-top: 0.5rem;
   }
 </style>
 </head>
@@ -75,34 +109,16 @@
         </div>
         <div class="first-time-visitor">
           <h3>First time visitor?</h3>
-          <p>Complete a waiver <a href="Client_Waiver.html">here</a>. Guardians must complete a waiver for minors under the age of 18.</p>
-          <p>Wear athletic clothing and non-marking shoes.</p>
+          <p><strong>Complete the waiver <a href="Client_Waiver.html">here</a>.</strong></p>
+          <ul class="first-time-list">
+            <li><span class="list-dot" aria-hidden="true"></span>Guardians must complete the waiver for minors under the age of 18.</li>
+            <li><span class="list-dot" aria-hidden="true"></span>Wear athletic clothing and non-marking shoes.</li>
+          </ul>
+          <p style="margin-top: 0.75rem; margin-bottom: 0;"><a href="Client_OpenPlay.html">How to Play at the Houston Badminton Center</a></p>
         </div>
       </div>
     </section>
 
-    <section class="features" id="how-it-works">
-      <div class="container">
-        <h2>How it works</h2>
-        <div class="feature-grid">
-          <div class="feature-card">
-            <div class="icon">📅</div>
-            <h3>Pick a date & time</h3>
-            <p>Browse available slots and select what works for you.</p>
-          </div>
-          <div class="feature-card">
-            <div class="icon">✏️</div>
-            <h3>Enter your details</h3>
-            <p>Add your name, contact info, and any special requests.</p>
-          </div>
-          <div class="feature-card">
-            <div class="icon">✓</div>
-            <h3>Confirm & done</h3>
-            <p>Get a confirmation and manage your booking anytime.</p>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer>

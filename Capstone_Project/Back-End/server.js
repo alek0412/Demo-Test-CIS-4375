@@ -35,6 +35,7 @@ const MIME = {
   '.gif': 'image/gif',
   '.ico': 'image/x-icon',
   '.svg': 'image/svg+xml',
+  '.pdf': 'application/pdf',
 };
 
 function serveFile(filePath, res) {
@@ -47,7 +48,11 @@ function serveFile(filePath, res) {
       res.end('Not found');
       return;
     }
-    res.writeHead(200, { 'Content-Type': contentType });
+    const headers = { 'Content-Type': contentType };
+    if (ext === '.pdf') {
+      headers['Content-Disposition'] = 'inline';
+    }
+    res.writeHead(200, headers);
     res.end(data);
   });
 }

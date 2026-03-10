@@ -211,10 +211,10 @@ body[data-theme="light"] .admin-sidebar-header .admin-logo-dark {
   display: none;
 }
 
-/* Light mode: left sidebar (nav area) same dark color as dark mode; top left (header) stays white */
+/* Light mode: left sidebar white; header stays white */
 body[data-theme="light"] .admin-sidebar {
-  background: #1a1a1a;
-  border-right-color: rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 body[data-theme="light"] .admin-sidebar-header {
   background: #ffffff;
@@ -222,8 +222,19 @@ body[data-theme="light"] .admin-sidebar-header {
 body[data-theme="light"] .admin-sidebar-header::after {
   background: rgba(0, 0, 0, 0.12);
 }
+body[data-theme="light"] .admin-nav-link {
+  color: #374151;
+}
+body[data-theme="light"] .admin-nav-link:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+body[data-theme="light"] .admin-nav-link.active {
+  background: #b91c1c;
+  color: #ffffff;
+}
 body[data-theme="light"] .admin-nav-section .admin-nav-link:nth-child(7) {
-  border-top-color: rgba(255, 255, 255, 0.2);
+  border-top-color: rgba(0, 0, 0, 0.12);
 }
 
 /* Dark theme: header area matches the dark logo image background (solid black) */
@@ -247,11 +258,6 @@ body[data-theme="dark"] .admin-nav-section .admin-nav-link:nth-child(7) {
 /* Dark theme: remove green borders (use neutral borders instead) */
 body[data-theme="dark"] .admin-topbar {
   border-bottom: none;
-}
-
-body[data-theme="dark"] .admin-client-view-btn,
-body[data-theme="dark"] .admin-client-view-btn:hover {
-  border-color: rgba(255, 255, 255, 0.2);
 }
 
 body[data-theme="dark"] .theme-dropdown-btn,
@@ -430,30 +436,6 @@ body[data-theme="dark"] .admin-welcome {
   padding-right: 0.25rem;
 }
 
-.admin-client-view-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 38px;
-  padding: 0 0.75rem;
-  font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  background: #1f2937;
-  border: 2px solid rgba(21, 128, 61, 0.55);
-  border-radius: var(--radius-sm, 6px);
-  text-decoration: none;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  box-sizing: border-box;
-}
-
-.admin-client-view-btn:hover {
-  background: #374151;
-  border-color: rgba(21, 128, 61, 0.7);
-  color: #ffffff;
-}
-
 .admin-logout-btn {
   display: inline-flex;
   align-items: center;
@@ -476,18 +458,6 @@ body[data-theme="dark"] .admin-welcome {
   background: #991b1b;
   border-color: #991b1b;
   color: #ffffff;
-}
-
-body[data-theme="light"] .admin-client-view-btn {
-  color: #374151;
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-body[data-theme="light"] .admin-client-view-btn:hover {
-  background: #f3f4f6;
-  border-color: rgba(0, 0, 0, 0.3);
-  color: #111827;
 }
 
 /* Theme dropdown: button + list */
