@@ -14,6 +14,8 @@ require('dotenv').config();
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const db = require('./db/connection');
+const config = require('./config');
 
 const PORT = process.env.PORT || 3000;
 
@@ -115,6 +117,41 @@ const server = http.createServer(async (req, res) => {
     const loggedIn = cookie.includes('admin_session=loggedin');
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ loggedIn }));
+    return;
+  }
+
+  // GET /api/db — return tables and rows from the database (for admin “View data”)
+  if (req.method === 'GET' && req.url === '/api/db') {
+    const cookie = req.headers.cookie || '';
+    if (!cookie.includes('admin_session=loggedin')) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Not authenticated' }));
+      return;
+    }
+    const send = (status, data) => {
+      res.writeHead(status, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
+    };
+    try {
+      const dbName = config.db.database;
+      const { rows: tableRows } = await db.query(
+        'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ? ORDER BY TABLE_NAME',
+        [dbName]
+      );
+      const tables = {};
+      for (const row of tableRows) {
+        const tableName = row.TABLE_NAME;
+        try {
+          const { rows: dataRows } = await db.query('SELECT * FROM `' + tableName.replace(/`/g, '``') + '` LIMIT 500', []);
+          tables[tableName] = dataRows;
+        } catch (e) {
+          tables[tableName] = [{ _error: String(e.message) }];
+        }
+      }
+      send(200, { database: dbName, tables });
+    } catch (err) {
+      send(200, { database: config.db.database || null, error: err.message, tables: {} });
+    }
     return;
   }
 

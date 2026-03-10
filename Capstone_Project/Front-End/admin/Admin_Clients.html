@@ -10,6 +10,18 @@
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="admin.css">
   <script src="../admin-theme.js" defer></script>
+  <style>
+    .db-error { color: #b91c1c; padding: 1rem; background: #fef2f2; border-radius: var(--radius); margin-bottom: 1rem; }
+    .db-meta { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9375rem; }
+    .db-table-wrap { margin-bottom: 2rem; overflow-x: auto; }
+    .db-table-wrap h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+    .db-table-wrap table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .db-table-wrap th, .db-table-wrap td { padding: 0.5rem 0.75rem; text-align: left; border: 1px solid var(--border); }
+    .db-table-wrap th { background: var(--bg-card); font-weight: 600; }
+    .db-table-wrap tr:nth-child(even) { background: rgba(0,0,0,0.03); }
+    body[data-theme="dark"] .db-table-wrap tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+    .db-loading { color: var(--text-muted); padding: 1rem; }
+  </style>
 </head>
 <body>
   <div class="admin-layout">
@@ -100,8 +112,73 @@
     <div class="admin-main">
       <header class="admin-topbar"><div id="admin-theme-container"></div></header>
       <div class="admin-content">
+        <h1>Clients</h1>
+        <p class="db-meta" id="db-meta">Loading database…</p>
+        <div id="db-content" class="db-loading"></div>
       </div>
     </div>
   </div>
+  <script>
+    fetch('/api/me', { credentials: 'same-origin' })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.loggedIn !== true) { window.location.replace('Admin_Login.html'); }
+      })
+      .catch(function () {});
+    fetch('/api/db', { credentials: 'same-origin' })
+      .then(function (r) {
+        if (r.status === 401) {
+          window.location.replace('Admin_Login.html');
+          return null;
+        }
+        return r.json();
+      })
+      .then(function (data) {
+        if (data === null) return;
+        var meta = document.getElementById('db-meta');
+        var el = document.getElementById('db-content');
+        if (data.error) {
+          meta.textContent = '';
+          el.className = 'db-error';
+          el.innerHTML = 'Cannot connect to the database. ' + data.error + (data.database ? ' (Database: ' + data.database + ')' : '') +
+            '<p style="margin-top: 0.75rem;">In AWS, only the EC2 instance can reach RDS. Run the app on EC2 and open Admin from there to see reservations data.</p>';
+          return;
+        }
+        meta.textContent = 'Database: ' + (data.database || '') + '. Table: reservations (up to 500 rows).';
+        el.className = '';
+        var tables = data.tables || {};
+        var rows = tables.reservations || tables.Reservations;
+        var html = '';
+        if (!rows) {
+          html = '<p class="db-meta">No reservations table in this database.</p>';
+        } else if (rows.length === 0) {
+          html = '<p class="db-meta">Reservations table is empty.</p>';
+        } else {
+          var isError = rows.length === 1 && rows[0]._error;
+          html = '<div class="db-table-wrap"><h3>reservations</h3>';
+          if (isError) {
+            html += '<p class="db-error">' + rows[0]._error + '</p>';
+          } else {
+            var cols = Object.keys(rows[0]);
+            html += '<table><thead><tr>';
+            cols.forEach(function (c) { html += '<th>' + c + '</th>'; });
+            html += '</tr></thead><tbody>';
+            rows.forEach(function (row) {
+              html += '<tr>';
+              cols.forEach(function (c) { html += '<td>' + (row[c] != null ? String(row[c]) : '') + '</td>'; });
+              html += '</tr>';
+            });
+            html += '</tbody></table>';
+          }
+          html += '</div>';
+        }
+        el.innerHTML = html;
+      })
+      .catch(function () {
+        document.getElementById('db-meta').textContent = '';
+        document.getElementById('db-content').className = 'db-error';
+        document.getElementById('db-content').innerHTML = 'Failed to load data. Open this site at the same URL where your Node server is running (e.g. <strong>http://localhost:3008</strong> if the terminal shows port 3008), log in from that page, then open Clients again.';
+      });
+  </script>
 </body>
 </html>
