@@ -129,13 +129,13 @@
     fetch('/api/me', { credentials: 'same-origin' })
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        if (data && data.loggedIn !== true) { window.location.replace('Admin_Login.html'); }
+        if (data && data.loggedIn !== true) { window.location.replace('/client/Client_Login.html'); }
       })
       .catch(function () {});
     fetch('/api/db', { credentials: 'same-origin' })
       .then(function (r) {
         if (r.status === 401) {
-          window.location.replace('Admin_Login.html');
+          window.location.replace('/client/Client_Login.html');
           return null;
         }
         return r.json();

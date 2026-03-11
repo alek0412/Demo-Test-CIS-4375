@@ -85,8 +85,8 @@
       logoutBtn.textContent = 'Log Out';
       logoutBtn.addEventListener('click', function () {
         fetch('/api/logout', { method: 'POST', credentials: 'same-origin' })
-          .then(function () { window.location.href = '../client/Client_Dashboard.html'; })
-          .catch(function () { window.location.href = '../client/Client_Dashboard.html'; });
+          .then(function () { window.location.href = '/client/General_Dashboard.html'; })
+          .catch(function () { window.location.href = '/client/General_Dashboard.html'; });
       });
       container.parentNode.insertBefore(topbarRight, container);
       topbarRight.appendChild(container);

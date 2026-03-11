@@ -8,10 +8,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
-    .openplay-close {
+    .openplay-header {
       position: fixed;
-      top: 1rem;
-      right: 1rem;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      background: #fff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .openplay-header .nav-right { margin: 0; }
+    .openplay-close {
+      position: static;
       z-index: 10;
       width: 40px;
       height: 40px;
@@ -39,6 +51,7 @@
       flex: 1;
       width: 100%;
       min-height: 100vh;
+      padding-top: 56px;
     }
     .openplay-frame-wrap iframe {
       width: 100%;
@@ -50,9 +63,15 @@
   </style>
 </head>
 <body>
-  <a href="Client_Dashboard.html" class="openplay-close" aria-label="Close and return to dashboard">&times;</a>
+  <header class="openplay-header">
+    <a href="Client_Dashboard.html" class="openplay-close" aria-label="Close and return to dashboard">&times;</a>
+    <div class="nav-right">
+      <a href="Client_Login.html" class="nav-tab nav-auth-link">Log in</a>
+    </div>
+  </header>
   <div class="openplay-frame-wrap">
     <iframe src="../images/HBC-OpenPlay.pdf" title="How to Play at the Houston Badminton Center"></iframe>
   </div>
+  <script src="/client-nav.js"></script>
 </body>
 </html>
