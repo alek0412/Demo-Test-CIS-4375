@@ -1,24 +1,48 @@
-# Back-End
+# Houston Badminton Center — Back-End
 
-## Running the app
+Node.js server that serves the front-end and provides API routes (login, DB view, etc.).
 
-From this folder (`Back-End`):
+## Run the server
+
+**First time (or after cloning):**
+
+```bash
+cd Capstone_Project/Back-End
+npm install
+```
+
+If you don’t have a `.env` file yet, copy the example and edit if needed:
+
+```bash
+cp .env.example .env
+```
+
+Then start the server:
+
+```bash
+npm start
+```
+
+Or:
 
 ```bash
 node server.js
 ```
 
-Then open **http://localhost:3000** in your browser. The server serves the Front-End files (HTML, CSS, images) so you get correct paths and one place to run everything.
+**Next times:** from `Capstone_Project/Back-End` run:
 
-- **server.js** — Main entry point. Serves static files from `../Front-End` and mounts API routes.
-- **config.js** — App config (port, DB URL, env).
-- **routes/** — API route definitions (auth, bookings, classes, clients, appointments, rooms, membership, staff, services, marketing, insights). Wire these in `server.js` under `/api/...`.
-- **controllers/** — Business logic for each route area; called from the route handlers.
-- **middleware/** — `auth.js` (protect admin routes, sessions), `errorHandler.js` (central error handling).
-- **db/connection.js** — Database connection (e.g. MongoDB, PostgreSQL, or SQLite) when you add persistence.
+```bash
+npm start
+```
 
-Client-side script for the Alternate Services form (`Client_Alternative.js`, mailto behavior) lives in `../Front-End/client/` and is loaded by `Client_AlternateServices.html`.
+- Server runs at **http://localhost:3000/** (or the `PORT` in `.env`).
+- Root redirects to the client dashboard.
+- Admin login: **admin@example.com** / **Admin123!** (override with `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `.env`).
 
-## Payments
+## Optional: database (Admin “Customers” view)
 
-**This website does not process payments.** No payment provider integration (Stripe, Square, PayPal, etc.) is in scope; payments are handled outside the site.
+The Admin **Customers** page uses `/api/db`, which needs a MySQL database. In `.env` set:
+
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
+
+If `.env` is missing or DB vars are not set, the server still starts; only the Customers “View data” feature will show an error until the DB is configured.

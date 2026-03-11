@@ -151,9 +151,17 @@ body[data-theme="dark"] .admin-login-page .login-footer {
 }
 
 /* ========== Admin layout: sidebar on left + main content (dark theme) ========== */
+/* Ensure full viewport height on admin pages (styles.css sets body to flex column) */
+body:has(.admin-layout) {
+  display: block;
+  height: 100vh;
+  min-height: 100vh;
+}
+
 .admin-layout {
   display: flex;
   flex-direction: row;
+  height: 100%;
   min-height: 100vh;
   background: #0a0a0a;
 }
@@ -167,8 +175,8 @@ body[data-theme="dark"] .admin-login-page .login-footer {
 .admin-sidebar-header::after {
   content: "";
   position: absolute;
-  left: 32px;
-  right: 8px;
+  left: 0;
+  right: 0;
   bottom: 0;
   height: 2px;
   background: rgba(30, 64, 175, 0.6);
@@ -216,6 +224,10 @@ body[data-theme="light"] .admin-sidebar {
   background: #ffffff;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
+
+body[data-theme="light"] .admin-nav {
+  background: #f3f4f6;
+}
 body[data-theme="light"] .admin-sidebar-header {
   background: #ffffff;
 }
@@ -249,6 +261,10 @@ body[data-theme="dark"] .admin-sidebar-header::after {
 body[data-theme="dark"] .admin-sidebar {
   background: #1a1a1a;
   border-right-color: rgba(255, 255, 255, 0.12);
+}
+
+body[data-theme="dark"] .admin-nav {
+  background: #2d2d2d;
 }
 
 body[data-theme="dark"] .admin-nav-section .admin-nav-link:nth-child(7) {
@@ -307,6 +323,7 @@ body[data-theme="dark"] .admin-welcome {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  background: #4b5563;
 }
 
 /* Same left/right padding for every section so all labels line up in a row */
@@ -327,7 +344,7 @@ body[data-theme="dark"] .admin-welcome {
   padding-left: 32px;
 }
 
-/* Line between Check In and Clients (7th link = Clients) – centered in the gap, extends to sidebar edge */
+/* Line between Check In and Customers (7th link = Customers) – centered in the gap, extends to sidebar edge */
 .admin-nav-section .admin-nav-link:nth-child(7) {
   border-top: 2px solid rgba(30, 64, 175, 0.6);
   padding-top: 0.5rem;
@@ -405,9 +422,11 @@ body[data-theme="dark"] .admin-welcome {
 .admin-main {
   flex: 1;
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   background: #0a0a0a;
+  position: relative;
 }
 
 .admin-topbar {
@@ -416,6 +435,8 @@ body[data-theme="dark"] .admin-welcome {
   padding: 0.75rem 1.5rem 3rem 0.5rem;
   flex-shrink: 0;
   min-height: 8px;
+  position: relative;
+  z-index: 10;
 }
 
 .admin-topbar {
@@ -540,8 +561,78 @@ body[data-theme="dark"] .admin-welcome {
 
 .admin-content {
   flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   padding: 1.5rem 1.5rem 1.5rem 0.5rem;
   color: rgba(255, 255, 255, 0.9);
+  position: relative;
+}
+
+/* Center page title in the middle of the main content area */
+.admin-title-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  pointer-events: none;
+}
+
+.admin-title-wrap .admin-page-title,
+.admin-title-wrap p {
+  pointer-events: auto;
+}
+
+.admin-title-wrap--left {
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  padding-left: 32.5rem;
+  padding-top: 0.5rem;
+  margin-top: -5rem;
+}
+
+/* When title has a description, keep block in flow so content below flows under it */
+.admin-title-wrap--left:has(p) {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: auto;
+  height: auto;
+  align-items: center;
+}
+
+.admin-title-wrap--left p {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+}
+
+.admin-title-wrap--waiver {
+  padding-left: 33.5rem;
+}
+
+body[data-theme="light"] .admin-title-wrap--left p {
+  color: var(--text-muted, #6b7280);
+}
+
+.admin-page-title {
+  text-align: center;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.admin-title-wrap--left .admin-page-title {
+  text-align: left;
 }
 
 /* Base text and headings in admin content */
