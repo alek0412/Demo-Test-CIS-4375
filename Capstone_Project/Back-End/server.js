@@ -24,8 +24,8 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@example.com';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
 
 // Customer login — set CUSTOMER_EMAIL and CUSTOMER_PASSWORD in .env (required for production; optional dev default below)
-const CUSTOMER_EMAIL = (process.env.CUSTOMER_EMAIL || 'customer@example.com').trim().toLowerCase();
-const CUSTOMER_PASSWORD = process.env.CUSTOMER_PASSWORD || 'ChangeMe123!';
+const CUSTOMER_EMAIL = (process.env.CUSTOMER_EMAIL || 'alekespi0412@gmail.com').trim().toLowerCase();
+const CUSTOMER_PASSWORD = process.env.CUSTOMER_PASSWORD || 'Espi22735@';
 
 // Session secret so cookies from before this server started are invalid (shows "Log in" on fresh start)
 const CUSTOMER_SESSION_SECRET = process.env.CUSTOMER_SESSION_SECRET || require('crypto').randomBytes(16).toString('hex');

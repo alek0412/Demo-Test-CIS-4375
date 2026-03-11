@@ -37,7 +37,10 @@ npm start
 
 - Server runs at **http://localhost:3000/** (or the `PORT` in `.env`).
 - Root redirects to the client dashboard.
-- Admin login: **admin@example.com** / **Admin123!** (override with `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `.env`).
+- **Customer login** (for “Log in as Customer”): **alekespi0412@gmail.com** / **Espi22735@** (temporary; override with `CUSTOMER_EMAIL` and `CUSTOMER_PASSWORD` in `.env`).
+- **Admin login**: **admin@example.com** / **Admin123!** (override with `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `.env`).
+
+**Important:** Open the site at **http://localhost:3000** (or your server URL). If you open the HTML files directly (e.g. from the file explorer), the login API will not be available and you’ll see “Unable to reach server.”
 
 ## Optional: database (Admin “Customers” view)
 

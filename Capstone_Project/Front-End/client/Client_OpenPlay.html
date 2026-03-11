@@ -23,7 +23,7 @@
     }
     .openplay-header .nav-right { margin: 0; }
     .openplay-close {
-      position: static;
+      margin-left: auto;
       z-index: 10;
       width: 40px;
       height: 40px;
@@ -64,10 +64,7 @@
 </head>
 <body>
   <header class="openplay-header">
-    <a href="Client_Dashboard.html" class="openplay-close" aria-label="Close and return to dashboard">&times;</a>
-    <div class="nav-right">
-      <a href="Client_Login.html" class="nav-tab nav-auth-link">Log in</a>
-    </div>
+    <a href="#" class="openplay-close" aria-label="Close and return" onclick="history.back(); return false;">&times;</a>
   </header>
   <div class="openplay-frame-wrap">
     <iframe src="../images/HBC-OpenPlay.pdf" title="How to Play at the Houston Badminton Center"></iframe>
