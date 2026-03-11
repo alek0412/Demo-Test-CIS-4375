@@ -105,7 +105,26 @@ node server.js
 
 ### 6. (Optional) Keep the app running
 
-- `node server.js` stops when you close the SSH session. To keep it running: use `nohup node server.js &`, or a process manager like `pm2` (`npm install -g pm2` then `pm2 start server.js`).
+- `node server.js` stops when you close the SSH session. To keep it running: use `nohup node server.js &`, or a process manager like **pm2** (see below).
+
+---
+
+## REMINDER: Next time you upload to EC2 (PM2 already installed)
+
+If you already ran `sudo npm install -g pm2` on the instance, you **don’t need to install anything else**. Just:
+
+1. **Clone** (or upload) the repo so you have `Capstone_Project/Back-End` and `Front-End` on the instance.
+2. **On EC2:**
+   ```bash
+   cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End   # or CIS-4375-Project/Capstone_Project/Back-End
+   cp .env.example .env
+   nano .env   # set DB_USER, DB_PASSWORD, etc.
+   npm install
+   pm2 start server.js --name "reservation-app"
+   ```
+3. **(Optional)** Start on reboot: run `pm2 startup`, run the command it prints, then `pm2 save`.
+
+Useful: `pm2 list` | `pm2 logs reservation-app` | `pm2 restart reservation-app` | `pm2 stop reservation-app`
 
 ---
 
