@@ -153,15 +153,15 @@
         }
         el.className = '';
         var tables = data.tables || {};
-        var rows = tables.reservations || tables.Reservations;
+        var rows = tables.customer || tables.Customer;
         var html = '';
         if (!rows) {
-          html = '<p class="db-meta">No reservations table in this database.</p>';
+          html = '<p class="db-meta">No customer table in this database.</p>';
         } else if (rows.length === 0) {
-          html = '<p class="db-meta">Reservations table is empty.</p>';
+          html = '<p class="db-meta">Customer table is empty.</p>';
         } else {
           var isError = rows.length === 1 && rows[0]._error;
-          html = '<div class="db-table-wrap"><h3>reservations</h3>';
+          html = '<div class="db-table-wrap"><h3>Customer</h3>';
           if (isError) {
             html += '<p class="db-error">' + rows[0]._error + '</p>';
           } else {
