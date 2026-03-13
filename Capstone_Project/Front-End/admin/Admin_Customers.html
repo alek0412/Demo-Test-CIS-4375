@@ -110,7 +110,13 @@
           <h1 class="admin-page-title">Customers</h1>
         </div>
         <div id="customer-search-wrap" class="db-search-wrap is-hidden">
-          <input type="text" id="customer-search" placeholder="Search customers..." aria-label="Search customer table">
+          <div class="db-search-filter-row">
+            <input type="text" id="customer-search" placeholder="Search customers..." aria-label="Search customer table">
+            <div class="db-filter-wrap">
+              <button type="button" id="customer-filter-btn" class="db-filter-btn" aria-haspopup="true" aria-expanded="false">Filter ▾</button>
+              <div id="customer-filter-dropdown" class="db-filter-dropdown is-hidden" role="menu"></div>
+            </div>
+          </div>
         </div>
         <div id="db-content" class="db-loading"></div>
       </div>

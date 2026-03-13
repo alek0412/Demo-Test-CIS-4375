@@ -74,25 +74,149 @@
       var searchInput = document.getElementById('customer-search');
       var table = document.getElementById('customer-table');
       var noResultsEl = document.getElementById('customer-no-results');
-      if (searchInput && table) {
+      var filterBtn = document.getElementById('customer-filter-btn');
+      var filterDropdown = document.getElementById('customer-filter-dropdown');
+
+      var cols = rows && rows.length && !rows[0]._error ? Object.keys(rows[0]) : [];
+      var emailCol = cols.find(function (c) { return c.toLowerCase() === 'email'; });
+      var statusCol = cols.find(function (c) {
+        var l = c.toLowerCase();
+        return l === 'customerstatus' || l === 'status' || l === 'customer_status';
+      });
+      var zipCol = cols.find(function (c) {
+        var l = c.toLowerCase();
+        return l === 'zipcode' || l === 'zip_code' || l === 'zip' || l === 'postalcode' || l === 'postal_code';
+      });
+
+      if (filterBtn && filterDropdown && rows && rows.length && !rows[0]._error) {
+        var domainCounts = {};
+        var statusCounts = {};
+        var zipCounts = {};
+        rows.forEach(function (row) {
+          if (emailCol && row[emailCol]) {
+            var email = String(row[emailCol]).trim();
+            var domain = email.indexOf('@') !== -1 ? email.split('@')[1].toLowerCase() : '(none)';
+            domainCounts[domain] = (domainCounts[domain] || 0) + 1;
+          }
+          if (statusCol && row[statusCol]) {
+            var s = String(row[statusCol]).trim() || '(blank)';
+            statusCounts[s] = (statusCounts[s] || 0) + 1;
+          }
+          if (zipCol && row[zipCol] != null) {
+            var zip = String(row[zipCol]).trim() || '(blank)';
+            zipCounts[zip] = (zipCounts[zip] || 0) + 1;
+          }
+        });
+
+        var dropdownHtml = '';
+        if (Object.keys(domainCounts).length > 0) {
+          dropdownHtml += '<div class="db-filter-section"><div class="db-filter-section-title">By email domain</div>';
+          dropdownHtml += '<button type="button" class="db-filter-option db-filter-domain" data-value="">All</button>';
+          Object.keys(domainCounts).sort().forEach(function (domain) {
+            dropdownHtml += '<button type="button" class="db-filter-option db-filter-domain" data-value="' + domain.replace(/"/g, '&quot;') + '">' + domain + ' (' + domainCounts[domain] + ')</button>';
+          });
+          dropdownHtml += '</div>';
+        }
+        if (Object.keys(statusCounts).length > 0) {
+          dropdownHtml += '<div class="db-filter-section"><div class="db-filter-section-title">By status</div>';
+          dropdownHtml += '<button type="button" class="db-filter-option db-filter-status" data-value="">All</button>';
+          Object.keys(statusCounts).sort().forEach(function (s) {
+            dropdownHtml += '<button type="button" class="db-filter-option db-filter-status" data-value="' + String(s).replace(/"/g, '&quot;') + '">' + s + ' (' + statusCounts[s] + ')</button>';
+          });
+          dropdownHtml += '</div>';
+        }
+        if (Object.keys(zipCounts).length > 0) {
+          dropdownHtml += '<div class="db-filter-section"><div class="db-filter-section-title">By zip code</div>';
+          dropdownHtml += '<button type="button" class="db-filter-option db-filter-zip" data-value="">All</button>';
+          Object.keys(zipCounts).sort().forEach(function (z) {
+            dropdownHtml += '<button type="button" class="db-filter-option db-filter-zip" data-value="' + String(z).replace(/"/g, '&quot;') + '">' + z + ' (' + zipCounts[z] + ')</button>';
+          });
+          dropdownHtml += '</div>';
+        }
+        if (dropdownHtml === '') dropdownHtml = '<div class="db-filter-section"><div class="db-filter-section-title">No filters available</div></div>';
+        filterDropdown.innerHTML = dropdownHtml;
+      }
+
+      var filterDomain = '';
+      var filterStatus = '';
+      var filterZip = '';
+
+      function getCellText(tr, colKey) {
+        if (!cols.length || !colKey) return '';
+        var idx = cols.indexOf(colKey);
+        if (idx === -1) return '';
+        var cell = tr.cells[idx];
+        return cell ? (cell.textContent || '').trim() : '';
+      }
+
+      function applyFilters() {
+        var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
+        var visibleCount = 0;
+        if (!table) return;
         var tbody = table.querySelector('tbody');
         var tableRows = tbody ? tbody.querySelectorAll('tr') : [];
-        searchInput.addEventListener('input', function () {
-          var q = (this.value || '').trim().toLowerCase();
-          var visibleCount = 0;
-          tableRows.forEach(function (tr) {
-            var text = tr.textContent || '';
-            var show = q === '' || text.toLowerCase().indexOf(q) !== -1;
-            tr.style.display = show ? '' : 'none';
-            if (show) visibleCount++;
-          });
-          if (noResultsEl) {
-            if (q !== '' && visibleCount === 0) {
-              noResultsEl.classList.remove('is-hidden');
-            } else {
-              noResultsEl.classList.add('is-hidden');
-            }
+        tableRows.forEach(function (tr) {
+          var rowText = tr.textContent || '';
+          var searchMatch = q === '' || rowText.toLowerCase().indexOf(q) !== -1;
+          var emailCell = getCellText(tr, emailCol);
+          var domainMatch = !filterDomain || (emailCell.indexOf('@') !== -1 && emailCell.split('@')[1].toLowerCase() === filterDomain);
+          var statusCell = getCellText(tr, statusCol);
+          var statusMatch = !filterStatus || statusCell === filterStatus;
+          var zipCell = getCellText(tr, zipCol);
+          var zipMatch = !filterZip || zipCell === filterZip;
+          var show = searchMatch && domainMatch && statusMatch && zipMatch;
+          tr.style.display = show ? '' : 'none';
+          if (show) visibleCount++;
+        });
+        if (noResultsEl) {
+          if ((q !== '' || filterDomain || filterStatus || filterZip) && visibleCount === 0) {
+            noResultsEl.classList.remove('is-hidden');
+          } else {
+            noResultsEl.classList.add('is-hidden');
           }
+        }
+        if (filterDropdown) {
+          filterDropdown.querySelectorAll('.db-filter-domain').forEach(function (opt) {
+            opt.classList.toggle('is-active', opt.getAttribute('data-value') === filterDomain);
+          });
+          filterDropdown.querySelectorAll('.db-filter-status').forEach(function (opt) {
+            opt.classList.toggle('is-active', opt.getAttribute('data-value') === filterStatus);
+          });
+          filterDropdown.querySelectorAll('.db-filter-zip').forEach(function (opt) {
+            opt.classList.toggle('is-active', opt.getAttribute('data-value') === filterZip);
+          });
+        }
+      }
+
+      if (searchInput && table) {
+        searchInput.addEventListener('input', applyFilters);
+      }
+
+      if (filterBtn && filterDropdown) {
+        filterBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var open = filterDropdown.classList.toggle('is-hidden');
+          filterBtn.setAttribute('aria-expanded', !open);
+        });
+        filterDropdown.querySelectorAll('.db-filter-option').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            var value = this.getAttribute('data-value') || '';
+            if (this.classList.contains('db-filter-domain')) {
+              filterDomain = value;
+            } else if (this.classList.contains('db-filter-status')) {
+              filterStatus = value;
+            } else if (this.classList.contains('db-filter-zip')) {
+              filterZip = value;
+            }
+            applyFilters();
+            filterDropdown.classList.add('is-hidden');
+            filterBtn.setAttribute('aria-expanded', 'false');
+          });
+        });
+        filterDropdown.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.addEventListener('click', function () {
+          filterDropdown.classList.add('is-hidden');
+          filterBtn.setAttribute('aria-expanded', 'false');
         });
       }
     })
