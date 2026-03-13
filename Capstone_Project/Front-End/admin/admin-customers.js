@@ -54,6 +54,7 @@
           html += '<p class="db-error">' + rows[0]._error + '</p>';
         } else {
           if (searchWrap) searchWrap.classList.remove('is-hidden');
+          html += '<div id="customer-no-results" class="db-no-results is-hidden" aria-live="polite">No customer found with that search.</div>';
           html += '<table id="customer-table"><thead><tr>';
           var cols = Object.keys(rows[0]);
           cols.forEach(function (c) { html += '<th>' + c + '</th>'; });
@@ -72,15 +73,26 @@
 
       var searchInput = document.getElementById('customer-search');
       var table = document.getElementById('customer-table');
+      var noResultsEl = document.getElementById('customer-no-results');
       if (searchInput && table) {
         var tbody = table.querySelector('tbody');
         var tableRows = tbody ? tbody.querySelectorAll('tr') : [];
         searchInput.addEventListener('input', function () {
           var q = (this.value || '').trim().toLowerCase();
+          var visibleCount = 0;
           tableRows.forEach(function (tr) {
             var text = tr.textContent || '';
-            tr.style.display = q === '' || text.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+            var show = q === '' || text.toLowerCase().indexOf(q) !== -1;
+            tr.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
           });
+          if (noResultsEl) {
+            if (q !== '' && visibleCount === 0) {
+              noResultsEl.classList.remove('is-hidden');
+            } else {
+              noResultsEl.classList.add('is-hidden');
+            }
+          }
         });
       }
     })

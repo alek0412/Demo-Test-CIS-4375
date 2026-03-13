@@ -879,3 +879,19 @@ body[data-theme="dark"] .db-table-wrap tr:nth-child(even) {
   outline: none;
   border-color: var(--primary, #2563eb);
 }
+.db-no-results {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 8rem;
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+.db-no-results.is-hidden {
+  display: none;
+}
+body[data-theme="dark"] .db-no-results {
+  color: rgba(255, 255, 255, 0.6);
+}
