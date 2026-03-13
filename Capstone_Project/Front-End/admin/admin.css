@@ -807,3 +807,75 @@ body[data-theme="light"] .theme-dropdown-option:hover {
     display: none;
   }
 }
+
+/* ========== Admin Customers page (db table + search) ========== */
+.db-error {
+  color: #b91c1c;
+  padding: 1rem;
+  background: #fef2f2;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+.db-meta {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-size: 0.9375rem;
+}
+.db-table-wrap {
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+.db-table-wrap h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.db-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.db-table-wrap th,
+.db-table-wrap td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+.db-table-wrap th {
+  background: var(--bg-card);
+  font-weight: 600;
+}
+.db-table-wrap tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.03);
+}
+body[data-theme="dark"] .db-table-wrap th {
+  background: #1f2937;
+  color: #f3f4f6;
+}
+body[data-theme="dark"] .db-table-wrap td {
+  color: rgba(255, 255, 255, 0.9);
+}
+body[data-theme="dark"] .db-table-wrap tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
+.db-loading {
+  color: var(--text-muted);
+  padding: 1rem;
+}
+.db-search-wrap {
+  margin-bottom: 0.75rem;
+}
+.db-search-wrap.is-hidden {
+  display: none;
+}
+.db-search-wrap input {
+  width: 100%;
+  max-width: 20rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.db-search-wrap input:focus {
+  outline: none;
+  border-color: var(--primary, #2563eb);
+}
