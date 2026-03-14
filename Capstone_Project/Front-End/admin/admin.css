@@ -164,6 +164,7 @@ body:has(.admin-layout) {
   height: 100%;
   min-height: 100vh;
   background: #0a0a0a;
+  overflow: hidden;
 }
 
 .admin-sidebar-header {
@@ -311,10 +312,12 @@ body[data-theme="dark"] .admin-welcome {
   border-right: 2px solid rgba(30, 64, 175, 0.6);
   display: flex;
   flex-direction: column;
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: 0;
   height: 100vh;
   overflow: hidden;
+  z-index: 100;
 }
 
 .admin-nav {
@@ -423,10 +426,13 @@ body[data-theme="dark"] .admin-welcome {
   flex: 1;
   min-width: 0;
   min-height: 0;
+  margin-left: 280px;
   display: flex;
   flex-direction: column;
   background: #0a0a0a;
   position: relative;
+  overflow: hidden;
+  height: 100vh;
 }
 
 .admin-topbar {
@@ -567,6 +573,7 @@ body[data-theme="dark"] .admin-welcome {
   padding: 1.5rem 1.5rem 1.5rem 0.5rem;
   color: rgba(255, 255, 255, 0.9);
   position: relative;
+  overflow-y: auto;
 }
 
 /* Center page title in the middle of the main content area */
@@ -791,6 +798,9 @@ body[data-theme="light"] .theme-dropdown-option:hover {
   .admin-sidebar {
     width: 72px;
     padding: 0;
+  }
+  .admin-main {
+    margin-left: 72px;
   }
   .admin-nav-link {
     grid-template-columns: 1fr;
