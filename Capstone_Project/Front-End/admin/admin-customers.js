@@ -54,6 +54,8 @@
           html += '<p class="db-error">' + rows[0]._error + '</p>';
         } else {
           if (searchWrap) searchWrap.classList.remove('is-hidden');
+          var countWrap = document.getElementById('customer-result-count');
+          if (countWrap) countWrap.classList.remove('is-hidden');
           html += '<div id="customer-no-results" class="db-no-results is-hidden" aria-live="polite">No customer found with that search.</div>';
           html += '<table id="customer-table"><thead><tr>';
           var cols = Object.keys(rows[0]);
@@ -213,6 +215,8 @@
             noResultsEl.classList.add('is-hidden');
           }
         }
+        var countEl = document.getElementById('customer-count-num');
+        if (countEl) countEl.textContent = visibleCount;
         if (filterDropdown) {
           filterDropdown.querySelectorAll('.db-filter-domain').forEach(function (opt) {
             opt.classList.toggle('is-active', opt.getAttribute('data-value') === filterDomain);
@@ -256,6 +260,13 @@
           filterDropdown.classList.add('is-hidden');
           filterBtn.setAttribute('aria-expanded', 'false');
         });
+      }
+
+      if (table && rows && rows.length && !rows[0]._error) {
+        applyFilters();
+      } else {
+        var countEl = document.getElementById('customer-count-num');
+        if (countEl) countEl.textContent = '0';
       }
     })
     .catch(function () {
