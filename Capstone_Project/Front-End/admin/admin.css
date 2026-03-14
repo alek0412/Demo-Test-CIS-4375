@@ -993,6 +993,30 @@ body[data-theme="dark"] .db-table-wrap tr:nth-child(even) {
   font-weight: 600;
   background: rgba(37, 99, 235, 0.1);
 }
+.db-filter-clear-wrap {
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.25rem;
+}
+.db-filter-clear-btn {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg-hover, rgba(0, 0, 0, 0.06));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.db-filter-clear-btn:hover {
+  background: rgba(185, 28, 28, 0.1);
+  border-color: rgba(185, 28, 28, 0.3);
+  color: #b91c1c;
+}
 body[data-theme="dark"] .db-filter-btn {
   background: #1f2937;
   color: #f3f4f6;
@@ -1006,6 +1030,19 @@ body[data-theme="dark"] .db-filter-dropdown {
 }
 body[data-theme="dark"] .db-filter-option:hover {
   background: #374151;
+}
+body[data-theme="dark"] .db-filter-clear-wrap {
+  border-top-color: #374151;
+}
+body[data-theme="dark"] .db-filter-clear-btn {
+  background: #374151;
+  color: #f3f4f6;
+  border-color: #4b5563;
+}
+body[data-theme="dark"] .db-filter-clear-btn:hover {
+  background: rgba(185, 28, 28, 0.25);
+  border-color: #b91c1c;
+  color: #fca5a5;
 }
 .db-no-results {
   display: flex;

@@ -124,11 +124,39 @@
         return l === 'zipcode' || l === 'zip_code' || l === 'zip' || l === 'postalcode' || l === 'postal_code';
       });
 
-      if (filterBtn && filterDropdown && rows && rows.length && !rows[0]._error) {
+      var filterDomain = '';
+      var filterStatus = '';
+      var filterZip = '';
+
+      function getFilteredRows() {
+        if (!rows || !rows.length || rows[0]._error) return [];
+        return rows.filter(function (row) {
+          var domainOk = !filterDomain;
+          if (!domainOk && emailCol && row[emailCol]) {
+            var email = String(row[emailCol]).trim();
+            var domain = email.indexOf('@') !== -1 ? email.split('@')[1].toLowerCase() : '(none)';
+            domainOk = domain === filterDomain;
+          }
+          var statusOk = !filterStatus;
+          if (!statusOk && statusCol != null) {
+            var s = membershipStatusLabel(row[statusCol]) || '(blank)';
+            statusOk = norm(s) === norm(filterStatus);
+          }
+          var zipOk = !filterZip;
+          if (!zipOk && zipCol != null) {
+            var z = norm(row[zipCol]) || '(blank)';
+            zipOk = z === norm(filterZip);
+          }
+          return domainOk && statusOk && zipOk;
+        });
+      }
+
+      function buildFilterDropdown(rowsSubset) {
+        if (!filterDropdown || !rowsSubset.length) return;
         var domainCounts = {};
         var statusCounts = {};
         var zipCounts = {};
-        rows.forEach(function (row) {
+        rowsSubset.forEach(function (row) {
           if (emailCol && row[emailCol]) {
             var email = String(row[emailCol]).trim();
             var domain = email.indexOf('@') !== -1 ? email.split('@')[1].toLowerCase() : '(none)';
@@ -147,35 +175,39 @@
         var dropdownHtml = '';
         if (Object.keys(domainCounts).length > 0) {
           dropdownHtml += '<div class="db-filter-section"><div class="db-filter-section-title">By email domain</div>';
-          dropdownHtml += '<button type="button" class="db-filter-option db-filter-domain" data-value="">All</button>';
+          dropdownHtml += '<button type="button" class="db-filter-option db-filter-domain' + (filterDomain === '' ? ' is-active' : '') + '" data-value="">All</button>';
           Object.keys(domainCounts).sort().forEach(function (domain) {
-            dropdownHtml += '<button type="button" class="db-filter-option db-filter-domain" data-value="' + domain.replace(/"/g, '&quot;') + '">' + domain + ' (' + domainCounts[domain] + ')</button>';
+            var active = filterDomain === domain ? ' is-active' : '';
+            dropdownHtml += '<button type="button" class="db-filter-option db-filter-domain' + active + '" data-value="' + domain.replace(/"/g, '&quot;') + '">' + domain + ' (' + domainCounts[domain] + ')</button>';
           });
           dropdownHtml += '</div>';
         }
         if (Object.keys(statusCounts).length > 0) {
           dropdownHtml += '<div class="db-filter-section"><div class="db-filter-section-title">By status</div>';
-          dropdownHtml += '<button type="button" class="db-filter-option db-filter-status" data-value="">All</button>';
+          dropdownHtml += '<button type="button" class="db-filter-option db-filter-status' + (filterStatus === '' ? ' is-active' : '') + '" data-value="">All</button>';
           Object.keys(statusCounts).sort().forEach(function (s) {
-            dropdownHtml += '<button type="button" class="db-filter-option db-filter-status" data-value="' + String(s).replace(/"/g, '&quot;') + '">' + s + ' (' + statusCounts[s] + ')</button>';
+            var active = norm(filterStatus) === norm(s) ? ' is-active' : '';
+            dropdownHtml += '<button type="button" class="db-filter-option db-filter-status' + active + '" data-value="' + String(s).replace(/"/g, '&quot;') + '">' + s + ' (' + statusCounts[s] + ')</button>';
           });
           dropdownHtml += '</div>';
         }
         if (Object.keys(zipCounts).length > 0) {
           dropdownHtml += '<div class="db-filter-section"><div class="db-filter-section-title">By zip code</div>';
-          dropdownHtml += '<button type="button" class="db-filter-option db-filter-zip" data-value="">All</button>';
+          dropdownHtml += '<button type="button" class="db-filter-option db-filter-zip' + (filterZip === '' ? ' is-active' : '') + '" data-value="">All</button>';
           Object.keys(zipCounts).sort().forEach(function (z) {
-            dropdownHtml += '<button type="button" class="db-filter-option db-filter-zip" data-value="' + String(z).replace(/"/g, '&quot;') + '">' + z + ' (' + zipCounts[z] + ')</button>';
+            var active = norm(filterZip) === norm(z) ? ' is-active' : '';
+            dropdownHtml += '<button type="button" class="db-filter-option db-filter-zip' + active + '" data-value="' + String(z).replace(/"/g, '&quot;') + '">' + z + ' (' + zipCounts[z] + ')</button>';
           });
           dropdownHtml += '</div>';
         }
         if (dropdownHtml === '') dropdownHtml = '<div class="db-filter-section"><div class="db-filter-section-title">No filters available</div></div>';
+        dropdownHtml += '<div class="db-filter-section db-filter-clear-wrap"><button type="button" class="db-filter-clear-btn" id="customer-filter-clear">Clear filters</button></div>';
         filterDropdown.innerHTML = dropdownHtml;
       }
 
-      var filterDomain = '';
-      var filterStatus = '';
-      var filterZip = '';
+      if (filterBtn && filterDropdown && rows && rows.length && !rows[0]._error) {
+        buildFilterDropdown(getFilteredRows());
+      }
 
       function getCellText(tr, colKey) {
         if (!cols.length || !colKey) return '';
@@ -240,22 +272,34 @@
           var open = filterDropdown.classList.toggle('is-hidden');
           filterBtn.setAttribute('aria-expanded', !open);
         });
-        filterDropdown.querySelectorAll('.db-filter-option').forEach(function (opt) {
-          opt.addEventListener('click', function () {
-            var value = this.getAttribute('data-value') || '';
-            if (this.classList.contains('db-filter-domain')) {
-              filterDomain = value;
-            } else if (this.classList.contains('db-filter-status')) {
-              filterStatus = value;
-            } else if (this.classList.contains('db-filter-zip')) {
-              filterZip = value;
-            }
+        filterDropdown.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (e.target && e.target.id === 'customer-filter-clear') {
+            filterDomain = '';
+            filterStatus = '';
+            filterZip = '';
+            if (searchInput) searchInput.value = '';
+            buildFilterDropdown(getFilteredRows());
             applyFilters();
             filterDropdown.classList.add('is-hidden');
             filterBtn.setAttribute('aria-expanded', 'false');
-          });
+            return;
+          }
+          var opt = e.target && e.target.closest && e.target.closest('.db-filter-option');
+          if (!opt) return;
+          var value = opt.getAttribute('data-value') || '';
+          if (opt.classList.contains('db-filter-domain')) {
+            filterDomain = value;
+          } else if (opt.classList.contains('db-filter-status')) {
+            filterStatus = value;
+          } else if (opt.classList.contains('db-filter-zip')) {
+            filterZip = value;
+          }
+          buildFilterDropdown(getFilteredRows());
+          applyFilters();
+          filterDropdown.classList.add('is-hidden');
+          filterBtn.setAttribute('aria-expanded', 'false');
         });
-        filterDropdown.addEventListener('click', function (e) { e.stopPropagation(); });
         document.addEventListener('click', function () {
           filterDropdown.classList.add('is-hidden');
           filterBtn.setAttribute('aria-expanded', 'false');
