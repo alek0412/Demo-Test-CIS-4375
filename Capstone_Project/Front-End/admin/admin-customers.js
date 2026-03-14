@@ -56,8 +56,6 @@
           if (searchWrap) searchWrap.classList.remove('is-hidden');
           var countWrap = document.getElementById('customer-result-count');
           if (countWrap) countWrap.classList.remove('is-hidden');
-          html += '<div id="customer-no-results" class="db-no-results is-hidden" aria-live="polite">No customer found with that search.</div>';
-          html += '<table id="customer-table"><thead><tr>';
           var cols = Object.keys(rows[0]);
           var statusColName = cols.find(function (c) {
             var l = c.toLowerCase();
@@ -79,8 +77,10 @@
             var key = colName.toLowerCase().replace(/\s+/g, '_');
             return colLabels[colName] || colLabels[key] || colName.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
           }
+          html += '<table id="customer-table"><thead><tr>';
           cols.forEach(function (c) { html += '<th>' + columnHeaderLabel(c) + '</th>'; });
           html += '</tr></thead><tbody>';
+          html += '<tr id="customer-no-results" class="db-no-results db-no-results-row is-hidden" aria-live="polite"><td colspan="' + cols.length + '">No customer found with that search.</td></tr>';
           rows.forEach(function (row) {
             html += '<tr>';
             cols.forEach(function (c) {
@@ -228,6 +228,7 @@
         var tbody = table.querySelector('tbody');
         var tableRows = tbody ? tbody.querySelectorAll('tr') : [];
         tableRows.forEach(function (tr) {
+          if (tr.id === 'customer-no-results') return;
           var rowText = tr.textContent || '';
           var searchMatch = q === '' || rowText.toLowerCase().indexOf(q) !== -1;
           var emailCell = getCellText(tr, emailCol);

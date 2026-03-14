@@ -1057,6 +1057,18 @@ body[data-theme="dark"] .db-filter-clear-btn:hover {
 .db-no-results.is-hidden {
   display: none;
 }
+.db-no-results-row {
+  display: table-row;
+}
+.db-no-results-row td {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.db-no-results-row.is-hidden {
+  display: none;
+}
 body[data-theme="dark"] .db-no-results {
   color: rgba(255, 255, 255, 0.6);
 }
