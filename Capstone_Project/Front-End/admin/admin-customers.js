@@ -61,7 +61,23 @@
             var l = c.toLowerCase();
             return l === 'membership_status' || l === 'customerstatus' || l === 'status' || l === 'customer_status';
           });
-          cols.forEach(function (c) { html += '<th>' + c + '</th>'; });
+          var colLabels = {
+            customer_id: 'Customer ID',
+            customer_first_name: 'First Name',
+            customer_last_name: 'Last Name',
+            phone: 'Phone',
+            email: 'Email',
+            street_address: 'Street Address',
+            city: 'City',
+            state: 'State',
+            zip_code: 'Zip Code',
+            membership_status: 'Membership Status'
+          };
+          function columnHeaderLabel(colName) {
+            var key = colName.toLowerCase().replace(/\s+/g, '_');
+            return colLabels[colName] || colLabels[key] || colName.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+          }
+          cols.forEach(function (c) { html += '<th>' + columnHeaderLabel(c) + '</th>'; });
           html += '</tr></thead><tbody>';
           rows.forEach(function (row) {
             html += '<tr>';
@@ -167,6 +183,10 @@
         return cell ? (cell.textContent || '').trim() : '';
       }
 
+      function norm(v) {
+        return (v == null || v === '') ? '' : String(v).trim();
+      }
+
       function applyFilters() {
         var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
         var visibleCount = 0;
@@ -179,9 +199,9 @@
           var emailCell = getCellText(tr, emailCol);
           var domainMatch = !filterDomain || (emailCell.indexOf('@') !== -1 && emailCell.split('@')[1].toLowerCase() === filterDomain);
           var statusCell = getCellText(tr, statusCol);
-          var statusMatch = !filterStatus || statusCell === filterStatus;
+          var statusMatch = !filterStatus || norm(statusCell) === norm(filterStatus);
           var zipCell = getCellText(tr, zipCol);
-          var zipMatch = !filterZip || zipCell === filterZip;
+          var zipMatch = !filterZip || norm(zipCell) === norm(filterZip);
           var show = searchMatch && domainMatch && statusMatch && zipMatch;
           tr.style.display = show ? '' : 'none';
           if (show) visibleCount++;
