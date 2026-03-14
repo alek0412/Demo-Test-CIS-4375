@@ -867,6 +867,11 @@ body[data-theme="dark"] .db-table-wrap tr:nth-child(even) {
 .db-search-wrap.is-hidden {
   display: none;
 }
+.db-search-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
 .db-search-wrap input {
   width: 100%;
   max-width: 20rem;

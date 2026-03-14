@@ -57,11 +57,21 @@
           html += '<div id="customer-no-results" class="db-no-results is-hidden" aria-live="polite">No customer found with that search.</div>';
           html += '<table id="customer-table"><thead><tr>';
           var cols = Object.keys(rows[0]);
+          var statusColName = cols.find(function (c) {
+            var l = c.toLowerCase();
+            return l === 'membership_status' || l === 'customerstatus' || l === 'status' || l === 'customer_status';
+          });
           cols.forEach(function (c) { html += '<th>' + c + '</th>'; });
           html += '</tr></thead><tbody>';
           rows.forEach(function (row) {
             html += '<tr>';
-            cols.forEach(function (c) { html += '<td>' + (row[c] != null ? String(row[c]) : '') + '</td>'; });
+            cols.forEach(function (c) {
+              var display = row[c];
+              if (c === statusColName && (display === 1 || display === 2 || display === '1' || display === '2')) {
+                display = display === 1 || display === '1' ? 'Active' : 'Inactive';
+              }
+              html += '<td>' + (display != null && display !== '' ? String(display) : '') + '</td>';
+            });
             html += '</tr>';
           });
           html += '</tbody></table>';
@@ -81,8 +91,16 @@
       var emailCol = cols.find(function (c) { return c.toLowerCase() === 'email'; });
       var statusCol = cols.find(function (c) {
         var l = c.toLowerCase();
-        return l === 'customerstatus' || l === 'status' || l === 'customer_status';
+        return l === 'customerstatus' || l === 'status' || l === 'customer_status' || l === 'membership_status';
       });
+
+      function membershipStatusLabel(val) {
+        if (val == null || val === '') return '';
+        var n = Number(val);
+        if (n === 1) return 'Active';
+        if (n === 2) return 'Inactive';
+        return String(val);
+      }
       var zipCol = cols.find(function (c) {
         var l = c.toLowerCase();
         return l === 'zipcode' || l === 'zip_code' || l === 'zip' || l === 'postalcode' || l === 'postal_code';
@@ -98,8 +116,8 @@
             var domain = email.indexOf('@') !== -1 ? email.split('@')[1].toLowerCase() : '(none)';
             domainCounts[domain] = (domainCounts[domain] || 0) + 1;
           }
-          if (statusCol && row[statusCol]) {
-            var s = String(row[statusCol]).trim() || '(blank)';
+          if (statusCol && row[statusCol] != null && row[statusCol] !== '') {
+            var s = membershipStatusLabel(row[statusCol]) || '(blank)';
             statusCounts[s] = (statusCounts[s] || 0) + 1;
           }
           if (zipCol && row[zipCol] != null) {
