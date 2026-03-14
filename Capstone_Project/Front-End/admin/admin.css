@@ -588,6 +588,11 @@ body[data-theme="dark"] .admin-welcome {
   overflow-y: auto;
 }
 
+/* Customers page: bring search/filter block closer to top */
+.admin-content:has(#customer-search-wrap) {
+  padding-top: 0.5rem;
+}
+
 /* Center page title in the middle of the main content area */
 .admin-title-wrap {
   position: absolute;
@@ -871,12 +876,22 @@ body[data-theme="light"] .theme-dropdown-option:hover {
   background: var(--bg-card);
   font-weight: 600;
 }
+.db-table-wrap thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 1px 0 0 var(--border);
+}
 .db-table-wrap tr:nth-child(even) {
   background: rgba(0, 0, 0, 0.03);
 }
 body[data-theme="dark"] .db-table-wrap th {
   background: #1f2937;
   color: #f3f4f6;
+}
+body[data-theme="dark"] .db-table-wrap thead th {
+  background: #1f2937;
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.08);
 }
 body[data-theme="dark"] .db-table-wrap td {
   color: rgba(255, 255, 255, 0.9);
