@@ -282,8 +282,7 @@
             if (searchInput) searchInput.value = '';
             buildFilterDropdown(getFilteredRows());
             applyFilters();
-            filterDropdown.classList.add('is-hidden');
-            filterBtn.setAttribute('aria-expanded', 'false');
+            /* keep dropdown open so user can keep filtering or close it themselves */
             return;
           }
           var opt = e.target && e.target.closest && e.target.closest('.db-filter-option');
@@ -298,8 +297,7 @@
           }
           buildFilterDropdown(getFilteredRows());
           applyFilters();
-          filterDropdown.classList.add('is-hidden');
-          filterBtn.setAttribute('aria-expanded', 'false');
+          /* leave dropdown open so user can pick more filters; they close it via button or click outside */
         });
         document.addEventListener('click', function () {
           filterDropdown.classList.add('is-hidden');
