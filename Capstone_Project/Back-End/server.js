@@ -9,11 +9,11 @@
  *   Password: Admin123!
  */
 
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const http = require('http');
 const fs = require('fs');
-const path = require('path');
 const db = require('./db/connection');
 const config = require('./config');
 

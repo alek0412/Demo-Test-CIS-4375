@@ -31,10 +31,28 @@
 
       if (data.error) {
         el.className = 'db-error';
+        var errLower = String(data.error).toLowerCase();
+        var missingCreds =
+          errLower.indexOf("using password: no") !== -1 ||
+          errLower.indexOf("user ''@") !== -1 ||
+          errLower.indexOf("user \"\"@") !== -1;
+        var accessDenied = errLower.indexOf("access denied") !== -1;
+        var hintBody;
+        if (missingCreds) {
+          hintBody =
+            'The server is not sending a database user or password. On the machine running Node, create or edit <code>Capstone_Project/Back-End/.env</code> with <code>DB_USER</code> and <code>DB_PASSWORD</code> (see <code>.env.example</code>), then restart the app (e.g. <code>pm2 restart reservation-app</code>).';
+        } else if (accessDenied) {
+          hintBody =
+            'The database host is reachable and a password was sent, but MySQL rejected the login. Confirm <code>DB_USER</code> matches the RDS master username (or a user you created with access to this database). Re-type <code>DB_PASSWORD</code> in <code>.env</code> with no quotes or spaces around the value. If you reset the RDS password in AWS, update <code>.env</code> and restart the app.';
+        } else {
+          hintBody =
+            'If you run the app on your laptop, RDS may be unreachable from your network. Run the app on EC2 (same VPC as RDS) and ensure <code>.env</code> has the correct <code>DB_*</code> values.';
+        }
+        var hint = '<p style="margin-top: 0.75rem;">' + hintBody + '</p>';
         el.innerHTML =
           'Cannot connect to the database. ' + data.error +
           (data.database ? ' (Database: ' + data.database + ')' : '') +
-          '<p style="margin-top: 0.75rem;">In AWS, only the EC2 instance can reach RDS. Run the app on EC2 and open Admin from there to see reservations data.</p>';
+          hint;
         return;
       }
 
