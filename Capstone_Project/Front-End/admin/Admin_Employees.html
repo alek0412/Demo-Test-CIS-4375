@@ -93,8 +93,21 @@
         <div class="admin-title-wrap admin-title-wrap--left">
           <h1 class="admin-page-title">Employees</h1>
         </div>
+        <div id="employee-search-wrap" class="db-search-wrap is-hidden">
+          <div class="db-search-filter-row">
+            <input type="text" id="employee-search" placeholder="Search employees..." aria-label="Search employee table">
+            <div class="db-filter-wrap">
+              <button type="button" id="employee-filter-btn" class="db-filter-btn" aria-haspopup="true" aria-expanded="false">Filter by email domain ▾</button>
+              <div id="employee-filter-dropdown" class="db-filter-dropdown is-hidden" role="menu"></div>
+            </div>
+          </div>
+          <p class="db-search-hint">Search by name, email, or phone. Use the filter to narrow by email domain (e.g. hbcstaff.com).</p>
+          <p class="db-result-count is-hidden" id="employee-result-count" aria-live="polite">Showing <span id="employee-count-num">—</span> employees</p>
+        </div>
+        <div id="db-content" class="db-loading"></div>
       </div>
     </div>
   </div>
+  <script src="admin-employees.js"></script>
 </body>
 </html>
