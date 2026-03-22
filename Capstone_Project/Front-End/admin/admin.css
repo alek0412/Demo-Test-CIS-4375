@@ -246,10 +246,6 @@ body[data-theme="light"] .admin-nav-link.active {
   background: #b91c1c;
   color: #ffffff;
 }
-body[data-theme="light"] .admin-nav-section .admin-nav-link:nth-child(7) {
-  border-top-color: rgba(0, 0, 0, 0.12);
-}
-
 /* Dark theme: header area matches the dark logo image background (solid black) */
 body[data-theme="dark"] .admin-sidebar-header {
   background: #000000;
@@ -266,10 +262,6 @@ body[data-theme="dark"] .admin-sidebar {
 
 body[data-theme="dark"] .admin-nav {
   background: #2d2d2d;
-}
-
-body[data-theme="dark"] .admin-nav-section .admin-nav-link:nth-child(7) {
-  border-top-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Dark theme: remove green borders (use neutral borders instead) */
@@ -345,15 +337,6 @@ body[data-theme="dark"] .admin-welcome {
 
 .admin-nav-section:first-child .admin-nav-link {
   padding-left: 32px;
-}
-
-/* Line between Check In and Customers (7th link = Customers) – centered in the gap, extends to sidebar edge */
-.admin-nav-section .admin-nav-link:nth-child(7) {
-  border-top: 2px solid rgba(30, 64, 175, 0.6);
-  padding-top: 0.5rem;
-  margin-top: 0.5rem;
-  margin-right: -16px;
-  padding-right: 24px;
 }
 
 /* Fixed grid: icon 26px | gap 8px | label 1fr | arrow. All labels start at the same column. */
