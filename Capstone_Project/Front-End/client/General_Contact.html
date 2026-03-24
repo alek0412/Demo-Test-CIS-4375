@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — Houston Badminton Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .hero { padding-top: 1.5rem; padding-bottom: 0.5rem; }
+    section.features { padding-top: 0.5rem; }
+    /* Match Alternate Services `.reach-out` form box */
+    .reach-out {
+      margin-top: 0.5rem;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      box-sizing: border-box;
+    }
+    .reach-out > p.intro {
+      margin: 0 0 1rem;
+      color: var(--text-primary);
+      font-size: 0.9375rem;
+      text-align: center;
+    }
+    .reach-out label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .reach-out textarea {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+      box-sizing: border-box;
+      min-height: 100px;
+      resize: vertical;
+    }
+    .reach-out .btn-email {
+      display: block;
+      width: 100%;
+      padding: 0.65rem 1rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .reach-out .btn-email:hover {
+      background: var(--accent-hover);
+    }
+    .reach-out .contact-details {
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+    .reach-out .contact-details p {
+      margin: 0 0 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.9375rem;
+      text-align: center;
+      line-height: 1.55;
+    }
+    .reach-out .contact-details p:last-child {
+      margin-bottom: 0;
+    }
+    .reach-out .contact-details .contact-map-link {
+      display: block;
+      margin: 0 auto 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 1.55;
+    }
+    .reach-out .contact-details .contact-map-link strong {
+      font-weight: 600;
+      color: #000;
+    }
+    .reach-out .contact-details a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .reach-out .contact-details a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="General_Dashboard.html" class="logo"><img src="../images/HBC.png" alt="Houston Badminton Center" class="logo-img"></a>
+        <div class="nav-tabs">
+          <a href="General_Dashboard.html" class="nav-tab">Dashboard</a>
+          <a href="General_Availability.html" class="nav-tab">Availability</a>
+          <a href="General_Membership.html" class="nav-tab">Membership</a>
+          <a href="General_AlternateServices.html" class="nav-tab">Alternate Services</a>
+          <a href="General_Contact.html" class="nav-tab active">Contact Us</a>
+        </div>
+        <div class="nav-right">
+          <a href="Client_Login.html" class="nav-tab nav-auth-link">Log in</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Contact Us</h1>
+        <p>Reach the Houston Badminton Center for questions, bookings help, or directions.</p>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="container">
+        <div class="reach-out">
+          <p class="intro">Have a question or concern? Send us a message below — or reach us using the address, email, or phone.</p>
+          <div class="contact-details">
+            <a
+              id="contact-map-link"
+              class="contact-map-link"
+              href="https://www.google.com/maps/dir/?api=1&destination=10550%20West%20Airport%20Blvd%2C%20Stafford%2C%20TX%2077477"
+              data-address="10550 West Airport Blvd, Stafford, TX 77477"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Google Maps with directions to Houston Badminton Center; on a phone this opens the Google Maps app when installed"
+            ><strong>Location:</strong> 10550 West Airport Blvd, Stafford, TX 77477</a>
+            <p><strong>Email:</strong> <a href="mailto:info@houstonbadmintoncenter.com">info@houstonbadmintoncenter.com</a></p>
+            <p><strong>Phone Number:</strong> <a href="tel:+13462294921">346-229-4921</a></p>
+          </div>
+          <label for="contact-message">Your questions or concerns</label>
+          <textarea id="contact-message" placeholder="e.g. I'd like to ask about court availability this weekend."></textarea>
+          <button type="button" class="btn-email" id="contact-send">Send</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Houston Badminton Center. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="/Client_Alternative.js"></script>
+  <script src="/client-nav.js"></script>
+</body>
+</html>

@@ -83,8 +83,10 @@ function parseBody(req) {
 }
 
 const server = http.createServer(async (req, res) => {
+  const pathname = (req.url || '').split('?')[0];
+
   // POST /api/login — validate admin credentials and set session cookie
-  if (req.method === 'POST' && req.url === '/api/login') {
+  if (req.method === 'POST' && pathname === '/api/login') {
     let data = {};
     try {
       data = await parseBody(req);
@@ -110,7 +112,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // POST /api/logout — clear admin session
-  if (req.method === 'POST' && req.url === '/api/logout') {
+  if (req.method === 'POST' && pathname === '/api/logout') {
     res.writeHead(200, {
       'Content-Type': 'application/json',
       'Set-Cookie': 'admin_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
@@ -120,7 +122,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // POST /api/customer-login — validate customer credentials and set session cookie
-  if (req.method === 'POST' && req.url === '/api/customer-login') {
+  if (req.method === 'POST' && pathname === '/api/customer-login') {
     let data = {};
     try {
       data = await parseBody(req);
@@ -146,7 +148,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // POST /api/customer-logout — clear customer session
-  if (req.method === 'POST' && req.url === '/api/customer-logout') {
+  if (req.method === 'POST' && pathname === '/api/customer-logout') {
     res.writeHead(200, {
       'Content-Type': 'application/json',
       'Set-Cookie': 'customer_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
@@ -156,7 +158,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // GET /api/customer-me — check if customer is logged in (only accepts session from this server run)
-  if (req.method === 'GET' && req.url === '/api/customer-me') {
+  if (req.method === 'GET' && pathname === '/api/customer-me') {
     const cookie = req.headers.cookie || '';
     let sessionValue = '';
     try {
@@ -170,7 +172,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // GET /api/me — check if admin is logged in (for dashboard redirect)
-  if (req.method === 'GET' && req.url === '/api/me') {
+  if (req.method === 'GET' && pathname === '/api/me') {
     const cookie = req.headers.cookie || '';
     const loggedIn = cookie.includes('admin_session=loggedin');
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -179,7 +181,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // GET /api/db — return tables and rows from the database (for admin “View data”)
-  if (req.method === 'GET' && req.url === '/api/db') {
+  if (req.method === 'GET' && pathname === '/api/db') {
     const cookie = req.headers.cookie || '';
     if (!cookie.includes('admin_session=loggedin')) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -214,13 +216,13 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Redirect root to general (public) client dashboard
-  if (req.url === '/' || req.url === '/index.html') {
+  if (pathname === '/' || pathname === '/index.html') {
     res.writeHead(302, { Location: '/client/General_Dashboard.html' });
     res.end();
     return;
   }
 
-  let urlPath = req.url.split('?')[0];
+  let urlPath = pathname;
 
   // Serve JS from Back-End/static (admin and client scripts live with backend)
   if (

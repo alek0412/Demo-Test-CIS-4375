@@ -1,5 +1,5 @@
 /**
- * Alternate Services — coach & Minami reach-out
+ * Alternate Services — coach & Minami reach-out; Contact page — info@ mailto.
  * Send: opens default email app (mailto:). If that does not work, user can use Gmail or Outlook in the browser.
  */
 (function () {
@@ -122,6 +122,81 @@
         '&body=' +
         encodeURIComponent(messageText);
       showFallback(minamiSend, 'minami-email-fallback', to, subject, messageText);
+    });
+  }
+
+  var contactSend = document.getElementById('contact-send');
+  var contactMessage = document.getElementById('contact-message');
+  if (contactSend) {
+    contactSend.addEventListener('click', function () {
+      var to = 'info@houstonbadmintoncenter.com';
+      var subject = 'Question for Houston Badminton Center';
+      var messageText =
+        contactMessage && contactMessage.value
+          ? contactMessage.value.trim()
+          : "Hi, I have a question for Houston Badminton Center. Please get back to me when you can.";
+      window.location.href =
+        'mailto:' +
+        to +
+        '?subject=' +
+        encodeURIComponent(subject) +
+        '&body=' +
+        encodeURIComponent(messageText);
+      showFallback(contactSend, 'contact-email-fallback', to, subject, messageText);
+    });
+  }
+
+  /** Contact address: open Google Maps app on iOS/Android when possible; else same URLs as href. */
+  var mapLink = document.getElementById('contact-map-link');
+  if (mapLink) {
+    mapLink.addEventListener('click', function (e) {
+      var address =
+        mapLink.getAttribute('data-address') || '10550 West Airport Blvd, Stafford, TX 77477';
+      var dest = encodeURIComponent(address);
+      var webUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + dest;
+      var ua = navigator.userAgent || '';
+      var isAndroid = /Android/i.test(ua);
+      var isApple =
+        /iPhone|iPad|iPod/i.test(ua) ||
+        (typeof navigator.platform === 'string' &&
+          navigator.platform === 'MacIntel' &&
+          navigator.maxTouchPoints > 1);
+
+      if (isApple) {
+        e.preventDefault();
+        var appUrl = 'comgooglemaps://?daddr=' + dest + '&directionsmode=driving';
+        var fallbackTimer = setTimeout(function () {
+          window.location.href = webUrl;
+        }, 1500);
+        function clearFallback() {
+          clearTimeout(fallbackTimer);
+        }
+        window.addEventListener('pagehide', clearFallback, { once: true });
+        document.addEventListener(
+          'visibilitychange',
+          function onVis() {
+            if (document.visibilityState === 'hidden') {
+              clearFallback();
+              document.removeEventListener('visibilitychange', onVis);
+            }
+          },
+          false
+        );
+        window.location.href = appUrl;
+        return;
+      }
+
+      if (isAndroid) {
+        e.preventDefault();
+        var intentUrl =
+          'intent://www.google.com/maps/dir/?api=1&destination=' +
+          dest +
+          '#Intent;scheme=https;package=com.google.android.apps.maps;S.browser_fallback_url=' +
+          encodeURIComponent(webUrl) +
+          ';end';
+        window.location.href = intentUrl;
+        return;
+      }
     });
   }
 })();

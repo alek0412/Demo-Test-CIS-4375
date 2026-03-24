@@ -159,6 +159,9 @@
           .then(function (r) { return r.json(); })
           .then(function (data) {
             if (data.success) {
+              try {
+                sessionStorage.setItem('hbc_customer_logged_in', '1');
+              } catch (e) {}
               window.location.href = '/client/Client_Dashboard.html?logged_in=1';
             } else {
               customerError.textContent = data.message || 'Invalid email or password';
