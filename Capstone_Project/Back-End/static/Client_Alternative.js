@@ -146,14 +146,20 @@
     });
   }
 
-  /** Contact address: open Google Maps app on iOS/Android when possible; else same URLs as href. */
-  var mapLink = document.getElementById('contact-map-link');
+  /** Contact "Open in Google Maps" button: optional data-user-origin="lat,lng" = directions from user to HBC. */
+  var mapLink = document.getElementById('contact-directions-generic');
   if (mapLink) {
     mapLink.addEventListener('click', function (e) {
       var address =
         mapLink.getAttribute('data-address') || '10550 West Airport Blvd, Stafford, TX 77477';
       var dest = encodeURIComponent(address);
-      var webUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + dest;
+      var origin = mapLink.getAttribute('data-user-origin');
+      var webUrl = origin
+        ? 'https://www.google.com/maps/dir/?api=1&origin=' +
+          encodeURIComponent(origin) +
+          '&destination=' +
+          dest
+        : 'https://www.google.com/maps/dir/?api=1&destination=' + dest;
       var ua = navigator.userAgent || '';
       var isAndroid = /Android/i.test(ua);
       var isApple =
@@ -164,7 +170,13 @@
 
       if (isApple) {
         e.preventDefault();
-        var appUrl = 'comgooglemaps://?daddr=' + dest + '&directionsmode=driving';
+        var appUrl = origin
+          ? 'comgooglemaps://?saddr=' +
+            encodeURIComponent(origin) +
+            '&daddr=' +
+            dest +
+            '&directionsmode=driving'
+          : 'comgooglemaps://?daddr=' + dest + '&directionsmode=driving';
         var fallbackTimer = setTimeout(function () {
           window.location.href = webUrl;
         }, 1500);
@@ -188,9 +200,13 @@
 
       if (isAndroid) {
         e.preventDefault();
+        var intentPath =
+          'intent://www.google.com/maps/dir/?api=1' +
+          (origin ? '&origin=' + encodeURIComponent(origin) : '') +
+          '&destination=' +
+          dest;
         var intentUrl =
-          'intent://www.google.com/maps/dir/?api=1&destination=' +
-          dest +
+          intentPath +
           '#Intent;scheme=https;package=com.google.android.apps.maps;S.browser_fallback_url=' +
           encodeURIComponent(webUrl) +
           ';end';

@@ -80,16 +80,55 @@
     .reach-out .contact-details p:last-child {
       margin-bottom: 0;
     }
-    .reach-out .contact-details .contact-map-link {
-      display: block;
-      margin: 0 auto 0.5rem;
+    .reach-out .contact-details .contact-map-link.contact-map-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto 0.35rem;
+      padding: 0.5rem 0.75rem;
+      font-family: inherit;
       font-size: 1rem;
       font-weight: 500;
       line-height: 1.55;
+      color: #1a73e8;
+      background: #f8fbff;
+      border: 1px solid #aecbfa;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      box-sizing: border-box;
     }
-    .reach-out .contact-details .contact-map-link strong {
+    .reach-out .contact-details .contact-map-link.contact-map-toggle:hover {
+      background: #e8f0fe;
+      border-color: #4285f4;
+    }
+    .reach-out .contact-details .contact-map-link.contact-map-toggle strong {
       font-weight: 600;
-      color: #000;
+      color: #174ea6;
+    }
+    .reach-out .contact-map-toggle-chevron {
+      display: inline-block;
+      font-size: 0.65rem;
+      color: #4285f4;
+      transition: transform 0.25s ease;
+    }
+    .reach-out .contact-map-link.contact-map-toggle[aria-expanded="true"] .contact-map-toggle-chevron {
+      transform: rotate(180deg);
+    }
+    .reach-out .contact-location-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.38s ease;
+    }
+    .reach-out .contact-location-panel.is-open {
+      grid-template-rows: 1fr;
+    }
+    .reach-out .contact-location-panel-inner {
+      min-height: 0;
+      overflow: hidden;
     }
     .reach-out .contact-details a {
       color: var(--accent);
@@ -98,6 +137,100 @@
     }
     .reach-out .contact-details a:hover {
       text-decoration: underline;
+    }
+    .reach-out .contact-location-wrap {
+      margin: 1rem 0 1.25rem;
+      padding: 1rem;
+      border: 2px solid #4285f4;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(180deg, #e8f0fe 0%, #f8fbff 100%);
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(66, 133, 244, 0.12);
+    }
+    .reach-out .contact-location-status {
+      padding: 0.75rem 0.85rem;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      border: 1px solid #dadce0;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      text-align: left;
+      color: #202124;
+    }
+    .reach-out .contact-location-status.is-ok {
+      background: #e6f4ea;
+      border-color: #34a853;
+      color: #137333;
+    }
+    .reach-out .contact-location-status.is-warn {
+      background: #fef7e0;
+      border-color: #fbbc04;
+      color: #b06000;
+    }
+    .reach-out .contact-location-distance {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      margin: 0 0 0.75rem;
+      color: #137333;
+    }
+    .reach-out .contact-location-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+    }
+    .reach-out .contact-location-actions a.btn-contact-maps {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: #1a73e8;
+      color: #fff;
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      border: 1px solid #1a73e8;
+    }
+    .reach-out .contact-location-actions a.btn-contact-maps:hover {
+      background: #1557b0;
+      border-color: #1557b0;
+    }
+    .reach-out .contact-location-actions a.btn-contact-maps-secondary {
+      background: #1a73e8;
+      color: #fff;
+      border: 1px solid #1a73e8;
+    }
+    .reach-out .contact-location-actions a.btn-contact-maps-secondary:hover {
+      background: #1557b0;
+      border-color: #1557b0;
+    }
+    .reach-out .contact-map-embed {
+      position: relative;
+      margin-top: 0.5rem;
+      width: 100%;
+      height: clamp(320px, 48vw, 600px);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #aecbfa;
+      line-height: 0;
+    }
+    .reach-out .contact-map-embed iframe {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .reach-out .contact-location-note {
+      margin: 0.5rem 0 0;
+      font-size: 0.75rem;
+      color: #5f6368;
+      line-height: 1.45;
+      text-align: center;
     }
   </style>
 </head>
@@ -133,15 +266,41 @@
         <div class="reach-out">
           <p class="intro">Have a question or concern? Send us a message below — or reach us using the address, email, or phone.</p>
           <div class="contact-details">
-            <a
+            <button
+              type="button"
               id="contact-map-link"
-              class="contact-map-link"
-              href="https://www.google.com/maps/dir/?api=1&destination=10550%20West%20Airport%20Blvd%2C%20Stafford%2C%20TX%2077477"
-              data-address="10550 West Airport Blvd, Stafford, TX 77477"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Open Google Maps with directions to Houston Badminton Center; on a phone this opens the Google Maps app when installed"
-            ><strong>Location:</strong> 10550 West Airport Blvd, Stafford, TX 77477</a>
+              class="contact-map-link contact-map-toggle"
+              aria-expanded="false"
+              aria-controls="contact-location-panel"
+              aria-label="Show or hide map and directions for Houston Badminton Center"
+            >
+              <span><strong>Location:</strong> 10550 West Airport Blvd, Stafford, TX 77477</span>
+              <span class="contact-map-toggle-chevron" aria-hidden="true">▼</span>
+            </button>
+            <div id="contact-location-panel" class="contact-location-panel">
+              <div class="contact-location-panel-inner">
+                <div class="contact-location-wrap">
+                  <div id="contact-location-status" class="contact-location-status" role="status">
+                    Tap <strong>Location</strong> above to open this section. We only ask for your location <em>after</em> you expand it, so you can see distance from where you are.
+                  </div>
+                  <p id="contact-location-distance" class="contact-location-distance" hidden></p>
+                  <div class="contact-location-actions">
+                    <a
+                      id="contact-directions-generic"
+                      class="btn-contact-maps btn-contact-maps-secondary"
+                      href="https://www.google.com/maps/dir/?api=1&amp;destination=10550%20West%20Airport%20Blvd%2C%20Stafford%2C%20TX%2077477"
+                      data-address="10550 West Airport Blvd, Stafford, TX 77477"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >Open in Google Maps</a>
+                  </div>
+                  <div class="contact-map-embed" aria-hidden="true">
+                    <iframe title="Map of Houston Badminton Center" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=10550+West+Airport+Blvd%2C+Stafford%2C+TX+77477&amp;hl=en&amp;z=14&amp;output=embed"></iframe>
+                  </div>
+                  <p class="contact-location-note">Your location stays in your browser—we do not send it to our server.</p>
+                </div>
+              </div>
+            </div>
             <p><strong>Email:</strong> <a href="mailto:info@houstonbadmintoncenter.com">info@houstonbadmintoncenter.com</a></p>
             <p><strong>Phone Number:</strong> <a href="tel:+13462294921">346-229-4921</a></p>
           </div>
@@ -159,6 +318,97 @@
     </div>
   </footer>
   <script src="/Client_Alternative.js"></script>
+  <script>
+    (function () {
+      var HBC_LAT = 29.63635;
+      var HBC_LNG = -95.58855;
+      var DEST_ENCODED = encodeURIComponent('10550 West Airport Blvd, Stafford, TX 77477');
+      var statusEl = document.getElementById('contact-location-status');
+      var distEl = document.getElementById('contact-location-distance');
+      var mapLink = document.getElementById('contact-map-link');
+      var panel = document.getElementById('contact-location-panel');
+      var directionsBtn = document.getElementById('contact-directions-generic');
+      if (!statusEl || !distEl || !mapLink || !panel || !directionsBtn) return;
+
+      function haversineMiles(lat1, lon1, lat2, lon2) {
+        var R = 3958.7613;
+        var r1 = (lat1 * Math.PI) / 180;
+        var r2 = (lat2 * Math.PI) / 180;
+        var dLat = ((lat2 - lat1) * Math.PI) / 180;
+        var dLon = ((lon2 - lon1) * Math.PI) / 180;
+        var a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(r1) * Math.cos(r2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+      }
+      function formatMi(m) {
+        return m < 10 ? m.toFixed(1) : String(Math.round(m));
+      }
+
+      function applyUserOrigin(lat, lng) {
+        var o = lat + ',' + lng;
+        directionsBtn.setAttribute('data-user-origin', o);
+        directionsBtn.href =
+          'https://www.google.com/maps/dir/?api=1&origin=' +
+          encodeURIComponent(o) +
+          '&destination=' +
+          DEST_ENCODED;
+        var mi = haversineMiles(lat, lng, HBC_LAT, HBC_LNG);
+        distEl.innerHTML =
+          'About ' +
+          formatMi(mi) +
+          ' mi away (straight line). Use <strong>Open in Google Maps</strong> for driving distance.';
+        distEl.hidden = false;
+        statusEl.className = 'contact-location-status is-ok';
+        statusEl.innerHTML =
+          'Your location is set. Use <strong>Open in Google Maps</strong> for driving directions from where you are.';
+      }
+
+      function onGeoFail(err) {
+        statusEl.className = 'contact-location-status is-warn';
+        var msg =
+          'We could not read your location. You can still use the map below and <strong>Open in Google Maps</strong>.';
+        if (err && err.code === 1) {
+          msg =
+            'Location was blocked. Allow location for this site if you want distance from you; otherwise use <strong>Open in Google Maps</strong> and enter your start point.';
+        }
+        statusEl.innerHTML = msg;
+      }
+
+      var geoOpts = { enableHighAccuracy: true, timeout: 20000, maximumAge: 120000 };
+      var geoRequestStarted = false;
+
+      function requestGeoWhenPanelOpens() {
+        if (geoRequestStarted) return;
+        geoRequestStarted = true;
+        if (!navigator.geolocation) {
+          statusEl.className = 'contact-location-status is-warn';
+          statusEl.innerHTML =
+            'This browser does not support location. Use <strong>Open in Google Maps</strong> to get directions.';
+          return;
+        }
+        statusEl.className = 'contact-location-status';
+        statusEl.innerHTML =
+          'Checking your location… If your browser asks, choose <strong>Allow</strong> to see how far you are from the center.';
+        navigator.geolocation.getCurrentPosition(
+          function (pos) {
+            applyUserOrigin(pos.coords.latitude, pos.coords.longitude);
+          },
+          onGeoFail,
+          geoOpts
+        );
+      }
+
+      mapLink.addEventListener('click', function () {
+        var open = panel.classList.toggle('is-open');
+        mapLink.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          requestGeoWhenPanelOpens();
+        }
+      });
+    })();
+  </script>
   <script src="/client-nav.js"></script>
 </body>
 </html>
