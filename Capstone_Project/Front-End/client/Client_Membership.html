@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Membership — Houston Badminton Center</title>
+  <title>Memberships Available — Houston Badminton Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -170,6 +170,19 @@
   .specials-box .specials-inner p:last-child {
     margin-bottom: 0;
   }
+  .features .pricing-lead {
+    text-align: center;
+  }
+  .features .pricing-lead h2 {
+    margin-bottom: 0.35rem;
+  }
+  .features .pricing-lead .pricing-note {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
@@ -179,7 +192,7 @@
         <a href="Client_Dashboard.html" class="logo"><img src="../images/HBC.png" alt="Placeholder" class="logo-img"></a>
         <div class="nav-tabs">
           <a href="Client_Dashboard.html" class="nav-tab">Dashboard</a>
-          <a href="Client_Reserve.html" class="nav-tab">Reserve Court</a>
+          <a href="Client_Availability.html" class="nav-tab">Availability</a>
           <a href="Client_Bookings.html" class="nav-tab">My Bookings</a>
           <a href="Client_Membership.html" class="nav-tab active">Membership</a>
           <a href="Client_AlternateServices.html" class="nav-tab">Alternate Services</a>
@@ -195,15 +208,17 @@
   <main>
     <section class="hero">
       <div class="container">
-        <h1>Your <span class="highlight">membership</span></h1>
-        <p>Manage your plan and membership details</p>
+        <h1>Memberships Available</h1>
+        <p>Plans and pricing we offer at Houston Badminton Center.</p>
       </div>
     </section>
 
     <section class="features">
       <div class="container">
-        <h2>Pricing</h2>
-        <p style="color: var(--text-muted); text-align: center; margin-bottom: 1.5rem;">Membership, day passes, court reservations, and locker rentals. Sales tax will be added to prices below.</p>
+        <div class="pricing-lead">
+          <h2>Pricing</h2>
+          <p class="pricing-note">Membership, day passes, court reservations, and locker rentals. Sales tax will be added to prices below.</p>
+        </div>
         <div class="specials-box" id="specials-box" role="button" tabindex="0" aria-expanded="false" aria-label="View current specials">
           <div class="specials-teaser">
             <span class="teaser-closed">Click here to see our specials!</span>
@@ -217,8 +232,9 @@
             </div>
           </div>
         </div>
-        <figure style="margin: 0 auto; max-width: 560px;">
-          <img src="../images/HBC_Pricing_Sheet.png" alt="Houston Badminton Center — Pricing: membership, drop-in day passes, court reservations, locker rentals" style="width: 100%; height: auto; display: block; border-radius: var(--radius); border: 1px solid var(--border);">
+        <figure class="membership-pricing-figure">
+          <img id="pricing-sheet-thumb" class="membership-pricing-img" src="../images/HBC_Pricing_Sheet.png" alt="Houston Badminton Center — Pricing: membership, drop-in day passes, court reservations, locker rentals">
+          <figcaption class="membership-pricing-hint">Click the image to zoom in. Use the × in the top-right or press Escape to close.</figcaption>
         </figure>
       </div>
     </section>
@@ -246,6 +262,7 @@
       });
     })();
   </script>
+  <script src="/membership-pricing-lightbox.js"></script>
   <script src="/client-nav.js"></script>
 </body>
 </html>

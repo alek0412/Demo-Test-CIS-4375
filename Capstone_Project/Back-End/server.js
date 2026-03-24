@@ -223,7 +223,12 @@ const server = http.createServer(async (req, res) => {
   let urlPath = req.url.split('?')[0];
 
   // Serve JS from Back-End/static (admin and client scripts live with backend)
-  if (urlPath === '/admin-theme.js' || urlPath === '/client-nav.js' || urlPath === '/Client_Alternative.js') {
+  if (
+    urlPath === '/admin-theme.js' ||
+    urlPath === '/client-nav.js' ||
+    urlPath === '/Client_Alternative.js' ||
+    urlPath === '/membership-pricing-lightbox.js'
+  ) {
     const staticPath = path.join(__dirname, 'static', path.basename(urlPath));
     fs.stat(staticPath, (err, stat) => {
       if (err || !stat.isFile()) {
