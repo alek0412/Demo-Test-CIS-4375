@@ -103,6 +103,16 @@ node server.js
 
 - In a browser: **http://3.211.8.41:3000** (or your EC2 Elastic IP and port). You should see the client dashboard; log in to admin to use the Clients (reservations) view and DB features.
 
+### Password reset (forgot password) on AWS
+
+The app emails (or logs) links like `/client/Client_ResetPassword.html?token=…`. Those links must use your **public site URL**, not `localhost`.
+
+- In **`Back-End/.env` on EC2**, set **`APP_BASE_URL`** to the same base URL users use in the browser, for example:
+  - `APP_BASE_URL=http://3.211.8.41:3000` (HTTP + Elastic IP + port), or
+  - `https://your-domain.com` if you add a domain and TLS in front of the app.
+- Run the SQL migration **`migrations/001_customer_password_reset.sql`** against your RDS database (same DB as `DB_NAME`) so the `customer` table has **`reset_token`** and **`reset_token_expires`** (your table already has **`password`** for the bcrypt hash).
+- **Email:** For real delivery, configure **SMTP** (often **Amazon SES** SMTP credentials in `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`, etc.). If SMTP is not set, the reset link is printed in **`pm2 logs`** / the terminal — useful for testing on EC2 without SES yet.
+
 ### 6. (Optional) Keep the app running
 
 - `node server.js` stops when you close the SSH session. To keep it running: use `nohup node server.js &`, or a process manager like **pm2** (see below).

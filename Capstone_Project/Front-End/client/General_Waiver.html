@@ -103,6 +103,18 @@
       gap: 0.75rem;
     }
     .waiver-form-area .form-section { margin-bottom: 2rem; }
+    .waiver-account-hint {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0 0 1rem;
+      line-height: 1.45;
+    }
+    .waiver-register-error {
+      color: var(--accent);
+      font-size: 0.875rem;
+      margin: 0.75rem 0 0;
+    }
+    .waiver-register-error[hidden] { display: none; }
     .waiver-form-area .pref-row {
       display: flex;
       align-items: center;
@@ -361,7 +373,7 @@
         <div class="waiver-intro">
           <h1>Waiver & Registration</h1>
           <p class="lead">First time at the Houston Badminton Center?</p>
-          <p class="sub">Make sure to fill out the form below before playing!</p>
+          <p class="sub">Fill out the form below, including a password to create your account, before playing.</p>
           <p class="required">(Required for all players)</p>
           <p class="note"><strong>Note:</strong> For minors under 18, a parent or legal guardian must complete the guardian section of this waiver and use the minor's name in the form above.</p>
         </div>
@@ -428,6 +440,21 @@
                     <option value="">Year</option>
                   </select>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Create your login</h3>
+            <p class="waiver-account-hint">Use the same email as above. This password is for your online account (bookings, profile).</p>
+            <div class="form-row">
+              <div>
+                <label for="account-password">Password</label>
+                <input type="password" id="account-password" name="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters">
+              </div>
+              <div>
+                <label for="account-password-confirm">Confirm password</label>
+                <input type="password" id="account-password-confirm" name="password_confirm" required minlength="8" autocomplete="new-password" placeholder="Re-enter password">
               </div>
             </div>
           </div>
@@ -509,7 +536,8 @@
               <input type="checkbox" id="agree" name="agree" required>
               <label for="agree">I agree with the above terms *</label>
             </div>
-            <button type="submit" class="btn-register">Register</button>
+            <p id="waiver-register-error" class="waiver-register-error" role="alert" hidden></p>
+            <button type="submit" class="btn-register" id="waiver-submit-btn">Register</button>
           </div>
         </form>
       </div>
@@ -533,9 +561,66 @@
           yearSelect.appendChild(opt);
         }
       }
-      document.getElementById('waiver-form').addEventListener('submit', function (e) {
+      var waiverForm = document.getElementById('waiver-form');
+      var waiverErr = document.getElementById('waiver-register-error');
+      var waiverBtn = document.getElementById('waiver-submit-btn');
+      waiverForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        alert('Waiver submission will be connected to the server later.');
+        waiverErr.hidden = true;
+        waiverErr.textContent = '';
+        var pw = document.getElementById('account-password').value;
+        var pw2 = document.getElementById('account-password-confirm').value;
+        if (pw !== pw2) {
+          waiverErr.textContent = 'Passwords do not match.';
+          waiverErr.hidden = false;
+          return;
+        }
+        if (pw.length < 8) {
+          waiverErr.textContent = 'Password must be at least 8 characters.';
+          waiverErr.hidden = false;
+          return;
+        }
+        if (!document.getElementById('agree').checked) {
+          waiverErr.textContent = 'You must agree to the waiver terms.';
+          waiverErr.hidden = false;
+          return;
+        }
+        waiverBtn.disabled = true;
+        waiverBtn.textContent = 'Registering…';
+        fetch('/api/waiver-register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            email: document.getElementById('email').value.trim(),
+            password: pw,
+            password_confirm: pw2,
+            first_name: document.getElementById('first-name').value.trim(),
+            last_name: document.getElementById('last-name').value.trim(),
+            mobile: document.getElementById('mobile').value.trim(),
+            agree: true
+          })
+        })
+          .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+          .then(function (result) {
+            if (result.ok && result.data.success) {
+              try {
+                sessionStorage.setItem('hbc_customer_logged_in', '1');
+              } catch (err) {}
+              window.location.href = '/client/Client_Dashboard.html?logged_in=1';
+            } else {
+              waiverErr.textContent = (result.data && result.data.message) || 'Registration failed. Try again.';
+              waiverErr.hidden = false;
+              waiverBtn.disabled = false;
+              waiverBtn.textContent = 'Register';
+            }
+          })
+          .catch(function () {
+            waiverErr.textContent = 'Unable to reach server. Open the site from the backend (e.g. http://localhost:3000).';
+            waiverErr.hidden = false;
+            waiverBtn.disabled = false;
+            waiverBtn.textContent = 'Register';
+          });
       });
     })();
   </script>

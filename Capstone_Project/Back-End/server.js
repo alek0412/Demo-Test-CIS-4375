@@ -16,6 +16,8 @@ const http = require('http');
 const fs = require('fs');
 const db = require('./db/connection');
 const config = require('./config');
+const customerPassword = require('./lib/customerPassword');
+const { sendPasswordResetEmail } = require('./lib/resetMail');
 
 const PORT = process.env.PORT || 3000;
 
@@ -133,7 +135,12 @@ const server = http.createServer(async (req, res) => {
     }
     const email = (data.email || '').trim().toLowerCase();
     const password = data.password || '';
-    const valid = email === CUSTOMER_EMAIL && password === CUSTOMER_PASSWORD;
+    const valid = await customerPassword.validateCustomerLogin(
+      email,
+      password,
+      CUSTOMER_EMAIL,
+      CUSTOMER_PASSWORD
+    );
     if (valid) {
       res.writeHead(200, {
         'Content-Type': 'application/json',
@@ -153,6 +160,135 @@ const server = http.createServer(async (req, res) => {
       'Content-Type': 'application/json',
       'Set-Cookie': 'customer_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
     });
+    res.end(JSON.stringify({ success: true }));
+    return;
+  }
+
+  // POST /api/waiver-register — create customer account (email + password) from public waiver form
+  if (req.method === 'POST' && pathname === '/api/waiver-register') {
+    let data = {};
+    try {
+      data = await parseBody(req);
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
+      return;
+    }
+    if (!data.agree) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'You must agree to the waiver terms.' }));
+      return;
+    }
+    const pw = data.password || '';
+    const pw2 = data.password_confirm != null ? data.password_confirm : data.passwordConfirm;
+    if (pw !== pw2) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Passwords do not match.' }));
+      return;
+    }
+    const result = await customerPassword.registerNewCustomer({
+      email: data.email,
+      password: pw,
+      firstName: data.first_name,
+      lastName: data.last_name,
+      phone: data.mobile != null ? data.mobile : data.phone,
+    });
+    if (!result.ok) {
+      if (result.code === 'exists') {
+        res.writeHead(409, { 'Content-Type': 'application/json' });
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: 'An account with this email already exists. Log in or use Forgot password.',
+          })
+        );
+        return;
+      }
+      if (result.code === 'invalid') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: 'Check your email and password (at least 8 characters).' }));
+        return;
+      }
+      res.writeHead(503, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
+          success: false,
+          message:
+            'Could not complete registration. Confirm the database migration is applied and column names match your customer table.',
+        })
+      );
+      return;
+    }
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Set-Cookie':
+        'customer_session=' + encodeURIComponent(CUSTOMER_SESSION_VALUE) + '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
+    });
+    res.end(JSON.stringify({ success: true }));
+    return;
+  }
+
+  // POST /api/forgot-password — if email exists in customer table, send reset link (email or console)
+  if (req.method === 'POST' && pathname === '/api/forgot-password') {
+    let data = {};
+    try {
+      data = await parseBody(req);
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
+      return;
+    }
+    const result = await customerPassword.startPasswordReset(data.email);
+    if (!result.ok && result.error === 'database') {
+      res.writeHead(503, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: 'Password reset is temporarily unavailable. Confirm the database migration is applied.',
+        })
+      );
+      return;
+    }
+    if (result.ok && result.token && result.email) {
+      try {
+        await sendPasswordResetEmail({ to: result.email, token: result.token });
+      } catch (e) {
+        console.error('[forgot-password] send:', e);
+        res.writeHead(503, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: 'Could not send the reset email. Try again later.' }));
+        return;
+      }
+    }
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(
+      JSON.stringify({
+        success: true,
+        message:
+          'If that email is registered, you will receive a link to reset your password.',
+      })
+    );
+    return;
+  }
+
+  // POST /api/reset-password — set new password using token from email link
+  if (req.method === 'POST' && pathname === '/api/reset-password') {
+    let data = {};
+    try {
+      data = await parseBody(req);
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
+      return;
+    }
+    const token = data.token || '';
+    const password = data.password || '';
+    const out = await customerPassword.completePasswordReset(token, password);
+    if (!out.ok) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: out.message || 'Could not reset password.' }));
+      return;
+    }
+    res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ success: true }));
     return;
   }
