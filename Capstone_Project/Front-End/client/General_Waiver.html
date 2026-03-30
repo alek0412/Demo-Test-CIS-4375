@@ -601,22 +601,48 @@
             agree: true
           })
         })
-          .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+          .then(function (r) {
+            return r.text().then(function (text) {
+              var data = {};
+              try {
+                data = text ? JSON.parse(text) : {};
+              } catch (e) {
+                return {
+                  _badJson: true,
+                  status: r.status,
+                  snippet: (text || '').slice(0, 120)
+                };
+              }
+              return { ok: r.ok, status: r.status, data: data };
+            });
+          })
           .then(function (result) {
+            if (result._badJson) {
+              waiverErr.textContent =
+                'The server did not return JSON (HTTP ' +
+                result.status +
+                '). On AWS, confirm Node is running (pm2 list), port 3000 is open, and you are not only serving static files without the API.';
+              waiverErr.hidden = false;
+              waiverBtn.disabled = false;
+              waiverBtn.textContent = 'Register';
+              return;
+            }
             if (result.ok && result.data.success) {
               try {
                 sessionStorage.setItem('hbc_customer_logged_in', '1');
               } catch (err) {}
               window.location.href = '/client/Client_Dashboard.html?logged_in=1';
             } else {
-              waiverErr.textContent = (result.data && result.data.message) || 'Registration failed. Try again.';
+              waiverErr.textContent =
+                (result.data && result.data.message) || 'Registration failed (HTTP ' + result.status + '). Try again.';
               waiverErr.hidden = false;
               waiverBtn.disabled = false;
               waiverBtn.textContent = 'Register';
             }
           })
           .catch(function () {
-            waiverErr.textContent = 'Unable to reach server. Open the site from the backend (e.g. http://localhost:3000).';
+            waiverErr.textContent =
+              'Network error: could not reach this site’s server. On EC2 run: pm2 start server.js from Back-End, and open the site at http://YOUR_IP:3000 (same host as this page).';
             waiverErr.hidden = false;
             waiverBtn.disabled = false;
             waiverBtn.textContent = 'Register';

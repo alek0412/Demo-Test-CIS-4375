@@ -145,15 +145,24 @@ async function registerNewCustomer({ email, password, firstName, lastName, phone
   }
   const hash = bcrypt.hashSync(password, BCRYPT_ROUNDS);
   const pool = db.getPool();
+  // Default membership id (see `membership` table). Use 2 = adult; set DEFAULT_MEMBERSHIP_STATUS in .env if your DB expects another id.
+  const membershipStatus = parseInt(process.env.DEFAULT_MEMBERSHIP_STATUS || '2', 10) || 2;
+  const phoneVal =
+    phone != null && String(phone).trim() !== '' ? String(phone).trim() : '';
   try {
     const [header] = await pool.execute(
-      'INSERT INTO customer (customer_first_name, customer_last_name, phone, email, `password`) VALUES (?, ?, ?, ?, ?)',
+      'INSERT INTO customer (customer_first_name, customer_last_name, phone, email, `password`, membership_status, street_address, city, state, zip_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         String(firstName || '').trim(),
         String(lastName || '').trim(),
-        phone ? String(phone).trim() : null,
+        phoneVal,
         normalized,
         hash,
+        membershipStatus,
+        '',
+        '',
+        '',
+        '',
       ]
     );
     if (header.affectedRows !== 1) {
@@ -163,7 +172,7 @@ async function registerNewCustomer({ email, password, firstName, lastName, phone
     if (e.code === 'ER_DUP_ENTRY') {
       return { ok: false, code: 'exists' };
     }
-    console.error('[registerNewCustomer]', e.message);
+    console.error('[registerNewCustomer]', e.code, e.sqlMessage || e.message);
     return { ok: false, code: 'database' };
   }
   return { ok: true };

@@ -166,65 +166,64 @@ const server = http.createServer(async (req, res) => {
 
   // POST /api/waiver-register — create customer account (email + password) from public waiver form
   if (req.method === 'POST' && pathname === '/api/waiver-register') {
-    let data = {};
+    const sendJson = (status, obj) => {
+      res.writeHead(status, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(obj));
+    };
     try {
-      data = await parseBody(req);
-    } catch (e) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
-      return;
-    }
-    if (!data.agree) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ success: false, message: 'You must agree to the waiver terms.' }));
-      return;
-    }
-    const pw = data.password || '';
-    const pw2 = data.password_confirm != null ? data.password_confirm : data.passwordConfirm;
-    if (pw !== pw2) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ success: false, message: 'Passwords do not match.' }));
-      return;
-    }
-    const result = await customerPassword.registerNewCustomer({
-      email: data.email,
-      password: pw,
-      firstName: data.first_name,
-      lastName: data.last_name,
-      phone: data.mobile != null ? data.mobile : data.phone,
-    });
-    if (!result.ok) {
-      if (result.code === 'exists') {
-        res.writeHead(409, { 'Content-Type': 'application/json' });
-        res.end(
-          JSON.stringify({
+      let data = {};
+      try {
+        data = await parseBody(req);
+      } catch (e) {
+        sendJson(400, { success: false, message: 'Invalid request' });
+        return;
+      }
+      if (!data.agree) {
+        sendJson(400, { success: false, message: 'You must agree to the waiver terms.' });
+        return;
+      }
+      const pw = data.password || '';
+      const pw2 = data.password_confirm != null ? data.password_confirm : data.passwordConfirm;
+      if (pw !== pw2) {
+        sendJson(400, { success: false, message: 'Passwords do not match.' });
+        return;
+      }
+      const result = await customerPassword.registerNewCustomer({
+        email: data.email,
+        password: pw,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        phone: data.mobile != null ? data.mobile : data.phone,
+      });
+      if (!result.ok) {
+        if (result.code === 'exists') {
+          sendJson(409, {
             success: false,
             message: 'An account with this email already exists. Log in or use Forgot password.',
-          })
-        );
-        return;
-      }
-      if (result.code === 'invalid') {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ success: false, message: 'Check your email and password (at least 8 characters).' }));
-        return;
-      }
-      res.writeHead(503, { 'Content-Type': 'application/json' });
-      res.end(
-        JSON.stringify({
+          });
+          return;
+        }
+        if (result.code === 'invalid') {
+          sendJson(400, { success: false, message: 'Check your email and password (at least 8 characters).' });
+          return;
+        }
+        sendJson(503, {
           success: false,
           message:
             'Could not complete registration. Confirm the database migration is applied and column names match your customer table.',
-        })
-      );
-      return;
+        });
+        return;
+      }
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Set-Cookie':
+          'customer_session=' + encodeURIComponent(CUSTOMER_SESSION_VALUE) + '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
+      });
+      res.end(JSON.stringify({ success: true }));
+    } catch (err) {
+      console.error('[waiver-register]', err);
+      sendJson(500, { success: false, message: 'Server error during registration. Check EC2 logs and database connection.' });
     }
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Set-Cookie':
-        'customer_session=' + encodeURIComponent(CUSTOMER_SESSION_VALUE) + '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
-    });
-    res.end(JSON.stringify({ success: true }));
     return;
   }
 
