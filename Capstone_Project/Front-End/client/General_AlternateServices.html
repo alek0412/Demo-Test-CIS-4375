@@ -53,20 +53,24 @@
       padding: 2.5rem 0;
     }
 
+    /* Match About page “Our facility” heading (Inter bold italic, same scale) */
     .pt-tt-section-title {
-      margin: 0 auto 1.35rem;
-      padding: 0 1rem;
+      margin: 0 auto 1.5rem;
+      padding: 1.25rem 1rem 0;
+      max-width: 960px;
       font-family: Inter, system-ui, sans-serif;
-      font-size: clamp(1.4rem, 3.2vw, 1.85rem);
+      font-size: clamp(2.125rem, 5.5vw, 3.25rem);
       font-weight: 700;
-      color: var(--text-primary);
+      font-style: italic;
+      color: #1f2937;
       text-align: center;
-      letter-spacing: 0.03em;
+      line-height: 1.15;
     }
 
     .pt-tt-wrap {
+      --pt-tt-max: 1100px;
       width: 100%;
-      max-width: 1100px;
+      max-width: var(--pt-tt-max);
       margin: 0 auto;
     }
 
@@ -76,6 +80,13 @@
       width: 100%;
       min-height: min(52vh, 540px);
       align-items: stretch;
+      overflow: visible;
+    }
+
+    .pt-tt-pickle-split .pt-tt-pickle-split__photo {
+      margin-left: min(0px, calc((var(--pt-tt-max) - 100vw) / 2));
+      width: max(50vw, 100%);
+      max-width: none;
     }
 
     .pt-tt-split-row__photo {
@@ -106,8 +117,18 @@
       object-position: center 22%;
     }
 
+    /* Table tennis photo: full-bleed to viewport right; left edge stays at 50vw split */
+    .pt-tt-tennis-split .pt-tt-tennis-split__photo {
+      justify-self: start;
+      width: max(50vw, 100%);
+      max-width: none;
+    }
+
     .pt-tt-pickle-split__text {
-      background: #98ffd1;
+      justify-self: start;
+      width: max(50vw, 100%);
+      max-width: none;
+      background: #98e2b1;
       color: #111827;
       padding: clamp(1.65rem, 3.5vw, 2.75rem) clamp(1.25rem, 3.5vw, 2.5rem);
       box-sizing: border-box;
@@ -116,6 +137,7 @@
       align-items: center;
       justify-content: center;
       overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .pt-tt-pickle-hpc {
@@ -211,8 +233,12 @@
       max-width: 20rem;
     }
 
+    /* Sky blue panel: full-bleed to viewport left; right edge stays at 50vw split */
     .pt-tt-tennis-split__text {
-      background: #98d8ef;
+      margin-left: min(0px, calc((var(--pt-tt-max) - 100vw) / 2));
+      width: max(50vw, 100%);
+      max-width: none;
+      background: #aee2eb;
       color: #111827;
       padding: clamp(1.65rem, 3.5vw, 2.75rem) clamp(1.25rem, 3.5vw, 2.5rem);
       box-sizing: border-box;
@@ -221,6 +247,7 @@
       align-items: center;
       justify-content: center;
       overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .pt-tt-tennis-split__text .pt-tt-tennis-title {

@@ -28,6 +28,47 @@
       line-height: 1.15;
     }
 
+    .about-welcome {
+      padding: 0 1rem 2.25rem;
+      max-width: 44rem;
+      margin: 0 auto;
+    }
+
+    .about-welcome__inner {
+      color: #111827;
+      font-size: 0.9375rem;
+      line-height: 1.65;
+    }
+
+    .about-welcome__lead {
+      margin: 0 0 1.5rem;
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: #1f2937;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .about-welcome__inner > p {
+      margin: 0 0 1rem;
+    }
+
+    .about-welcome__inner > p:last-child {
+      margin-bottom: 0;
+    }
+
+    .about-welcome__mission {
+      margin: 0 0 0.85rem;
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: #111827;
+      line-height: 1.4;
+    }
+
+    .about-welcome__mission strong {
+      font-weight: 700;
+    }
+
     .about-facility-split {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -131,20 +172,24 @@
       padding: 2.5rem 0 2.5rem;
     }
 
-    .pt-tt-section-title {
-      margin: 0 auto 1.35rem;
-      padding: 0 1rem;
+    /* Same typography as .about-facility-page-title (“Our facility”) */
+    .about-facility-main .pt-tt-section-title {
+      margin: 0 auto 1.5rem;
+      padding: 1.25rem 1rem 0;
+      max-width: 960px;
       font-family: Inter, system-ui, sans-serif;
-      font-size: clamp(1.4rem, 3.2vw, 1.85rem);
+      font-size: clamp(2.125rem, 5.5vw, 3.25rem);
       font-weight: 700;
-      color: var(--text-primary);
+      font-style: italic;
+      color: #1f2937;
       text-align: center;
-      letter-spacing: 0.03em;
+      line-height: 1.15;
     }
 
     .pt-tt-wrap {
+      --pt-tt-max: 1100px;
       width: 100%;
-      max-width: 1100px;
+      max-width: var(--pt-tt-max);
       margin: 0 auto;
     }
 
@@ -154,6 +199,14 @@
       width: 100%;
       min-height: min(52vh, 540px);
       align-items: stretch;
+      overflow: visible;
+    }
+
+    /* Pickleball photo: full-bleed to viewport left; right edge stays at column split */
+    .pt-tt-pickle-split .pt-tt-pickle-split__photo {
+      margin-left: min(0px, calc((var(--pt-tt-max) - 100vw) / 2));
+      width: max(50vw, 100%);
+      max-width: none;
     }
 
     .pt-tt-split-row__photo {
@@ -184,8 +237,19 @@
       object-position: center 22%;
     }
 
+    /* Table tennis photo: full-bleed to viewport right; left edge stays at 50vw split */
+    .pt-tt-tennis-split .pt-tt-tennis-split__photo {
+      justify-self: start;
+      width: max(50vw, 100%);
+      max-width: none;
+    }
+
+    /* Mint panel: full-bleed to viewport right; left edge stays at 50vw split */
     .pt-tt-pickle-split__text {
-      background: #98ffd1;
+      justify-self: start;
+      width: max(50vw, 100%);
+      max-width: none;
+      background: #98e2b1;
       color: #111827;
       padding: clamp(1.65rem, 3.5vw, 2.75rem) clamp(1.25rem, 3.5vw, 2.5rem);
       box-sizing: border-box;
@@ -194,6 +258,7 @@
       align-items: center;
       justify-content: center;
       overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .pt-tt-pickle-hpc {
@@ -290,8 +355,12 @@
       max-width: 20rem;
     }
 
+    /* Sky blue panel: full-bleed to viewport left; right edge stays at 50vw split */
     .pt-tt-tennis-split__text {
-      background: #98d8ef;
+      margin-left: min(0px, calc((var(--pt-tt-max) - 100vw) / 2));
+      width: max(50vw, 100%);
+      max-width: none;
+      background: #aee2eb;
       color: #111827;
       padding: clamp(1.65rem, 3.5vw, 2.75rem) clamp(1.25rem, 3.5vw, 2.5rem);
       box-sizing: border-box;
@@ -300,6 +369,7 @@
       align-items: center;
       justify-content: center;
       overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .pt-tt-tennis-split__text .pt-tt-tennis-title {
@@ -398,9 +468,23 @@
   </header>
 
   <main class="about-facility-main">
-    <h1 class="about-facility-page-title">Our facility</h1>
+    <section class="about-welcome" aria-labelledby="about-welcome-heading">
+      <h1 id="about-welcome-heading" class="about-facility-page-title">Welcome</h1>
+      <div class="about-welcome__inner">
+        <p class="about-welcome__lead">Houston&apos;s first and only dedicated badminton facility.</p>
+        <p class="about-welcome__mission"><strong>Our Mission:</strong> Promote fitness through fun and sport</p>
+        <p>
+          Whether you&apos;ve been playing your whole life or just heard of badminton yesterday, young or old, an Olympic athlete or consider the walk to your fridge your daily exercise, badminton is the sport for you. Badminton, pickleball, and table tennis are all &ldquo;life&rdquo; sports, for people of all ages and levels of fitness.
+        </p>
+        <p>
+          The Houston Badminton Center (Est. 2015) is a state-of-the-art facility featuring 12 courts, offering badminton, pickleball and table tennis. You can visit with a group of friends or by yourself and find pick-up games. Train with professional coaches to reach your goals. Visit on a day pass or join us as a member!
+        </p>
+      </div>
+    </section>
 
-    <section class="about-facility-split" aria-label="Facility details">
+    <h2 id="our-facility-heading" class="about-facility-page-title">Our facility</h2>
+
+    <section class="about-facility-split" aria-labelledby="our-facility-heading">
       <div class="about-facility-split__col about-facility-split__col--blue">
         <h3>12 courts</h3>
         <ul>
