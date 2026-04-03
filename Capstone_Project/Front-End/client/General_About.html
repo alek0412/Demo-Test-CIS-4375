@@ -3,54 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alternate Services — Houston Badminton Center</title>
+  <title>About — Houston Badminton Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,700&family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,700&family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
   <style>
-    .hero { padding-top: 1.5rem; padding-bottom: 0.5rem; }
-    section.features { padding-top: 0.5rem; }
-    .alternate-images { display: flex; flex-direction: column; gap: 3rem; }
-    .alternate-images img { width: 100%; height: auto; display: block; }
-    .alternate-block { display: flex; flex-direction: column; gap: 1rem; text-align: center; }
-    .alternate-block h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); margin: 0; }
-    .alternate-block .desc { color: var(--text-muted); font-size: 0.9375rem; line-height: 1.55; margin: 0 auto; white-space: nowrap; }
-    .same-width-row { display: flex; flex-direction: column; gap: 2rem; }
-    .same-width-row img { width: 100%; max-width: 100%; height: auto; display: block; }
-    .alternate-images > .alternate-block:first-child .same-width-row img { border-radius: var(--radius) var(--radius) 0 0; border: 4px solid #88dcf8; border-bottom: none; }
-    .minami-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-    .reach-out { margin-top: 1.5rem; padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; text-align: left; box-sizing: border-box; }
-    .reach-out--trainers { background: #88dcf8; border-color: #88dcf8; margin-top: -1rem; border-top: none; max-width: none; width: 100%; border-radius: 0 0 var(--radius) var(--radius); }
-    .reach-out--trainers p, .reach-out--trainers label { color: #001f3f; }
-    .reach-out p { margin: 0 0 1rem; color: var(--text-primary); font-size: 0.9375rem; text-align: center; }
-    .reach-out--trainers p { color: #001f3f; font-weight: bold; }
-    .reach-out label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; }
-    .reach-out--trainers label { color: #001f3f; font-weight: bold; }
-    .reach-out select, .reach-out input[readonly], .reach-out input[type="email"], .reach-out #coach-email, .reach-out #minami-to, .reach-out textarea { width: 100%; padding: 0.5rem 0.75rem; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 1rem; box-sizing: border-box; min-height: 2.5rem; }
-    .reach-out #coach-email[readonly], .reach-out #minami-to, .reach-out input[readonly] { background: var(--bg-dark); color: var(--text-muted); }
-    .reach-out textarea { min-height: 100px; resize: vertical; }
-    .reach-out .btn-email { display: block; width: 100%; padding: 0.65rem 1rem; font-size: 0.9375rem; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; margin-top: 0.5rem; }
-    .reach-out .btn-email:hover { background: var(--accent-hover); }
-    .reach-out--trainers .btn-email { background: #001f3f; }
-    .reach-out--trainers .btn-email:hover { background: #003366; }
-    .alternate-images > .alternate-block:last-child .minami-row { margin-top: -1rem; }
-    .alternate-images > .alternate-block:last-child .same-width-row img,
-    .alternate-images > .alternate-block:last-child .minami-row img { border: 4px solid #8fbc8f; }
-    .alternate-images > .alternate-block:last-child .same-width-row img { border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; border-color: #de9129; }
-    .alternate-images > .alternate-block:last-child .minami-row img { border-top: none; }
-    .reach-out.minami-reach-out { background: #8fbc8f; border: none; margin-top: -1rem; max-width: none; width: 100%; border-radius: 0 0 var(--radius) var(--radius); }
-    .reach-out.minami-reach-out p, .reach-out.minami-reach-out label { color: #000; font-weight: bold; }
-    .reach-out.minami-reach-out .btn-email { background: #1b4d3e; }
-    .reach-out.minami-reach-out .btn-email:hover { background: #2d6a4f; }
-    .minami-email { font-size: 0.875rem; margin: -0.5rem 0 1rem; }
-    .minami-email a { color: var(--accent); text-decoration: none; }
-    .minami-email a:hover { text-decoration: underline; }
+    /* About — Our facility (two pastel columns) */
+    .about-facility-main {
+      padding-top: 0.5rem;
+      padding-bottom: 0;
+    }
+
+    .about-facility-page-title {
+      margin: 0 auto 1.5rem;
+      padding: 1.25rem 1rem 0;
+      max-width: 960px;
+      font-family: Inter, system-ui, sans-serif;
+      font-size: clamp(2.125rem, 5.5vw, 3.25rem);
+      font-weight: 700;
+      font-style: italic;
+      color: #1f2937;
+      text-align: center;
+      line-height: 1.15;
+    }
+
+    .about-facility-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      margin: 0;
+    }
+
+    .about-facility-split__col {
+      padding: 2rem clamp(1.25rem, 4vw, 2.75rem) 2.5rem;
+      color: #111827;
+      font-size: 0.9375rem;
+      line-height: 1.65;
+    }
+
+    .about-facility-split__col--blue {
+      background: #aee2eb;
+    }
+
+    .about-facility-split__col--green {
+      background: #98e2b1;
+    }
+
+    .about-facility-split__col h3 {
+      margin: 1.35rem 0 0.45rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .about-facility-split__col h3:first-child {
+      margin-top: 0;
+    }
+
+    .about-facility-split__col ul {
+      margin: 0 0 0.5rem;
+      padding-left: 1.2rem;
+    }
+
+    .about-facility-split__col li {
+      margin-bottom: 0.45rem;
+    }
+
+    .about-facility-split__col li:last-child {
+      margin-bottom: 0;
+    }
+
+    .about-facility-split__col .about-facility-note {
+      margin: 0.25rem 0 0;
+      font-size: 0.9375rem;
+      color: #1f2937;
+    }
+
+    .about-facility-follow {
+      padding-top: 2.5rem;
+      padding-bottom: 3rem;
+      background: #fff;
+    }
+
+    .about-facility-follow .about-prose {
+      max-width: 44rem;
+      margin: 0 auto;
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .about-facility-follow .about-prose h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .about-facility-follow .about-prose h2:first-child {
+      margin-top: 0;
+    }
+
+    .about-facility-follow .about-prose p {
+      margin: 0 0 1rem;
+    }
+
+    .about-facility-follow .about-prose p:last-child {
+      margin-bottom: 0;
+    }
+
+    .about-facility-follow .about-prose a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .about-facility-follow .about-prose a:hover {
+      text-decoration: underline;
+    }
 
     /* Pickleball / Table Tennis — match houstonbadminton.com: 50/50 rows, mint + sky panels */
-    .pt-tt-block {
+    .about-facility-main .pt-tt-block {
       margin: 0;
-      padding: 2.5rem 0;
+      padding: 2.5rem 0 2.5rem;
     }
 
     .pt-tt-section-title {
@@ -198,6 +276,7 @@
       height: auto;
     }
 
+    /* PNG is graphic-only; wordmark matches reference site typography */
     .pt-tt-pickle-wordmark {
       margin: 0;
       font-family: Montserrat, system-ui, sans-serif;
@@ -281,6 +360,10 @@
     }
 
     @media (max-width: 768px) {
+      .about-facility-split {
+        grid-template-columns: 1fr;
+      }
+
       .pt-tt-split-row {
         grid-template-columns: 1fr;
         min-height: 0;
@@ -301,10 +384,10 @@
         <a href="General_Dashboard.html" class="logo"><img src="../images/HBC.png" alt="Houston Badminton Center" class="logo-img"></a>
         <div class="nav-tabs">
           <a href="General_Dashboard.html" class="nav-tab">Home</a>
-          <a href="General_About.html" class="nav-tab">About</a>
+          <a href="General_About.html" class="nav-tab active">About</a>
           <a href="General_Availability.html" class="nav-tab">Availability</a>
           <a href="General_Membership.html" class="nav-tab">Membership</a>
-          <a href="General_AlternateServices.html" class="nav-tab active">Alternate Services</a>
+          <a href="General_AlternateServices.html" class="nav-tab">Alternate Services</a>
           <a href="General_Contact.html" class="nav-tab">Contact Us</a>
         </div>
         <div class="nav-right">
@@ -314,16 +397,60 @@
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="container">
-        <h1>Alternate Services</h1>
-        <p>Alternate services and offerings at the center</p>
+  <main class="about-facility-main">
+    <h1 class="about-facility-page-title">Our facility</h1>
+
+    <section class="about-facility-split" aria-label="Facility details">
+      <div class="about-facility-split__col about-facility-split__col--blue">
+        <h3>12 courts</h3>
+        <ul>
+          <li>Eight (8) high-quality maplewood sports courts</li>
+          <li>Four (4) courts with BWF-approved Nagase Kenko badminton mats on top of wood flooring</li>
+          <li>Anchored sports floor system with 64% shock absorption (badminton standard 55%–75%; easier on knees)</li>
+          <li>Matte finish on wood flooring for low specular reflectance—helps reduce glare</li>
+          <li>BWF-approved Victor net posts</li>
+          <li>6 feet between courts and 8 feet behind courts</li>
+        </ul>
+
+        <h3>High ceilings</h3>
+        <p class="about-facility-note">30-foot clearance</p>
+
+        <h3>Dark-colored walls and ceiling</h3>
+        <p class="about-facility-note">Provides contrast for good shuttlecock visibility</p>
+
+        <h3>Strip lighting between courts</h3>
+        <p class="about-facility-note">Even light distribution and reduced glare</p>
+      </div>
+
+      <div class="about-facility-split__col about-facility-split__col--green">
+        <h3>Solar panels</h3>
+        <p class="about-facility-note">On-site solar energy</p>
+
+        <h3>Upstairs mezzanine</h3>
+        <p class="about-facility-note">Weight room and workout equipment, plus a large open area for parties and events</p>
+
+        <h3>Air conditioning and heating</h3>
+        <p class="about-facility-note">Air dispersion system designed for low-velocity distribution—limited impact on shuttlecock flight</p>
+
+        <h3>Media room</h3>
+        <p class="about-facility-note">Comfortable, furnished space for kids and parents</p>
+
+        <h3>Men’s and women’s locker and shower rooms</h3>
+        <p class="about-facility-note">Shampoo and body wash provided; towels are not</p>
+
+        <h3>Drinks and snacks</h3>
+        <p class="about-facility-note">Available at the facility</p>
+
+        <h3>Pro shop</h3>
+        <p class="about-facility-note">Stringing service, managed by Sportsnet International</p>
+
+        <h3>Rental rackets</h3>
+        <p class="about-facility-note">Available when you visit</p>
       </div>
     </section>
 
-    <section class="pt-tt-block" aria-labelledby="pt-tt-heading">
-      <h2 id="pt-tt-heading" class="pt-tt-section-title">Pickleball/Table Tennis</h2>
+    <section class="pt-tt-block" aria-labelledby="pt-tt-heading-about">
+      <h2 id="pt-tt-heading-about" class="pt-tt-section-title">Pickleball/Table Tennis</h2>
       <div class="pt-tt-wrap">
         <div class="pt-tt-split-row pt-tt-pickle-split">
           <figure class="pt-tt-split-row__photo pt-tt-pickle-split__photo">
@@ -393,48 +520,14 @@
       </div>
     </section>
 
-    <section class="features">
+    <section class="features about-facility-follow">
       <div class="container">
-        <div class="alternate-images">
-          <div class="alternate-block">
-            <h2>Badminton Training</h2>
-            <p class="desc">Training academies and coaches at HBC. Book with Twin Tigers, Ooi Badminton, or Ram Kiran Badminton Academy — or bring your own coach.</p>
-            <div class="same-width-row">
-              <img src="../images/Badminton-training.png" alt="Badminton Training at HBC">
-            </div>
-            <div class="reach-out reach-out--trainers">
-              <p>Interested? Feel free to reach out to one of the coaches!</p>
-              <label for="coach-select">Coach / Academy</label>
-              <select id="coach-select" aria-label="Select a coach">
-                <option value="">Choose a coach…</option>
-                <option value="TwinTigersSportsLLC@gmail.com" data-name="Twin Tigers Badminton Academy (Ben Yang)">Twin Tigers Badminton Academy — Ben Yang</option>
-                <option value="RachelOoi919@gmail.com" data-name="Ooi Badminton Academy (Rachel Ooi)">Ooi Badminton Academy — Rachel Ooi</option>
-                <option value="RRaguthu@gmail.com" data-name="Ram Kiran Badminton Academy">Ram Kiran Badminton Academy — Ram Kiran</option>
-                <option value="personal-trainer">Personal Trainer</option>
-              </select>
-              <label for="coach-email">To</label>
-              <input type="text" id="coach-email" inputmode="email" readonly placeholder="Select a coach above or enter your trainer's email" />
-              <label for="session-message">Your message (e.g. session request)</label>
-              <textarea id="session-message" placeholder="e.g. Hi, I'd like to schedule a training session. Please let me know your availability."></textarea>
-              <button type="button" class="btn-email" id="open-email">Send</button>
-            </div>
-          </div>
-          <div class="alternate-block">
-            <h2>Minami Massage</h2>
-            <p class="desc">Licensed massage therapy and Reiki at the center. Feel better, play better — full body and chair massage available.</p>
-            <div class="same-width-row">
-              <img src="../images/Minami-info.png" alt="Minami Holistic Massage, PLLC">
-            </div>
-            <div class="minami-row">
-              <img src="../images/Minami-massage.png" alt="Minami Massage">
-            </div>
-            <div class="reach-out minami-reach-out">
-              <p>Reach out to Mika to inquire about a session!</p>
-              <label for="minami-message">Your message</label>
-              <textarea id="minami-message" placeholder="e.g. I'd like to book a massage. Please let me know availability." rows="4"></textarea>
-              <button type="button" class="btn-email" id="minami-send">Send</button>
-            </div>
-          </div>
+        <div class="about-prose">
+          <h2>Community</h2>
+          <p>We serve players and families across the Houston area. Drop-ins, members, and groups all help make the gym lively. Staff at the front desk can help with day passes, reservations, and questions when you visit.</p>
+
+          <h2>Learn more</h2>
+          <p>See <a href="General_Availability.html">availability</a>, <a href="General_Membership.html">membership</a>, and <a href="General_Contact.html">contact</a> for hours, pricing, and how to reach us.</p>
         </div>
       </div>
     </section>
@@ -445,7 +538,6 @@
       <p>© 2026 Houston Badminton Center. All rights reserved.</p>
     </div>
   </footer>
-  <script src="/Client_Alternative.js"></script>
   <script src="/client-nav.js"></script>
 </body>
 </html>

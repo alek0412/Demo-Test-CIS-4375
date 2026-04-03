@@ -9,5 +9,9 @@
 # Dependencies
 node_modules/
 
+# Uploaded event promo images (managed via Admin → Marketing)
+Capstone_Project/Front-End/uploads/upcoming-events/*
+!Capstone_Project/Front-End/uploads/upcoming-events/.gitkeep
+
 # EC2 / SSH keys (never commit)
 *.pem

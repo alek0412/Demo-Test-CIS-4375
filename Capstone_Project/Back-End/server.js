@@ -18,6 +18,7 @@ const db = require('./db/connection');
 const config = require('./config');
 const customerPassword = require('./lib/customerPassword');
 const { sendPasswordResetEmail } = require('./lib/resetMail');
+const upcomingEvents = require('./lib/upcomingEvents');
 
 const PORT = process.env.PORT || 3000;
 
@@ -35,6 +36,12 @@ const CUSTOMER_SESSION_VALUE = 'loggedin:' + CUSTOMER_SESSION_SECRET;
 
 // Front-End folder is one level up from Back-End
 const FRONT_END = path.join(__dirname, '..', 'Front-End');
+
+/** Match admin_session=loggedin as its own cookie (avoids substring false positives). */
+function hasAdminSessionCookie(req) {
+  const c = req.headers.cookie || '';
+  return /(?:^|;\s*)admin_session=loggedin(?:\s|;|$)/.test(c);
+}
 
 const MIME = {
   '.html': 'text/html',
@@ -79,6 +86,29 @@ function parseBody(req) {
       } catch (e) {
         resolve({});
       }
+    });
+    req.on('error', reject);
+  });
+}
+
+function readBodyWithLimit(req, maxBytes) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let total = 0;
+    let rejected = false;
+    req.on('data', (chunk) => {
+      if (rejected) return;
+      total += chunk.length;
+      if (total > maxBytes) {
+        rejected = true;
+        reject(new Error('too_large'));
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => {
+      if (rejected) return;
+      resolve(Buffer.concat(chunks).toString('utf8'));
     });
     req.on('error', reject);
   });
@@ -308,17 +338,130 @@ const server = http.createServer(async (req, res) => {
 
   // GET /api/me — check if admin is logged in (for dashboard redirect)
   if (req.method === 'GET' && pathname === '/api/me') {
-    const cookie = req.headers.cookie || '';
-    const loggedIn = cookie.includes('admin_session=loggedin');
+    const loggedIn = hasAdminSessionCookie(req);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ loggedIn }));
     return;
   }
 
+  // GET /api/upcoming-events — home dashboard promo images (public)
+  if (req.method === 'GET' && pathname === '/api/upcoming-events') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(upcomingEvents.getPublicPayload()));
+    return;
+  }
+
+  // POST /api/admin/upcoming-events — upload or clear a slot (admin only)
+  if (req.method === 'POST' && pathname === '/api/admin/upcoming-events') {
+    if (!hasAdminSessionCookie(req)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Not authenticated' }));
+      return;
+    }
+    let raw;
+    try {
+      /* Base64 in JSON is ~4/3 decoded size; extra slack for JSON keys / alt text */
+      const upcomingBodyLimit =
+        Math.ceil((upcomingEvents.MAX_IMAGE_BYTES * 4) / 3) + 4 * 1024 * 1024;
+      raw = await readBodyWithLimit(req, upcomingBodyLimit);
+    } catch (e) {
+      if (e && e.message === 'too_large') {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(
+          JSON.stringify({
+            success: false,
+            message:
+              'Request body too large (over ~1 GB image after encoding). Use a smaller file or compress the image.',
+          })
+        );
+        return;
+      }
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
+      return;
+    }
+    let data = {};
+    try {
+      data = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Invalid JSON' }));
+      return;
+    }
+    const opNorm =
+      typeof data.op === 'string' ? data.op.trim().toLowerCase().replace(/\s+/g, '') : '';
+    const wantsClear = opNorm === 'clear' || data.clear === true;
+    const wantsSetCount = opNorm === 'setcount' || opNorm === 'setslotcount';
+
+    if (wantsSetCount) {
+      const out = upcomingEvents.setSlotCount(data.count);
+      if (!out.ok) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: out.error || 'Could not update slot count.' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true }));
+      return;
+    }
+
+    /* Bare { count: N } without op/slot — same as setCount (avoids NaN slot → "Invalid slot 0–2") */
+    if (
+      !wantsClear &&
+      data.count != null &&
+      (data.dataUrl === undefined || data.dataUrl === null) &&
+      (data.slot === undefined || data.slot === null || data.slot === '')
+    ) {
+      const out = upcomingEvents.setSlotCount(data.count);
+      if (out.ok) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+        return;
+      }
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: out.error || 'Could not update slot count.' }));
+      return;
+    }
+
+    const slot = typeof data.slot === 'number' && Number.isInteger(data.slot) ? data.slot : parseInt(data.slot, 10);
+    if (wantsClear) {
+      const out = upcomingEvents.clearSlot(slot);
+      if (!out.ok) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: out.error || 'Could not clear slot.' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true }));
+      return;
+    }
+
+    if (!Number.isInteger(slot) || Number.isNaN(slot)) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
+          success: false,
+          message:
+            'Invalid request. For changing how many images you use, pick a number in the dropdown and confirm. Restart the server if this keeps happening.',
+        })
+      );
+      return;
+    }
+
+    const out = upcomingEvents.setSlotImage(slot, data.dataUrl, data.alt);
+    if (!out.ok) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: out.error || 'Could not save image.' }));
+      return;
+    }
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true }));
+    return;
+  }
+
   // GET /api/db — return tables and rows from the database (for admin “View data”)
   if (req.method === 'GET' && pathname === '/api/db') {
-    const cookie = req.headers.cookie || '';
-    if (!cookie.includes('admin_session=loggedin')) {
+    if (!hasAdminSessionCookie(req)) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Not authenticated' }));
       return;
@@ -364,7 +507,9 @@ const server = http.createServer(async (req, res) => {
     urlPath === '/admin-theme.js' ||
     urlPath === '/client-nav.js' ||
     urlPath === '/Client_Alternative.js' ||
-    urlPath === '/membership-pricing-lightbox.js'
+    urlPath === '/membership-pricing-lightbox.js' ||
+    urlPath === '/upcoming-events-home.js' ||
+    urlPath === '/admin-marketing.js'
   ) {
     const staticPath = path.join(__dirname, 'static', path.basename(urlPath));
     fs.stat(staticPath, (err, stat) => {
