@@ -1,0 +1,13 @@
+{
+  "teaserText": "Click here to see our specials!",
+  "items": [
+    {
+      "name": "Weekend Happy Hour",
+      "description": "Saturday and Sunday after 7PM\n$3 OFF Regular Drop-in Fees\nMembers can bring first-time guests for free"
+    },
+    {
+      "name": "Day Pass Package",
+      "description": "Buy nine day passes and get one free!\n(Day passes do not expire)"
+    }
+  ]
+}

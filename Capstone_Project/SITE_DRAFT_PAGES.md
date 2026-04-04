@@ -169,7 +169,7 @@ This is a draft of how each page could look and what it would contain. Goals: fe
 | 7 | Clients        | Admin_Clients.html     | Client list, search, basic info |
 | 8 | Point of Sale  | Admin_PointOfSale.html  | POS / sales |
 | 9 | Insights       | Admin_Insights.html     | Reports, analytics |
-| 10| Marketing      | Admin_Marketing.html    | Promos, campaigns |
+| 10| Layout         | Admin_Layout.html       | Public + customer page layout (imagery, presentation) |
 | 11| Services & Products | Admin_Services_Products.html | Catalog of services/products |
 | 12| Staff          | Admin_Staff.html        | Staff accounts, roles |
 | 13| Settings       | Admin_Settings.html     | Site/business settings |

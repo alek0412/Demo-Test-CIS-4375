@@ -16,26 +16,23 @@ cd Demo-Test-CIS-4375
 
 ---
 
-## 2. Create `.env` in the Back-End folder
+## 2. Create `.env` in the Back-End folder (do not skip)
+
+The repo includes **`.env.example`** — copy it to **`.env`** and add your **real RDS password** (and any other secrets). **`.env` is gitignored** and must exist on the server after clone.
 
 ```bash
 cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End
+cp .env.example .env
 nano .env
 ```
 
-Paste the following and **replace `your_actual_rds_password`** with your real RDS password:
+**Minimum for RDS:** set **`DB_PASSWORD=`** to your actual RDS password. Confirm **`DB_NAME`**, **`DB_USER`**, and **`DB_HOST`** match your database (use `DB_NAME=HBC_Reservation_System` if your Customer table lives in that database).
 
-```env
-PORT=3000
-DB_HOST=reservation-capstone-db.czltypivanye.us-east-1.rds.amazonaws.com
-DB_PORT=3306
-DB_NAME=reservation_db
-DB_USER=HBC_DB_Admin
-DB_PASSWORD=your_actual_rds_password
-```
+Optionally set **`ADMIN_EMAIL`**, **`ADMIN_PASSWORD`**, **`CUSTOMER_*`**, and **SMTP** variables for production (see comments inside `.env.example`).
 
-- **Save and exit:** Ctrl+O, Enter, Ctrl+X.
-- Use `DB_NAME=HBC_Reservation_System` if your Customer table lives in that database.
+- **Save and exit in nano:** Ctrl+O, Enter, Ctrl+X.
+
+**After updates from Git:** your `.env` stays on the server; only run `git pull`. Re-copy `.env.example` only if new variables were added and you need to merge them by hand.
 
 ---
 
@@ -98,6 +95,6 @@ pm2 save
 ## Checklist
 
 - EC2 security group allows **inbound TCP port 3000** (and 22 for SSH).
-- `.env` exists and has the correct `DB_USER` and `DB_PASSWORD` (and `DB_NAME` if different).
+- **`Back-End/.env` exists** (created from **`cp .env.example .env`**) with correct **`DB_PASSWORD`**, **`DB_USER`**, **`DB_NAME`**, **`DB_HOST`**.
 
 **Result:** The app is running on EC2 and pulling code from GitHub (CLU). Use **Operation TRON** when you want to remove it.

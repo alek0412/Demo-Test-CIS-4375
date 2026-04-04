@@ -1,5 +1,5 @@
 /**
- * Admin Marketing — dynamic slot count and upload/clear for upcoming event images.
+ * Admin Layout — dynamic slot count and upload/clear for upcoming event images (home dashboards).
  */
 (function () {
   'use strict';

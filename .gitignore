@@ -9,9 +9,13 @@
 # Dependencies
 node_modules/
 
-# Uploaded event promo images (managed via Admin → Marketing)
+# Uploaded event promo images (managed via Admin → Layout)
 Capstone_Project/Front-End/uploads/upcoming-events/*
 !Capstone_Project/Front-End/uploads/upcoming-events/.gitkeep
+
+# Popular Times PDF (managed via Admin → Layout)
+Capstone_Project/Front-End/uploads/popular-times/*
+!Capstone_Project/Front-End/uploads/popular-times/.gitkeep
 
 # EC2 / SSH keys (never commit)
 *.pem

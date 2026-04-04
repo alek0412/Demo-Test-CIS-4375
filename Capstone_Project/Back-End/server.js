@@ -19,6 +19,8 @@ const config = require('./config');
 const customerPassword = require('./lib/customerPassword');
 const { sendPasswordResetEmail } = require('./lib/resetMail');
 const upcomingEvents = require('./lib/upcomingEvents');
+const popularTimesPdf = require('./lib/popularTimesPdf');
+const membershipSpecials = require('./lib/membershipSpecials');
 const { parseBody, readBodyWithLimit } = require('./lib/httpBody');
 const { handleApi } = require('./api');
 
@@ -94,6 +96,8 @@ const server = http.createServer(async (req, res) => {
     customerPassword,
     sendPasswordResetEmail,
     upcomingEvents,
+    popularTimesPdf,
+    membershipSpecials,
     db,
     config,
   };
@@ -117,7 +121,10 @@ const server = http.createServer(async (req, res) => {
     urlPath === '/Client_Alternative.js' ||
     urlPath === '/membership-pricing-lightbox.js' ||
     urlPath === '/upcoming-events-home.js' ||
-    urlPath === '/admin-marketing.js'
+    urlPath === '/admin-marketing.js' ||
+    urlPath === '/admin-popular-times.js' ||
+    urlPath === '/admin-membership-specials.js' ||
+    urlPath === '/membership-specials-display.js'
   ) {
     const staticPath = path.join(__dirname, 'static', path.basename(urlPath));
     fs.stat(staticPath, (err, stat) => {

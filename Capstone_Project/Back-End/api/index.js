@@ -5,6 +5,8 @@ const handlers = [
   require('./adminAuth'),
   require('./customerAuth'),
   require('./upcomingEventsRoutes'),
+  require('./popularTimesRoutes'),
+  require('./membershipSpecialsRoutes'),
   require('./dbDump'),
 ];
 

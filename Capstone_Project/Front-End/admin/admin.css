@@ -167,6 +167,12 @@ body:has(.admin-layout) {
   overflow: hidden;
 }
 
+/* Layout page: intro block (title + subtitle) can extend for viewport alignment (see .admin-layout-intro) */
+.admin-layout:has(.admin-title-wrap--layout-page) {
+  overflow-x: visible;
+  overflow-y: hidden;
+}
+
 .admin-sidebar-header {
   padding: 1.25rem 1.25rem 1rem;
   padding-left: 3.5rem;
@@ -418,6 +424,10 @@ body[data-theme="dark"] .admin-welcome {
   height: 100vh;
 }
 
+.admin-main:has(.admin-title-wrap--layout-page) {
+  overflow-x: visible;
+}
+
 .admin-topbar {
   background: #0a0a0a;
   border-bottom: none;
@@ -436,6 +446,15 @@ body[data-theme="dark"] .admin-welcome {
 
 .admin-topbar:empty {
   padding: 0.5rem 1.5rem 2.5rem 0.5rem;
+}
+
+/* Layout page: title + subtitle aligned with main content (not the wide --left offset) */
+.admin-title-wrap--left.admin-title-wrap--layout-page:has(.admin-layout-intro) {
+  padding-left: 0.5rem;
+  padding-right: 1.5rem;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .admin-topbar-right {
@@ -561,6 +580,10 @@ body[data-theme="dark"] .admin-welcome {
   -webkit-overflow-scrolling: touch;
 }
 
+.admin-content:has(.admin-title-wrap--layout-page) {
+  overflow-x: visible;
+}
+
 .admin-content > .admin-title-wrap,
 .admin-content > .db-search-wrap,
 .admin-content > #customer-search-wrap {
@@ -646,6 +669,94 @@ body[data-theme="light"] .admin-title-wrap--left p {
 
 .admin-title-wrap--left .admin-page-title {
   text-align: left;
+}
+
+/*
+ * Layout page: one shifted column so "Layout" and the intro paragraph share the same horizontal center
+ * (subtitle sits under the middle of the word, not the main column edge).
+ */
+.admin-title-wrap--left.admin-title-wrap--layout-page .admin-layout-intro {
+  width: 100%;
+  margin-left: calc(50% - 50vw);
+  transform: translateX(2.75rem);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@supports (width: 100dvw) {
+  .admin-title-wrap--left.admin-title-wrap--layout-page .admin-layout-intro {
+    margin-left: calc(50% - 50dvw);
+  }
+}
+
+.admin-title-wrap--left.admin-title-wrap--layout-page .admin-layout-intro .admin-page-title {
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.admin-title-wrap--left.admin-title-wrap--layout-page .admin-layout-intro .admin-subtitle {
+  text-align: center;
+  margin: 0.75rem 0 0;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 48rem;
+  width: 100%;
+}
+
+/* Layout page: upcoming-events controls aligned with the same column as "Layout" + intro */
+.admin-layout-tools {
+  width: 100%;
+  margin-left: calc(50% - 50vw);
+  transform: translateX(2.75rem);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@supports (width: 100dvw) {
+  .admin-layout-tools {
+    margin-left: calc(50% - 50dvw);
+  }
+}
+
+.admin-layout-tools-heading {
+  margin: 1.25rem 0 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  width: 100%;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Center in the Layout column only — do not override grid max-width (--n1 = 560px, etc.) */
+.admin-layout-tools .admin-marketing-toolbar {
+  justify-content: center;
+  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0;
+}
+
+.admin-layout-tools .admin-marketing-layout-hint {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 48rem;
+}
+
+.admin-layout-tools .admin-marketing-grid {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Base text and headings in admin content */
@@ -1077,7 +1188,7 @@ body[data-theme="dark"] .db-no-results {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Marketing — upcoming event images */
+/* Layout — upcoming event images (home dashboards) */
 .admin-subtitle {
   max-width: 48rem;
   margin: 0.75rem 0 0;
@@ -1215,6 +1326,23 @@ body[data-theme="dark"] .admin-marketing-slot-title {
   border-style: solid;
 }
 
+/* Availability admin: PDF preview in same dashed box as event image */
+.admin-marketing-preview:has(.admin-marketing-preview-pdf) {
+  display: block;
+  padding: 0;
+  border-style: solid;
+}
+.admin-marketing-preview-pdf {
+  display: block;
+  width: 100%;
+  min-height: 200px;
+  border: none;
+  background: rgba(0, 0, 0, 0.02);
+}
+body[data-theme="dark"] .admin-marketing-preview-pdf {
+  background: rgba(255, 255, 255, 0.04);
+}
+
 body[data-theme="dark"] .admin-marketing-preview {
   background: rgba(255, 255, 255, 0.04);
   border-color: #4b5563;
@@ -1261,6 +1389,40 @@ body[data-theme="dark"] .admin-marketing-input {
   width: 100%;
   font-size: 0.8125rem;
   margin-bottom: 1rem;
+}
+.admin-marketing-textarea {
+  min-height: 5rem;
+  resize: vertical;
+  margin-bottom: 1rem;
+  line-height: 1.45;
+}
+/* Membership specials — outer section: no card box (only inner special blocks stay boxed) */
+.admin-membership-open-section {
+  padding: 0;
+  background: transparent;
+  border: none;
+  width: 100%;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.admin-membership-open-section > .admin-marketing-slot-title {
+  text-align: center;
+  width: 100%;
+}
+.admin-membership-special-card {
+  margin-top: 1rem;
+}
+.admin-membership-special-card:first-of-type {
+  margin-top: 0;
+}
+.admin-membership-specials-open-hint {
+  text-align: left;
+  margin-top: 0.25rem;
+  max-width: none;
+}
+.admin-membership-special-remove {
+  margin-top: 0.5rem;
 }
 .admin-marketing-actions {
   display: flex;
