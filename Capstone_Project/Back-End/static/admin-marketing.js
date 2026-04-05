@@ -18,6 +18,13 @@
     el.style.color = isError ? '#b91c1c' : '#15803d';
   }
 
+  function authFailureMessage(msg) {
+    if (msg === 'Not authenticated') {
+      return 'Session expired or you are not logged in as admin. Use the admin sign-in on the login page.';
+    }
+    return msg || 'Could not complete.';
+  }
+
   function fileToDataUrl(file) {
     return new Promise(function (resolve, reject) {
       var reader = new FileReader();
@@ -47,12 +54,6 @@
         '<div class="admin-marketing-preview" id="marketing-preview-' +
         i +
         '"></div>' +
-        '<label class="admin-marketing-label" for="marketing-alt-' +
-        i +
-        '">Alt text (accessibility)</label>' +
-        '<input type="text" id="marketing-alt-' +
-        i +
-        '" class="admin-marketing-input" maxlength="200" placeholder="Describe the flyer or event" autocomplete="off">' +
         '<label class="admin-marketing-label" for="marketing-file-' +
         i +
         '">Image file</label>' +
@@ -97,8 +98,6 @@
           prev.appendChild(ph);
         }
       }
-      var altInput = $('marketing-alt-' + i);
-      if (altInput && slot.alt != null) altInput.value = slot.alt;
     }
   }
 
@@ -152,7 +151,6 @@
         }
         fileToDataUrl(f)
           .then(function (dataUrl) {
-            var alt = ($('marketing-alt-' + slot) && $('marketing-alt-' + slot).value) || '';
             return fetch('/api/admin/upcoming-events', {
               method: 'POST',
               credentials: 'include',
@@ -160,7 +158,7 @@
               body: JSON.stringify({
                 slot: slot,
                 dataUrl: dataUrl,
-                alt: alt,
+                alt: '',
               }),
             });
           })
@@ -175,7 +173,7 @@
               if (fileInput) fileInput.value = '';
               loadState();
             } else {
-              showStatus(statusEl, (out.body && out.body.message) || 'Could not save.', true);
+              showStatus(statusEl, authFailureMessage((out.body && out.body.message) || 'Could not save.'), true);
             }
           })
           .catch(function () {
@@ -205,7 +203,7 @@
               showStatus(statusEl, 'Cleared.', false);
               loadState();
             } else {
-              showStatus(statusEl, (out.body && out.body.message) || 'Could not clear.', true);
+              showStatus(statusEl, authFailureMessage((out.body && out.body.message) || 'Could not clear.'), true);
             }
           })
           .catch(function () {
@@ -252,7 +250,7 @@
             showStatus(st, 'Layout updated.', false);
             loadState();
           } else {
-            showStatus(st, (out.body && out.body.message) || 'Could not update.', true);
+            showStatus(st, authFailureMessage((out.body && out.body.message) || 'Could not update.'), true);
             sel.value = String(currentSlotCount);
           }
         })
@@ -265,15 +263,19 @@
 
   fetch('/api/me', { credentials: 'include' })
     .then(function (r) {
-      return r.json();
+      return r.json().then(function (data) {
+        return { ok: r.ok, data: data };
+      });
     })
-    .then(function (data) {
-      if (data && data.loggedIn !== true) {
-        window.location.replace('/client/Client_Login.html');
+    .then(function (x) {
+      if (x.ok && x.data && x.data.loggedIn === true) {
+        initSlotCountControl();
+        loadState();
+        return;
       }
+      window.location.replace('/client/Client_Login.html');
     })
-    .catch(function () {});
-
-  initSlotCountControl();
-  loadState();
+    .catch(function () {
+      window.location.replace('/client/Client_Login.html');
+    });
 })();

@@ -17,5 +17,15 @@ Capstone_Project/Front-End/uploads/upcoming-events/*
 Capstone_Project/Front-End/uploads/popular-times/*
 !Capstone_Project/Front-End/uploads/popular-times/.gitkeep
 
+# Membership pricing asset (managed via Admin → Layout)
+Capstone_Project/Front-End/uploads/membership-pricing/*
+!Capstone_Project/Front-End/uploads/membership-pricing/.gitkeep
+
+# Membership pricing visibility (admin Remove = hidden on public pages)
+Capstone_Project/Back-End/data/membership-pricing-state.json
+
+# Popular Times visibility (admin Remove = hidden on Availability pages)
+Capstone_Project/Back-End/data/popular-times-state.json
+
 # EC2 / SSH keys (never commit)
 *.pem

@@ -803,6 +803,20 @@ body.event-image-lightbox-open {
   box-shadow: var(--shadow-md);
 }
 
+.membership-pricing-pdf-thumb {
+  width: 100%;
+  min-height: 280px;
+  display: block;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  cursor: zoom-in;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.membership-pricing-pdf-thumb:hover {
+  box-shadow: var(--shadow-md);
+}
+
 .membership-pricing-hint {
   margin: 0.5rem 0 0;
   font-size: 0.8125rem;
@@ -868,6 +882,17 @@ body.event-image-lightbox-open {
   object-fit: contain;
   border-radius: var(--radius-sm);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.pricing-lightbox-iframe {
+  width: min(96vw, 960px);
+  height: min(85vh, 1200px);
+  max-width: 96vw;
+  max-height: calc(100vh - 5rem);
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  background: #ffffff;
 }
 
 @media (max-width: 640px) {

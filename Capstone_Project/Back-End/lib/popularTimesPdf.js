@@ -3,14 +3,32 @@
  * Supports PDF and common image formats (PNG, JPEG, GIF, WebP, SVG).
  * Default: bundled Front-End/images/Popular-Times-at-HBC.pdf
  * Custom: Front-End/uploads/popular-times/popular-times.<ext>
+ * Admin Remove sets hidden=true so Availability pages show no asset until a new file is saved.
  */
 const fs = require('fs');
 const path = require('path');
 
 const FRONT_END = path.join(__dirname, '..', '..', 'Front-End');
 const UPLOAD_DIR = path.join(FRONT_END, 'uploads', 'popular-times');
+const STATE_PATH = path.join(__dirname, '..', 'data', 'popular-times-state.json');
 const BASE_NAME = 'popular-times';
 const DEFAULT_URL = '/images/Popular-Times-at-HBC.pdf';
+
+function readHiddenFlag() {
+  try {
+    const raw = fs.readFileSync(STATE_PATH, 'utf8');
+    const j = JSON.parse(raw);
+    return j.hidden === true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function writeHiddenFlag(hidden) {
+  const dir = path.dirname(STATE_PATH);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(STATE_PATH, JSON.stringify({ hidden: !!hidden }) + '\n', 'utf8');
+}
 
 /** @type {Record<string, string>} mime (lowercase) → file extension including dot */
 const MIME_TO_EXT = {
@@ -68,14 +86,21 @@ function getKindForPath(filePath) {
  */
 function getPublicPayload() {
   const p = customFilePath();
-  if (!p) {
-    return { url: DEFAULT_URL, hasCustom: false, kind: 'pdf' };
+  if (!p || !fs.existsSync(p)) {
+    const hidden = readHiddenFlag();
+    return {
+      url: DEFAULT_URL,
+      hasCustom: false,
+      kind: 'pdf',
+      visible: !hidden,
+    };
   }
   const name = path.basename(p);
   return {
     url: '/uploads/popular-times/' + name,
     hasCustom: true,
     kind: getKindForPath(p),
+    visible: true,
   };
 }
 
@@ -197,6 +222,7 @@ function setFromDataUrl(dataUrl) {
   } catch (e) {
     return { ok: false, error: 'Could not save file.' };
   }
+  writeHiddenFlag(false);
   return { ok: true };
 }
 
@@ -206,6 +232,7 @@ function clearCustom() {
   } catch (e) {
     return { ok: false, error: 'Could not remove custom file.' };
   }
+  writeHiddenFlag(true);
   return { ok: true };
 }
 

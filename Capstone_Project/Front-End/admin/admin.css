@@ -616,7 +616,8 @@ body[data-theme="dark"] .admin-welcome {
 }
 
 .admin-title-wrap .admin-page-title,
-.admin-title-wrap p {
+.admin-title-wrap p,
+.admin-title-wrap .admin-layout-jump {
   pointer-events: auto;
 }
 
@@ -709,6 +710,48 @@ body[data-theme="light"] .admin-title-wrap--left p {
   width: 100%;
 }
 
+.admin-title-wrap--left.admin-title-wrap--layout-page .admin-layout-jump {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 48rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  border: 1px solid #525252;
+  border-radius: var(--radius-sm, 6px);
+  background: #2d2d2d;
+}
+
+body[data-theme="light"] .admin-title-wrap--left.admin-title-wrap--layout-page .admin-layout-jump {
+  border-color: #e5e7eb;
+  background: #f3f4f6;
+}
+
+.admin-layout-jump-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body[data-theme="light"] .admin-layout-jump-label {
+  color: #374151;
+}
+
+.admin-title-wrap--left.admin-title-wrap--layout-page .admin-layout-jump .admin-marketing-select {
+  min-width: min(18rem, 100%);
+  max-width: 100%;
+}
+
+#layout-section-home,
+#layout-section-availability,
+#layout-section-membership {
+  scroll-margin-top: 1rem;
+}
+
 /* Layout page: upcoming-events controls aligned with the same column as "Layout" + intro */
 .admin-layout-tools {
   width: 100%;
@@ -757,6 +800,28 @@ body[data-theme="light"] .admin-title-wrap--left p {
 .admin-layout-tools .admin-marketing-grid {
   margin-left: auto;
   margin-right: auto;
+}
+
+.admin-layout-tools--no-divider-below {
+  padding-bottom: 0.25rem;
+}
+
+/* Horizontal rule between major Layout sections (e.g. Upcoming Events ↔ Availability) */
+.admin-layout-tools--section-divider {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  flex-shrink: 0;
+}
+.admin-layout-tools--section-divider .admin-layout-section-rule {
+  border: none;
+  border-top: 1px solid #000000;
+  margin: 0 auto;
+  width: 100%;
+  max-width: min(72rem, 100%);
+}
+
+body[data-theme="dark"] .admin-layout-tools--section-divider .admin-layout-section-rule {
+  border-top-color: #ffffff;
 }
 
 /* Base text and headings in admin content */
@@ -1146,8 +1211,11 @@ body[data-theme="dark"] .db-filter-dropdown {
 body[data-theme="dark"] .db-filter-option:hover {
   background: #374151;
 }
+body[data-theme="dark"] .db-filter-section {
+  border-bottom-color: #ffffff;
+}
 body[data-theme="dark"] .db-filter-clear-wrap {
-  border-top-color: #374151;
+  border-top-color: #ffffff;
 }
 body[data-theme="dark"] .db-filter-clear-btn {
   background: #374151;
@@ -1347,6 +1415,118 @@ body[data-theme="dark"] .admin-marketing-preview {
   background: rgba(255, 255, 255, 0.04);
   border-color: #4b5563;
 }
+
+/* Layout page only: card / preview panels — slightly dark grey */
+body[data-theme="dark"] .admin-layout-tools .admin-marketing-slot {
+  background: #2d2d2d;
+  border-color: #525252;
+}
+body[data-theme="light"] .admin-layout-tools .admin-marketing-slot {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+}
+body[data-theme="dark"] .admin-layout-tools .admin-marketing-preview {
+  background: #252525;
+  border-color: #525252;
+}
+body[data-theme="dark"] .admin-layout-tools .admin-marketing-preview-pdf {
+  background: #252525;
+}
+body[data-theme="light"] .admin-layout-tools .admin-marketing-preview {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+body[data-theme="light"] .admin-layout-tools .admin-marketing-preview-pdf {
+  background: #f9fafb;
+}
+
+/* Layout page: center headings, labels, fields, and actions inside each box */
+.admin-layout-tools .admin-marketing-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.admin-layout-tools .admin-marketing-slot .admin-marketing-slot-title,
+.admin-layout-tools .admin-marketing-slot .admin-marketing-label {
+  width: 100%;
+  text-align: center;
+}
+
+.admin-layout-tools .admin-marketing-slot .admin-marketing-preview {
+  align-self: stretch;
+  width: 100%;
+}
+
+.admin-layout-tools .admin-marketing-slot .admin-marketing-input,
+.admin-layout-tools .admin-marketing-slot .admin-marketing-textarea {
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;
+  text-align: center;
+}
+
+.admin-layout-tools .admin-marketing-slot .admin-marketing-file {
+  align-self: stretch;
+  text-align: center;
+}
+
+.admin-layout-tools .admin-marketing-slot .admin-marketing-actions {
+  justify-content: center;
+  width: 100%;
+}
+
+.admin-layout-tools .admin-marketing-slot .admin-marketing-status {
+  text-align: center;
+  width: 100%;
+}
+
+.admin-layout-tools .admin-membership-open-section {
+  text-align: center;
+}
+
+.admin-layout-tools .admin-membership-open-section .admin-membership-specials-open-hint {
+  text-align: center;
+}
+
+.admin-layout-tools .admin-membership-specials-toolbar .admin-marketing-actions {
+  justify-content: center;
+}
+
+.admin-layout-tools .admin-membership-specials-actions-row {
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+}
+
+.admin-layout-tools .admin-membership-specials-toolbar .btn-membership-add {
+  background: #2563eb;
+  border: 2px solid #2563eb;
+  color: #ffffff;
+  box-shadow: none;
+}
+.admin-layout-tools .admin-membership-specials-toolbar .btn-membership-add:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff;
+}
+.admin-layout-tools .admin-membership-specials-toolbar .btn-membership-add:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.admin-membership-specials-toolbar {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body[data-theme="dark"] .admin-membership-specials-toolbar {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
 .admin-marketing-preview-img {
   display: block;
   width: 100%;
@@ -1434,4 +1614,47 @@ body[data-theme="dark"] .admin-marketing-input {
   min-height: 1.25rem;
   margin: 0.75rem 0 0;
   font-size: 0.8125rem;
+}
+
+/* Layout page: Save actions green, Remove actions red */
+.admin-layout-tools .btn-primary {
+  background: #15803d;
+  border: 2px solid #15803d;
+  color: #ffffff;
+  box-shadow: none;
+}
+.admin-layout-tools .btn-primary:hover {
+  background: #166534;
+  border-color: #166534;
+  box-shadow: 0 2px 8px rgba(21, 128, 61, 0.35);
+  color: #ffffff;
+}
+.admin-layout-tools .btn-primary:focus-visible {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
+}
+
+.admin-layout-tools .btn-ghost#popular-times-pdf-reset,
+.admin-layout-tools .btn-ghost#membership-pricing-reset,
+.admin-layout-tools .btn-ghost[id^="marketing-clear-"],
+.admin-layout-tools .admin-membership-special-remove {
+  color: #b91c1c;
+  border: 2px solid #b91c1c;
+  background: transparent;
+}
+.admin-layout-tools .btn-ghost#popular-times-pdf-reset:hover,
+.admin-layout-tools .btn-ghost#membership-pricing-reset:hover,
+.admin-layout-tools .btn-ghost[id^="marketing-clear-"]:hover,
+.admin-layout-tools .admin-membership-special-remove:hover {
+  background: rgba(185, 28, 28, 0.12);
+  color: #991b1b;
+  border-color: #991b1b;
+}
+body[data-theme="dark"] .admin-layout-tools .btn-ghost#popular-times-pdf-reset:hover,
+body[data-theme="dark"] .admin-layout-tools .btn-ghost#membership-pricing-reset:hover,
+body[data-theme="dark"] .admin-layout-tools .btn-ghost[id^="marketing-clear-"]:hover,
+body[data-theme="dark"] .admin-layout-tools .admin-membership-special-remove:hover {
+  background: rgba(185, 28, 28, 0.22);
+  color: #fecaca;
+  border-color: #f87171;
 }

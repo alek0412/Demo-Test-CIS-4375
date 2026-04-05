@@ -6,9 +6,9 @@
 
   var teaserInput = document.getElementById('membership-specials-teaser-input');
   var itemsRoot = document.getElementById('membership-specials-items-admin');
+  var toolbarEl = document.getElementById('membership-specials-toolbar');
   var btnAdd = document.getElementById('membership-specials-add');
   var btnSave = document.getElementById('membership-specials-save-all');
-  var btnReset = document.getElementById('membership-specials-reset-all');
   var statusEl = document.getElementById('membership-specials-status');
 
   var workingItems = [];
@@ -33,6 +33,9 @@
 
   function renderItemsEditor() {
     if (!itemsRoot) return;
+    if (toolbarEl && toolbarEl.parentNode) {
+      toolbarEl.parentNode.removeChild(toolbarEl);
+    }
     itemsRoot.innerHTML = '';
     workingItems.forEach(function (item, idx) {
       var card = document.createElement('div');
@@ -76,6 +79,16 @@
 
       itemsRoot.appendChild(card);
     });
+
+    if (toolbarEl && itemsRoot) {
+      var cards = itemsRoot.querySelectorAll('.admin-membership-special-card');
+      var lastCard = cards[cards.length - 1];
+      if (lastCard) {
+        lastCard.appendChild(toolbarEl);
+      } else {
+        itemsRoot.parentNode.insertBefore(toolbarEl, itemsRoot.nextSibling);
+      }
+    }
 
     itemsRoot.querySelectorAll('[data-remove-index]').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -194,47 +207,6 @@
         })
         .then(function () {
           btnSave.disabled = false;
-        });
-    });
-  }
-
-  if (btnReset && teaserInput && itemsRoot) {
-    btnReset.addEventListener('click', function () {
-      if (!confirm('Reset teaser and all specials to site defaults?')) return;
-      showStatus(statusEl, '', false);
-      btnReset.disabled = true;
-      fetch('/api/admin/membership-specials-teaser', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ op: 'reset' }),
-      })
-        .then(function (r) {
-          return r.text().then(function (text) {
-            return parseResponseBody(r, text);
-          });
-        })
-        .then(function (x) {
-          if (x.ok && x.body && x.body.success) {
-            showStatus(statusEl, 'Restored defaults.', false);
-            if (typeof x.body.teaserText === 'string' && teaserInput) {
-              teaserInput.value = x.body.teaserText;
-            }
-            syncWorkingFromPayload(x.body);
-            renderItemsEditor();
-          } else {
-            var msg = (x.body && x.body.message) || 'Could not reset.';
-            if (x.body && x.body.message === 'Not authenticated') {
-              msg = 'Session expired. Log in to the admin again.';
-            }
-            showStatus(statusEl, msg, true);
-          }
-        })
-        .catch(function () {
-          showStatus(statusEl, 'Network error.', true);
-        })
-        .then(function () {
-          btnReset.disabled = false;
         });
     });
   }

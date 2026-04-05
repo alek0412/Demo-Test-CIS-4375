@@ -1,14 +1,14 @@
 /**
- * Admin Layout — Availability sheet upload (same card pattern as upcoming event images).
+ * Admin Layout — membership pricing upload (Layout page only).
  */
 (function () {
   'use strict';
 
-  var preview = document.getElementById('popular-times-preview');
-  var fileInput = document.getElementById('popular-times-pdf-file');
-  var btnSave = document.getElementById('popular-times-pdf-save');
-  var btnReset = document.getElementById('popular-times-pdf-reset');
-  var statusEl = document.getElementById('popular-times-pdf-status');
+  var preview = document.getElementById('membership-pricing-preview');
+  var fileInput = document.getElementById('membership-pricing-file');
+  var btnSave = document.getElementById('membership-pricing-save');
+  var btnReset = document.getElementById('membership-pricing-reset');
+  var statusEl = document.getElementById('membership-pricing-status');
   var saveDefaultLabel = btnSave ? btnSave.textContent : 'Save image';
   var lastServerPayload = null;
   var pendingObjectUrl = null;
@@ -48,7 +48,7 @@
     if (d.kind === 'image') {
       var im = document.createElement('img');
       im.src = url;
-      im.alt = 'Availability times preview';
+      im.alt = 'Membership pricing preview';
       im.className = 'admin-marketing-preview-img';
       preview.appendChild(im);
       return;
@@ -85,23 +85,37 @@
       return;
     }
 
-    if (file.type.indexOf('image/') === 0) {
-      var reader = new FileReader();
-      reader.onload = function () {
+    var reader = new FileReader();
+    reader.onload = function () {
+      if (!preview) return;
+      preview.innerHTML = '';
+      var im = document.createElement('img');
+      im.src = reader.result;
+      im.alt = 'Membership pricing preview';
+      im.className = 'admin-marketing-preview-img';
+      im.onerror = function () {
         if (!preview) return;
         preview.innerHTML = '';
-        var im = document.createElement('img');
-        im.src = reader.result;
-        im.alt = 'Availability times preview';
-        im.className = 'admin-marketing-preview-img';
-        preview.appendChild(im);
+        var ph = document.createElement('span');
+        ph.className = 'admin-marketing-preview-empty';
+        ph.textContent = 'No preview for this type. Save to upload.';
+        preview.appendChild(ph);
       };
-      reader.readAsDataURL(file);
-    }
+      preview.appendChild(im);
+    };
+    reader.onerror = function () {
+      if (!preview) return;
+      preview.innerHTML = '';
+      var ph = document.createElement('span');
+      ph.className = 'admin-marketing-preview-empty';
+      ph.textContent = 'Could not read file for preview.';
+      preview.appendChild(ph);
+    };
+    reader.readAsDataURL(file);
   }
 
   function loadState() {
-    fetch('/api/popular-times-pdf', { credentials: 'include' })
+    fetch('/api/membership-pricing', { credentials: 'include' })
       .then(function (r) {
         return r.text().then(function (text) {
           return parseResponseBody(r, text);
@@ -131,7 +145,9 @@
   }
 
   if (btnSave && fileInput) {
-    btnSave.addEventListener('click', function () {
+    btnSave.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
       showStatus(statusEl, '', false);
       var f = fileInput.files && fileInput.files[0];
       if (!f) {
@@ -140,10 +156,12 @@
       }
       btnSave.disabled = true;
       btnSave.textContent = 'Saving…';
+      showStatus(statusEl, 'Reading file…', false);
       var reader = new FileReader();
       reader.onload = function () {
         var dataUrl = reader.result;
-        fetch('/api/admin/popular-times-pdf', {
+        showStatus(statusEl, 'Uploading…', false);
+        fetch('/api/admin/membership-pricing', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -155,7 +173,15 @@
             });
           })
           .then(function (x) {
-            if (x.ok && x.body && x.body.success) {
+            var okSave =
+              x.ok &&
+              x.body &&
+              (x.body.success === true ||
+                x.body.success === 'true' ||
+                (typeof x.body.url === 'string' &&
+                  x.body.hasCustom === true &&
+                  x.body.success !== false));
+            if (okSave) {
               showStatus(statusEl, 'Saved.', false);
               revokePending();
               fileInput.value = '';
@@ -197,7 +223,7 @@
       e.preventDefault();
       showStatus(statusEl, '', false);
       btnReset.disabled = true;
-      fetch('/api/admin/popular-times-pdf', {
+      fetch('/api/admin/membership-pricing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -239,4 +265,3 @@
   renderPreviewFromServer(null);
   loadState();
 })();
-
