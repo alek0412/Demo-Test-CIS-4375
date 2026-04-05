@@ -75,6 +75,9 @@
           var countWrap = document.getElementById('customer-result-count');
           if (countWrap) countWrap.classList.remove('is-hidden');
           var cols = Object.keys(rows[0]);
+          var customerIdColInner = cols.find(function (c) {
+            return c.toLowerCase() === 'customer_id';
+          });
           var statusColName = cols.find(function (c) {
             var l = c.toLowerCase();
             return l === 'membership_status' || l === 'customerstatus' || l === 'status' || l === 'customer_status';
@@ -100,7 +103,11 @@
           html += '</tr></thead><tbody>';
           html += '<tr id="customer-no-results" class="db-no-results db-no-results-row is-hidden" aria-live="polite"><td colspan="' + cols.length + '">No customer found with that search.</td></tr>';
           rows.forEach(function (row) {
-            html += '<tr>';
+            var cid =
+              customerIdColInner != null && row[customerIdColInner] != null
+                ? String(row[customerIdColInner]).replace(/"/g, '&quot;')
+                : '';
+            html += '<tr class="customer-data-row"' + (cid ? ' data-customer-id="' + cid + '"' : '') + '>';
             cols.forEach(function (c) {
               var display = row[c];
               if (c === statusColName && (display === 1 || display === 2 || display === '1' || display === '2')) {
@@ -124,6 +131,9 @@
       var filterDropdown = document.getElementById('customer-filter-dropdown');
 
       var cols = rows && rows.length && !rows[0]._error ? Object.keys(rows[0]) : [];
+      var customerIdCol = cols.find(function (c) {
+        return c.toLowerCase() === 'customer_id';
+      });
       var emailCol = cols.find(function (c) { return c.toLowerCase() === 'email'; });
       var statusCol = cols.find(function (c) {
         var l = c.toLowerCase();
@@ -239,6 +249,31 @@
         return (v == null || v === '') ? '' : String(v).trim();
       }
 
+      var selectedCustomerId = null;
+      var allRowsData = rows && rows.length && !rows[0]._error ? rows : [];
+
+      function getRowDataByCustomerId(idStr) {
+        var n = parseInt(idStr, 10);
+        if (!Number.isFinite(n) || !customerIdCol) return null;
+        for (var i = 0; i < allRowsData.length; i++) {
+          if (parseInt(allRowsData[i][customerIdCol], 10) === n) return allRowsData[i];
+        }
+        return null;
+      }
+
+      function syncRowSelection() {
+        document.querySelectorAll('.customer-data-row').forEach(function (tr) {
+          tr.classList.remove('customer-row-selected');
+          tr.setAttribute('aria-selected', 'false');
+        });
+        if (selectedCustomerId == null) return;
+        var sel = document.querySelector('.customer-data-row[data-customer-id="' + selectedCustomerId + '"]');
+        if (sel && sel.style.display !== 'none') {
+          sel.classList.add('customer-row-selected');
+          sel.setAttribute('aria-selected', 'true');
+        }
+      }
+
       function applyFilters() {
         var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
         var visibleCount = 0;
@@ -279,6 +314,13 @@
             opt.classList.toggle('is-active', opt.getAttribute('data-value') === filterZip);
           });
         }
+        if (selectedCustomerId != null) {
+          var selTr = document.querySelector('.customer-data-row[data-customer-id="' + selectedCustomerId + '"]');
+          if (!selTr || selTr.style.display === 'none') {
+            selectedCustomerId = null;
+          }
+        }
+        syncRowSelection();
       }
 
       if (searchInput && table) {
@@ -320,6 +362,223 @@
         document.addEventListener('click', function () {
           filterDropdown.classList.add('is-hidden');
           filterBtn.setAttribute('aria-expanded', 'false');
+        });
+      }
+
+      var editBtn = document.getElementById('customer-edit-btn');
+      var delBtn = document.getElementById('customer-delete-btn');
+      var customerEditModal = document.getElementById('customer-edit-modal');
+      var editSaveBtn = document.getElementById('customer-edit-save');
+      var editCancelBtn = document.getElementById('customer-edit-cancel');
+      var editFormStatus = document.getElementById('customer-edit-form-status');
+
+      function colKey(name) {
+        var l = name.toLowerCase();
+        for (var i = 0; i < cols.length; i++) {
+          if (cols[i].toLowerCase() === l) return cols[i];
+        }
+        return null;
+      }
+
+      function fillEditModal(row) {
+        if (!row) return;
+        document.getElementById('edit-display-id').textContent = selectedCustomerId || '—';
+        var map = [
+          ['edit-customer-first', 'customer_first_name'],
+          ['edit-customer-last', 'customer_last_name'],
+          ['edit-customer-phone', 'phone'],
+          ['edit-customer-email', 'email'],
+          ['edit-customer-street', 'street_address'],
+          ['edit-customer-city', 'city'],
+          ['edit-customer-state', 'state'],
+          ['edit-customer-zip', 'zip_code'],
+        ];
+        map.forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          var k = colKey(pair[1]);
+          if (el) el.value = k && row[k] != null ? String(row[k]) : '';
+        });
+        var stK = colKey('membership_status');
+        var sel = document.getElementById('edit-customer-status');
+        if (sel && stK) {
+          var n = parseInt(row[stK], 10);
+          sel.value = n === 2 ? '2' : '1';
+        }
+        var pw = document.getElementById('edit-customer-new-password');
+        if (pw) pw.value = '';
+        if (editFormStatus) {
+          editFormStatus.textContent = '';
+          editFormStatus.style.color = '';
+        }
+      }
+
+      function openEditModal() {
+        if (!customerIdCol) {
+          alert('This database table has no customer_id column; editing is not supported.');
+          return;
+        }
+        if (!selectedCustomerId) {
+          alert('Click a row in the table to select a customer, then choose Edit customer.');
+          return;
+        }
+        var rowData = getRowDataByCustomerId(selectedCustomerId);
+        if (!rowData) {
+          alert('Could not load that customer. Try refreshing the page.');
+          return;
+        }
+        fillEditModal(rowData);
+        if (customerEditModal) {
+          customerEditModal.classList.remove('is-hidden');
+        }
+      }
+
+      function closeEditModal() {
+        if (customerEditModal) customerEditModal.classList.add('is-hidden');
+      }
+
+      if (table && customerIdCol) {
+        var tbodyEl = table.querySelector('tbody');
+        if (tbodyEl) {
+          tbodyEl.addEventListener('click', function (e) {
+            var tr = e.target.closest && e.target.closest('.customer-data-row');
+            if (!tr) return;
+            var id = tr.getAttribute('data-customer-id');
+            if (!id) return;
+            selectedCustomerId = id;
+            syncRowSelection();
+          });
+        }
+      }
+
+      if (editBtn) {
+        editBtn.addEventListener('click', function () {
+          openEditModal();
+        });
+      }
+
+      if (editCancelBtn) {
+        editCancelBtn.addEventListener('click', closeEditModal);
+      }
+
+      if (customerEditModal) {
+        customerEditModal.addEventListener('click', function (e) {
+          if (e.target === customerEditModal) closeEditModal();
+        });
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && customerEditModal && !customerEditModal.classList.contains('is-hidden')) {
+          closeEditModal();
+        }
+      });
+
+      if (editSaveBtn) {
+        editSaveBtn.addEventListener('click', function () {
+          if (!selectedCustomerId) return;
+          var payload = {
+            op: 'update',
+            customerId: parseInt(selectedCustomerId, 10),
+            customer_first_name: (document.getElementById('edit-customer-first') || {}).value || '',
+            customer_last_name: (document.getElementById('edit-customer-last') || {}).value || '',
+            phone: (document.getElementById('edit-customer-phone') || {}).value || '',
+            email: (document.getElementById('edit-customer-email') || {}).value || '',
+            street_address: (document.getElementById('edit-customer-street') || {}).value || '',
+            city: (document.getElementById('edit-customer-city') || {}).value || '',
+            state: (document.getElementById('edit-customer-state') || {}).value || '',
+            zip_code: (document.getElementById('edit-customer-zip') || {}).value || '',
+            membership_status: parseInt((document.getElementById('edit-customer-status') || {}).value, 10) || 1,
+          };
+          var npw = (document.getElementById('edit-customer-new-password') || {}).value || '';
+          if (npw.trim()) payload.newPassword = npw.trim();
+          editSaveBtn.disabled = true;
+          if (editFormStatus) editFormStatus.textContent = 'Saving…';
+          fetch('/api/admin/customer', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+            .then(function (r) {
+              return r.json().then(function (body) {
+                return { ok: r.ok, body: body };
+              });
+            })
+            .then(function (out) {
+              if (out.ok && out.body && out.body.success) {
+                closeEditModal();
+                window.location.reload();
+              } else {
+                var msg = (out.body && out.body.message) || 'Could not save.';
+                if (editFormStatus) {
+                  editFormStatus.textContent = msg;
+                  editFormStatus.style.color = '#b91c1c';
+                } else {
+                  alert(msg);
+                }
+              }
+            })
+            .catch(function () {
+              if (editFormStatus) {
+                editFormStatus.textContent = 'Network error.';
+                editFormStatus.style.color = '#b91c1c';
+              }
+            })
+            .then(function () {
+              editSaveBtn.disabled = false;
+            });
+        });
+      }
+
+      if (delBtn) {
+        delBtn.addEventListener('click', function () {
+          if (!customerIdCol) {
+            alert('This database table has no customer_id column; delete is not supported.');
+            return;
+          }
+          if (!selectedCustomerId) {
+            alert('Click a row in the table to select a customer, then choose Delete customer.');
+            return;
+          }
+          if (
+            !confirm(
+              'Delete customer #' +
+                selectedCustomerId +
+                ' from the database? This cannot be undone.'
+            )
+          ) {
+            return;
+          }
+          delBtn.disabled = true;
+          fetch('/api/admin/customer', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              op: 'delete',
+              customerId: parseInt(selectedCustomerId, 10),
+            }),
+          })
+            .then(function (r) {
+              return r.json().then(function (body) {
+                return { ok: r.ok, body: body };
+              });
+            })
+            .then(function (out) {
+              if (out.ok && out.body && out.body.success) {
+                window.location.reload();
+              } else {
+                var msg =
+                  (out.body && out.body.message) ||
+                  'Could not delete. The customer may be referenced by reservations or other records.';
+                alert(msg);
+              }
+            })
+            .catch(function () {
+              alert('Network error.');
+            })
+            .then(function () {
+              delBtn.disabled = false;
+            });
         });
       }
 

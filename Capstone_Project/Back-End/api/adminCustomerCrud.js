@@ -1,0 +1,121 @@
+/**
+ * POST /api/admin/customer — admin-only update or delete customer row.
+ * Body: { op: 'delete', customerId: number } | { op: 'update', customerId: number, ...fields }
+ */
+const bcrypt = require('bcryptjs');
+
+const BCRYPT_ROUNDS = 10;
+
+const UPDATE_WHITELIST = [
+  'customer_first_name',
+  'customer_last_name',
+  'phone',
+  'email',
+  'street_address',
+  'city',
+  'state',
+  'zip_code',
+  'membership_status',
+];
+
+module.exports = async function handleAdminCustomerCrud(req, res, ctx) {
+  const { pathname, hasAdminSessionCookie, db, parseBody } = ctx;
+
+  if (req.method !== 'POST' || pathname !== '/api/admin/customer') {
+    return false;
+  }
+
+  const send = (status, obj) => {
+    res.writeHead(status, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(obj));
+  };
+
+  if (!hasAdminSessionCookie(req)) {
+    send(401, { success: false, message: 'Not authenticated' });
+    return true;
+  }
+
+  let body = {};
+  try {
+    body = await parseBody(req);
+  } catch (e) {
+    send(400, { success: false, message: 'Invalid request body' });
+    return true;
+  }
+
+  const op = (body.op || '').toLowerCase();
+  const customerId = parseInt(body.customerId, 10);
+  if (!Number.isFinite(customerId) || customerId < 1) {
+    send(400, { success: false, message: 'Invalid customer id' });
+    return true;
+  }
+
+  try {
+    if (op === 'delete') {
+      await db.query('DELETE FROM `customer` WHERE `customer_id` = ?', [customerId]);
+      send(200, { success: true });
+      return true;
+    }
+
+    if (op === 'update') {
+      const sets = [];
+      const params = [];
+      for (const key of UPDATE_WHITELIST) {
+        if (Object.prototype.hasOwnProperty.call(body, key)) {
+          let v = body[key];
+          if (key === 'membership_status') {
+            const n = parseInt(v, 10);
+            if (n !== 1 && n !== 2) {
+              send(400, { success: false, message: 'membership_status must be 1 (Active) or 2 (Inactive)' });
+              return true;
+            }
+            v = n;
+          } else if (key === 'email') {
+            v = String(v || '').trim();
+            if (!v) {
+              send(400, { success: false, message: 'Email cannot be empty' });
+              return true;
+            }
+          } else {
+            v = v == null ? '' : String(v);
+          }
+          sets.push('`' + key.replace(/`/g, '``') + '` = ?');
+          params.push(v);
+        }
+      }
+
+      const newPassword = typeof body.newPassword === 'string' ? body.newPassword.trim() : '';
+      if (newPassword) {
+        if (newPassword.length < 8) {
+          send(400, { success: false, message: 'New password must be at least 8 characters' });
+          return true;
+        }
+        const hash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+        sets.push('`password` = ?');
+        params.push(hash);
+      }
+
+      if (sets.length === 0) {
+        send(400, { success: false, message: 'No fields to update' });
+        return true;
+      }
+
+      params.push(customerId);
+      const sql = 'UPDATE `customer` SET ' + sets.join(', ') + ' WHERE `customer_id` = ?';
+      await db.query(sql, params);
+      send(200, { success: true });
+      return true;
+    }
+
+    send(400, { success: false, message: 'Unknown op; use delete or update' });
+    return true;
+  } catch (err) {
+    const msg = err.message || String(err);
+    if (/ER_ROW_IS_REFERENCED|foreign key|Cannot delete/i.test(msg)) {
+      send(409, { success: false, message: 'Cannot delete this customer: other records still reference them.' });
+      return true;
+    }
+    send(500, { success: false, message: msg });
+    return true;
+  }
+};

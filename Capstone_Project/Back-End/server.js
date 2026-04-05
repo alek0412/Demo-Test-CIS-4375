@@ -16,6 +16,13 @@ const http = require('http');
 const fs = require('fs');
 const db = require('./db/connection');
 const config = require('./config');
+const handleAdminCustomerCrud = require('./api/adminCustomerCrud');
+
+/** Match admin_session=loggedin as its own cookie (avoids substring false positives). */
+function hasAdminSessionCookie(req) {
+  const c = req.headers.cookie || '';
+  return /(?:^|;\s*)admin_session=loggedin(?:\s|;|$)/.test(c);
+}
 
 const PORT = process.env.PORT || 3000;
 
@@ -212,6 +219,12 @@ const server = http.createServer(async (req, res) => {
     } catch (err) {
       send(200, { database: config.db.database || null, error: err.message, tables: {} });
     }
+    return;
+  }
+
+  // POST /api/admin/customer — update or delete customer row (admin session)
+  const adminCustomerCtx = { pathname, hasAdminSessionCookie, db, parseBody };
+  if (await handleAdminCustomerCrud(req, res, adminCustomerCtx)) {
     return;
   }
 
