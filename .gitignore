@@ -2,12 +2,10 @@
 .DS_Store
 
 # Environment (never commit secrets)
-.env
-.env.local
-.env.*.local
-
-# Dependencies
-node_modules/
+*.env
+*.env.local
+*.env.*.local
+*.env.example
 
 # EC2 / SSH keys (never commit)
 *.pem
