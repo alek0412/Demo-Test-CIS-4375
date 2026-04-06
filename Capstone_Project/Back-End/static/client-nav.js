@@ -1,9 +1,8 @@
 /**
- * General + Client nav auth:
+ * General + Client nav auth (public-facing nav link .nav-auth-link):
  * - Default: "Log in" → /client/Client_Login.html
- * - Customer session: "Log out" → POST /api/customer-logout → General_Dashboard
- * - Admin session: "Log out" → POST /api/logout → General_Dashboard
- * - Both sessions: one "Log out" clears both, then General_Dashboard
+ * - Customer session only: "Log out" → POST /api/customer-logout → General_Dashboard
+ * - Admin session (/api/me) does NOT change this link — admins use Admin Log out separately.
  * - ?logged_in=1: just signed in as customer (nav shows Log out before cookie is readable)
  * - sessionStorage hbc_customer_logged_in: set on customer sign-in; cleared on logout or API says logged out
  */
@@ -97,25 +96,20 @@
       customerLoggedIn = true;
     }
 
-    if (!adminIn && !customerLoggedIn) {
+    // Only customer login controls "Log out" here. An admin cookie alone must not show Log out
+    // (e.g. user has Admin Layout open in another tab but never signed in as a customer).
+    if (!customerLoggedIn) {
       return;
     }
 
     showLogOut(function () {
       clearCustomerFlag();
-      if (customerLoggedIn && !adminIn) {
+      if (!adminIn) {
         try {
           sessionStorage.setItem(LOGIN_TAB_ADMIN_KEY, 'admin');
         } catch (e) {}
       }
-      var reqs = [];
-      if (adminIn) {
-        reqs.push(fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }));
-      }
-      if (customerLoggedIn) {
-        reqs.push(fetch('/api/customer-logout', { method: 'POST', credentials: 'same-origin' }));
-      }
-      Promise.all(reqs).then(function () {
+      fetch('/api/customer-logout', { method: 'POST', credentials: 'same-origin' }).then(function () {
         window.location.href = GENERAL;
       });
     });

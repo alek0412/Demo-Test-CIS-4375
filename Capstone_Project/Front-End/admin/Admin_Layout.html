@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout — Houston Badminton Center Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="admin.css">
+  <script src="../admin-theme.js" defer></script>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <a href="Admin_Dashboard.html">
+          <img src="../images/HBC.png" alt="Houston Badminton Center" class="admin-logo admin-logo-light">
+        <img src="../images/HBC-dark.png" alt="Houston Badminton Center" class="admin-logo admin-logo-dark">
+        </a>
+      </div>
+      <nav class="admin-nav">
+        <div class="admin-nav-section">
+          <a href="Admin_Dashboard.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+            <span>Dashboard</span>
+          </a>
+          <a href="Admin_Layout.html" class="admin-nav-link active">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125Z" />
+            </svg>
+            <span>Layout</span>
+          </a>
+          <a href="Admin_Reservations.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            <span>Reservations</span>
+          </a>
+          <a href="Admin_Courts.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 6a5 3 0 01-10 0 5 3 0 0110 0M12 9v12" />
+            </svg>
+            <span>Courts</span>
+          </a>
+          <a href="Admin_CheckIn.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Check In</span>
+          </a>
+          <a href="Admin_Customers.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span>Customers</span>
+          </a>
+          <a href="Admin_PointOfSale.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            <span>Point of Sale</span>
+          </a>
+          <a href="Admin_Insights.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+            <span>Insights</span>
+          </a>
+          <a href="Admin_Services_Products.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" /></svg>
+            <span>Services & Products</span>
+          </a>
+          <a href="Admin_Employees.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span>Employees</span>
+          </a>
+          <a href="Admin_Waiver.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Waiver</span>
+          </a>
+          <a href="Admin_Settings.html" class="admin-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+    <div class="admin-main">
+      <header class="admin-topbar"><div id="admin-theme-container"></div></header>
+      <div class="admin-content">
+        <div class="admin-title-wrap admin-title-wrap--left admin-title-wrap--layout-page">
+          <div class="admin-layout-intro">
+            <h1 class="admin-page-title">Layout</h1>
+            <p class="admin-subtitle">Control how <strong>general (public)</strong> and <strong>customer</strong> pages look and feel—spacing, imagery, and presentation so the experience stays clear and appealing. Below: <strong>Upcoming events</strong> on the shared home dashboards (JPEG, PNG, GIF, or WebP, up to about 8 MB each), the <strong>Popular Times</strong> sheet (PDF or image) on both Availability pages, and <strong>membership pricing</strong> (PDF or image) on General and Client Membership.</p>
+            <div class="admin-layout-jump">
+              <label for="layout-section-jump" class="admin-layout-jump-label">Jump to section</label>
+              <select id="layout-section-jump" class="admin-marketing-select">
+                <option value="">Choose a section…</option>
+                <option value="layout-section-home">Home</option>
+                <option value="layout-section-availability">Availability</option>
+                <option value="layout-section-membership">Membership</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="admin-layout-tools" id="layout-section-home">
+          <h2 class="admin-layout-tools-heading">Home/Dashboard - Modify Upcoming Events</h2>
+          <div class="admin-marketing-toolbar">
+            <label for="marketing-slot-count" class="admin-marketing-toolbar-label">Number of images</label>
+            <select id="marketing-slot-count" class="admin-marketing-select" aria-describedby="marketing-slot-hint"></select>
+            <span id="marketing-slot-count-status" class="admin-marketing-toolbar-status" role="status"></span>
+          </div>
+          <p id="marketing-slot-hint" class="admin-marketing-layout-hint">One image uses a large layout on the home page; two or more use a smaller shared grid.</p>
+          <div id="marketing-slots-root" class="admin-marketing-grid"></div>
+        </div>
+        <div class="admin-layout-tools admin-layout-tools--section-divider" aria-hidden="true">
+          <hr class="admin-layout-section-rule" />
+        </div>
+        <div class="admin-layout-tools" id="layout-section-availability">
+          <h2 class="admin-layout-tools-heading">Availability - Modify Availability Times</h2>
+          <p class="admin-marketing-layout-hint">This appears on <strong>General</strong> and <strong>Client</strong> Availability. Upload a <strong>PDF</strong> or <strong>image</strong> (PNG, JPEG, GIF, WebP, or SVG—up to about 15 MB). <strong>Remove</strong> hides the Popular Times block on those pages until you save a new file.</p>
+          <div id="popular-times-slot-root" class="admin-marketing-grid admin-marketing-grid--n1">
+            <div class="admin-marketing-slot">
+              <h2 class="admin-marketing-slot-title">Availability times</h2>
+              <div class="admin-marketing-preview" id="popular-times-preview"></div>
+              <label class="admin-marketing-label" for="popular-times-pdf-file">PDF or image file</label>
+              <input type="file" id="popular-times-pdf-file" class="admin-marketing-file" accept="application/pdf,.pdf,image/png,image/jpeg,image/gif,image/webp,image/svg+xml,.png,.jpg,.jpeg,.gif,.webp,.svg">
+              <div class="admin-marketing-actions">
+                <button type="button" class="btn btn-primary" id="popular-times-pdf-save">Save image</button>
+                <button type="button" class="btn btn-ghost" id="popular-times-pdf-reset">Remove</button>
+              </div>
+              <p class="admin-marketing-status" id="popular-times-pdf-status" role="status"></p>
+            </div>
+          </div>
+        </div>
+        <div class="admin-layout-tools admin-layout-tools--section-divider" aria-hidden="true">
+          <hr class="admin-layout-section-rule" />
+        </div>
+        <div id="layout-section-membership" class="admin-layout-membership-group">
+          <div class="admin-layout-tools admin-layout-tools--no-divider-below">
+            <input type="hidden" id="membership-specials-teaser-input" value="">
+            <div class="admin-marketing-grid admin-marketing-grid--n1">
+              <div class="admin-membership-open-section">
+                <h2 class="admin-marketing-slot-title">Memberships - Modify Specials</h2>
+                <p class="admin-marketing-layout-hint admin-membership-specials-open-hint">Each block has a <strong>Name of Special</strong> and a <strong>Description</strong>. New lines in the description become new lines on the site.</p>
+                <div id="membership-specials-items-admin"></div>
+                <div id="membership-specials-toolbar" class="admin-membership-specials-toolbar">
+                  <div class="admin-marketing-actions admin-membership-specials-actions-row">
+                    <button type="button" class="btn btn-membership-add" id="membership-specials-add">Add special</button>
+                    <button type="button" class="btn btn-primary" id="membership-specials-save-all">Save all</button>
+                  </div>
+                  <p class="admin-marketing-status" id="membership-specials-status" role="status"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="admin-layout-tools">
+            <h2 class="admin-layout-tools-heading">Memberships - Modify Membership Pricing</h2>
+            <p class="admin-marketing-layout-hint">This appears on <strong>General</strong> and <strong>Client</strong> Membership. Upload a <strong>PDF</strong> or <strong>image</strong> (PNG, JPG, WebP, SVG, HEIC, AVIF, and most other common formats—up to about 50 MB). Unsupported types are rejected. <strong>Remove</strong> hides the pricing block on those pages until you save a new file.</p>
+            <div id="membership-pricing-slot-root" class="admin-marketing-grid admin-marketing-grid--n1">
+              <div class="admin-marketing-slot">
+                <h2 class="admin-marketing-slot-title">Membership pricing</h2>
+                <div class="admin-marketing-preview" id="membership-pricing-preview"></div>
+                <label class="admin-marketing-label" for="membership-pricing-file">PDF or image file</label>
+                <input type="file" id="membership-pricing-file" class="admin-marketing-file" accept="image/*,application/pdf,.pdf">
+                <div class="admin-marketing-actions">
+                  <button type="button" class="btn btn-primary" id="membership-pricing-save">Save image</button>
+                  <button type="button" class="btn btn-ghost" id="membership-pricing-reset">Remove</button>
+                </div>
+                <p class="admin-marketing-status" id="membership-pricing-status" role="status"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/admin-marketing.js"></script>
+  <script src="/admin-popular-times.js"></script>
+  <script src="/admin-membership-pricing.js"></script>
+  <script src="/admin-membership-specials.js"></script>
+  <script>
+    (function () {
+      var sel = document.getElementById('layout-section-jump');
+      if (!sel) return;
+      sel.addEventListener('change', function () {
+        var id = sel.value;
+        if (!id) return;
+        var target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        sel.selectedIndex = 0;
+      });
+    })();
+  </script>
+</body>
+</html>

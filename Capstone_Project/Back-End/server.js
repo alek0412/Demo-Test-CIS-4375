@@ -1,6 +1,6 @@
 /**
  * Houston Badminton Center — Backend server
- * Serves the Front-End and can host API routes.
+ * Serves the Front-End; HTTP APIs live under ./api/ (see api/index.js).
  * Run from this folder: node server.js
  * Then open http://localhost:3000
  *
@@ -16,13 +16,14 @@ const http = require('http');
 const fs = require('fs');
 const db = require('./db/connection');
 const config = require('./config');
-const handleAdminCustomerCrud = require('./api/adminCustomerCrud');
-
-/** Match admin_session=loggedin as its own cookie (avoids substring false positives). */
-function hasAdminSessionCookie(req) {
-  const c = req.headers.cookie || '';
-  return /(?:^|;\s*)admin_session=loggedin(?:\s|;|$)/.test(c);
-}
+const customerPassword = require('./lib/customerPassword');
+const { sendPasswordResetEmail } = require('./lib/resetMail');
+const upcomingEvents = require('./lib/upcomingEvents');
+const popularTimesPdf = require('./lib/popularTimesPdf');
+const membershipPricing = require('./lib/membershipPricing');
+const membershipSpecials = require('./lib/membershipSpecials');
+const { parseBody, readBodyWithLimit } = require('./lib/httpBody');
+const { handleApi } = require('./api');
 
 const PORT = process.env.PORT || 3000;
 
@@ -40,6 +41,12 @@ const CUSTOMER_SESSION_VALUE = 'loggedin:' + CUSTOMER_SESSION_SECRET;
 
 // Front-End folder is one level up from Back-End
 const FRONT_END = path.join(__dirname, '..', 'Front-End');
+
+/** Match admin_session=loggedin as its own cookie (avoids substring false positives). */
+function hasAdminSessionCookie(req) {
+  const c = req.headers.cookie || '';
+  return /(?:^|;\s*)admin_session=loggedin(?:\s|;|$)/.test(c);
+}
 
 const MIME = {
   '.html': 'text/html',
@@ -74,157 +81,29 @@ function serveFile(filePath, res) {
   });
 }
 
-function parseBody(req) {
-  return new Promise((resolve, reject) => {
-    let body = '';
-    req.on('data', (chunk) => { body += chunk; });
-    req.on('end', () => {
-      try {
-        resolve(body ? JSON.parse(body) : {});
-      } catch (e) {
-        resolve({});
-      }
-    });
-    req.on('error', reject);
-  });
-}
-
 const server = http.createServer(async (req, res) => {
   const pathname = (req.url || '').split('?')[0];
 
-  // POST /api/login — validate admin credentials and set session cookie
-  if (req.method === 'POST' && pathname === '/api/login') {
-    let data = {};
-    try {
-      data = await parseBody(req);
-    } catch (e) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
-      return;
-    }
-    const email = (data.email || '').trim().toLowerCase();
-    const password = data.password || '';
-    const valid = email === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD;
-    if (valid) {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-        'Set-Cookie': 'admin_session=loggedin; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
-      });
-      res.end(JSON.stringify({ success: true }));
-      return;
-    }
-    res.writeHead(401, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: false, message: 'Invalid email or password' }));
-    return;
-  }
-
-  // POST /api/logout — clear admin session
-  if (req.method === 'POST' && pathname === '/api/logout') {
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Set-Cookie': 'admin_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
-    });
-    res.end(JSON.stringify({ success: true }));
-    return;
-  }
-
-  // POST /api/customer-login — validate customer credentials and set session cookie
-  if (req.method === 'POST' && pathname === '/api/customer-login') {
-    let data = {};
-    try {
-      data = await parseBody(req);
-    } catch (e) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
-      return;
-    }
-    const email = (data.email || '').trim().toLowerCase();
-    const password = data.password || '';
-    const valid = email === CUSTOMER_EMAIL && password === CUSTOMER_PASSWORD;
-    if (valid) {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-        'Set-Cookie': 'customer_session=' + encodeURIComponent(CUSTOMER_SESSION_VALUE) + '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
-      });
-      res.end(JSON.stringify({ success: true }));
-      return;
-    }
-    res.writeHead(401, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: false, message: 'Invalid email or password' }));
-    return;
-  }
-
-  // POST /api/customer-logout — clear customer session
-  if (req.method === 'POST' && pathname === '/api/customer-logout') {
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Set-Cookie': 'customer_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
-    });
-    res.end(JSON.stringify({ success: true }));
-    return;
-  }
-
-  // GET /api/customer-me — check if customer is logged in (only accepts session from this server run)
-  if (req.method === 'GET' && pathname === '/api/customer-me') {
-    const cookie = req.headers.cookie || '';
-    let sessionValue = '';
-    try {
-      const match = cookie.match(/customer_session=([^;]*)/);
-      sessionValue = match ? decodeURIComponent(match[1].trim()) : '';
-    } catch (_) {}
-    const loggedIn = sessionValue === CUSTOMER_SESSION_VALUE;
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ loggedIn }));
-    return;
-  }
-
-  // GET /api/me — check if admin is logged in (for dashboard redirect)
-  if (req.method === 'GET' && pathname === '/api/me') {
-    const cookie = req.headers.cookie || '';
-    const loggedIn = cookie.includes('admin_session=loggedin');
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ loggedIn }));
-    return;
-  }
-
-  // GET /api/db — return tables and rows from the database (for admin “View data”)
-  if (req.method === 'GET' && pathname === '/api/db') {
-    const cookie = req.headers.cookie || '';
-    if (!cookie.includes('admin_session=loggedin')) {
-      res.writeHead(401, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Not authenticated' }));
-      return;
-    }
-    const send = (status, data) => {
-      res.writeHead(status, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(data));
-    };
-    try {
-      const dbName = config.db.database;
-      const { rows: tableRows } = await db.query(
-        'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ? ORDER BY TABLE_NAME',
-        [dbName]
-      );
-      const tables = {};
-      for (const row of tableRows) {
-        const tableName = row.TABLE_NAME;
-        try {
-          const { rows: dataRows } = await db.query('SELECT * FROM `' + tableName.replace(/`/g, '``') + '` LIMIT 500', []);
-          tables[tableName] = dataRows;
-        } catch (e) {
-          tables[tableName] = [{ _error: String(e.message) }];
-        }
-      }
-      send(200, { database: dbName, tables });
-    } catch (err) {
-      send(200, { database: config.db.database || null, error: err.message, tables: {} });
-    }
-    return;
-  }
-
-  // POST /api/admin/customer — update or delete customer row (admin session)
-  const adminCustomerCtx = { pathname, hasAdminSessionCookie, db, parseBody };
-  if (await handleAdminCustomerCrud(req, res, adminCustomerCtx)) {
+  const apiCtx = {
+    pathname,
+    parseBody,
+    readBodyWithLimit,
+    hasAdminSessionCookie,
+    ADMIN_EMAIL,
+    ADMIN_PASSWORD,
+    CUSTOMER_EMAIL,
+    CUSTOMER_PASSWORD,
+    CUSTOMER_SESSION_VALUE,
+    customerPassword,
+    sendPasswordResetEmail,
+    upcomingEvents,
+    popularTimesPdf,
+    membershipPricing,
+    membershipSpecials,
+    db,
+    config,
+  };
+  if (await handleApi(req, res, apiCtx)) {
     return;
   }
 
@@ -242,6 +121,14 @@ const server = http.createServer(async (req, res) => {
     urlPath === '/admin-theme.js' ||
     urlPath === '/client-nav.js' ||
     urlPath === '/Client_Alternative.js' ||
+    urlPath === '/membership-page-pricing.js' ||
+    urlPath === '/admin-membership-pricing.js' ||
+    urlPath === '/upcoming-events-home.js' ||
+    urlPath === '/admin-marketing.js' ||
+    urlPath === '/admin-popular-times.js' ||
+    urlPath === '/availability-popular-times.js' ||
+    urlPath === '/admin-membership-specials.js' ||
+    urlPath === '/membership-specials-display.js' ||
     urlPath === '/membership-pricing-lightbox.js'
   ) {
     const staticPath = path.join(__dirname, 'static', path.basename(urlPath));
