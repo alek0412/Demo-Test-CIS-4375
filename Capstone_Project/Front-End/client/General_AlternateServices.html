@@ -10,12 +10,30 @@
   <link rel="stylesheet" href="../styles.css">
   <style>
     .hero { padding-top: 1.5rem; padding-bottom: 0.5rem; }
-    section.features { padding-top: 0.5rem; }
+    section.features {
+      padding-top: 0.5rem;
+      border-top: 2px solid #000;
+    }
     .alternate-images { display: flex; flex-direction: column; gap: 3rem; }
     .alternate-images img { width: 100%; height: auto; display: block; }
     .alternate-block { display: flex; flex-direction: column; gap: 1rem; text-align: center; }
     .alternate-block h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); margin: 0; }
     .alternate-block .desc { color: var(--text-muted); font-size: 0.9375rem; line-height: 1.55; margin: 0 auto; white-space: nowrap; }
+    .alternate-block--table-tennis .desc { white-space: normal; max-width: 42rem; }
+    .reach-out--tt .tt-coach-name {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: #0c2d3d;
+      margin: 0 0 0.65rem;
+      text-align: left;
+    }
+    .reach-out--tt .tt-coach-bio {
+      margin: 0 0 1rem;
+      font-size: 0.9375rem;
+      line-height: 1.55;
+      color: #0c2d3d;
+      text-align: left;
+    }
     .same-width-row { display: flex; flex-direction: column; gap: 2rem; }
     .same-width-row img { width: 100%; max-width: 100%; height: auto; display: block; }
     .alternate-images > .alternate-block:first-child .same-width-row img { border-radius: var(--radius) var(--radius) 0 0; border: 4px solid #88dcf8; border-bottom: none; }
@@ -34,6 +52,70 @@
     .reach-out .btn-email:hover { background: var(--accent-hover); }
     .reach-out--trainers .btn-email { background: #001f3f; }
     .reach-out--trainers .btn-email:hover { background: #003366; }
+    .reach-out--tt {
+      background: #98d8ef;
+      border-color: #7bb8d0;
+      margin-top: 1rem;
+      text-align: left;
+      position: relative;
+      padding-top: 1.25rem;
+      padding-right: 1.25rem;
+      padding-bottom: 1.25rem;
+      padding-left: 1.25rem;
+    }
+    .reach-out--tt p, .reach-out--tt li { color: #0c2d3d; }
+    .reach-out--tt h3 { font-size: 0.9375rem; font-weight: 700; margin: 1rem 0 0.4rem; color: #0c2d3d; }
+    .reach-out--tt ul { margin: 0 0 0.85rem; padding-left: 1.2rem; font-size: 0.9375rem; line-height: 1.5; }
+    .reach-out--tt .rates-list { list-style: none; padding-left: 0; }
+    .reach-out--tt .rates-list li { margin-bottom: 0.35rem; }
+    .reach-out--tt .contact-prompt { margin: 1rem 0 0.5rem; font-weight: 600; text-align: center; }
+    .reach-out--tt .tt-coach-photo-wrap {
+      margin: 0;
+    }
+    .reach-out--tt .tt-coach-photo-wrap img {
+      display: block;
+      width: 19rem;
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(12, 45, 61, 0.22);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    @media (min-width: 520px) {
+      .reach-out--tt {
+        padding-right: 22.5rem;
+      }
+      .reach-out--tt .tt-coach-photo-wrap {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 19rem;
+      }
+    }
+    @media (max-width: 519px) {
+      .reach-out--tt .tt-coach-photo-wrap {
+        float: right;
+        width: 14rem;
+        margin: 0 0 0.5rem 0.75rem;
+      }
+      .reach-out--tt .tt-coach-photo-wrap img {
+        width: 100%;
+      }
+      .reach-out--tt::after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+    }
+    a.btn-call-me {
+      display: block; width: 100%; max-width: 14rem; margin: 0.75rem auto 0; padding: 0.55rem 1.25rem;
+      font-family: inherit; font-size: 0.9375rem; font-weight: 700; text-align: center;
+      background: #66ff66; color: #14532d; border: none; border-radius: 999px; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+    a.btn-call-me:hover { filter: brightness(0.97); }
     .alternate-images > .alternate-block:last-child .minami-row { margin-top: -1rem; }
     .alternate-images > .alternate-block:last-child .same-width-row img,
     .alternate-images > .alternate-block:last-child .minami-row img { border: 4px solid #8fbc8f; }
@@ -46,6 +128,51 @@
     .minami-email { font-size: 0.875rem; margin: -0.5rem 0 1rem; }
     .minami-email a { color: var(--accent); text-decoration: none; }
     .minami-email a:hover { text-decoration: underline; }
+    .foundations-flyer-block { text-align: center; }
+    .foundations-flyer-wrap {
+      width: 100%;
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 0.75rem;
+      box-sizing: border-box;
+      border: 2px solid #6d28d9;
+      border-radius: var(--radius);
+      background: var(--bg-card);
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .foundations-flyer-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--radius-sm);
+    }
+    .foundations-register-row { margin: 0; }
+    a.btn-foundations-register {
+      display: inline-block;
+      padding: 0.65rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+    a.btn-foundations-register:hover { background: var(--accent-hover); }
+    .alternate-services-rule {
+      border: none;
+      border-top: 2px solid #000;
+      margin: 0;
+      width: 100vw;
+      max-width: none;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      box-sizing: border-box;
+    }
   </style>
 </head>
 <body>
@@ -54,7 +181,8 @@
       <nav>
         <a href="General_Dashboard.html" class="logo"><img src="../images/HBC.png" alt="Houston Badminton Center" class="logo-img"></a>
         <div class="nav-tabs">
-          <a href="General_Dashboard.html" class="nav-tab">Dashboard</a>
+          <a href="General_Dashboard.html" class="nav-tab">Home</a>
+          <a href="General_About.html" class="nav-tab">About Us</a>
           <a href="General_Availability.html" class="nav-tab">Availability</a>
           <a href="General_Membership.html" class="nav-tab">Membership</a>
           <a href="General_AlternateServices.html" class="nav-tab active">Alternate Services</a>
@@ -99,6 +227,40 @@
               <label for="session-message">Your message (e.g. session request)</label>
               <textarea id="session-message" placeholder="e.g. Hi, I'd like to schedule a training session. Please let me know your availability."></textarea>
               <button type="button" class="btn-email" id="open-email">Send</button>
+            </div>
+          </div>
+          <div class="alternate-block foundations-flyer-block">
+            <div class="foundations-flyer-wrap">
+              <img src="../images/Master-the-Foundations-Badminton-Flyer.png" width="680" height="1024" alt="Master the Foundations of Badminton — Twin Tigers at Houston Badminton Center. Six 1.5-hour group classes for $99.">
+              <p class="foundations-register-row">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScrkLc1Se8C01zYwDfgheq4_fKnRowRNvnwoA7P8yBK_KJVcw/viewform" class="btn-foundations-register" target="_blank" rel="noopener noreferrer">Click to Registar!</a>
+              </p>
+            </div>
+          </div>
+          <hr class="alternate-services-rule" aria-hidden="true">
+          <div class="alternate-block alternate-block--table-tennis">
+            <h2>Table Tennis Training</h2>
+            <p class="desc">Private lessons with Coach Wang at Houston Badminton Center — all ages and skill levels. Reach out to schedule a session or ask about availability.</p>
+            <div class="reach-out reach-out--tt">
+              <div class="tt-coach-photo-wrap">
+                <img src="../images/table-tennis-coach-katherine-wang.png" width="511" height="698" alt="Coach Katherine (Huijing) Wang in action, preparing a forehand strike during a table tennis match.">
+              </div>
+              <p class="tt-coach-name">Coach Katherine (Huijing) Wang.</p>
+              <p class="tt-coach-bio">Coach Wang was born and raised in China where she trained and coached in the city of Tianjin. She was a member of the China National Youth Table Tennis Team and later coached in Japan. She has won multiple tournaments during her career.</p>
+              <h3>Recent Achievements</h3>
+              <ul>
+                <li><strong>2012 US Open:</strong> Over-30 Women's Champion &amp; Women's Singles 2nd Place</li>
+                <li><strong>2010 US Open:</strong> Over-30 Women's Champion &amp; Women's Singles 3rd Place</li>
+                <li><strong>2008 Badger Open:</strong> Champion - Open Singles, Women's Singles &amp; Open Doubles. Defeated a male USA National team coach in Open Finals</li>
+                <li><strong>2008 Houston Open:</strong> Women's Singles &amp; Open Champion</li>
+              </ul>
+              <h3>Private Lesson Rates</h3>
+              <ul class="rates-list">
+                <li>Student coaching: $50/hour</li>
+                <li>Adult coaching: $60/hour</li>
+              </ul>
+              <p class="contact-prompt">For questions or to schedule a lesson, contact Coach Wang:</p>
+              <a href="tel:+12818189700" class="btn-call-me" aria-label="Call (281) 818-9700">Contact</a>
             </div>
           </div>
           <div class="alternate-block">

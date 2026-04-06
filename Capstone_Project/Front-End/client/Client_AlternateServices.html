@@ -10,7 +10,10 @@
   <link rel="stylesheet" href="../styles.css">
   <style>
     .hero { padding-top: 1.5rem; padding-bottom: 0.5rem; }
-    section.features { padding-top: 0.5rem; }
+    section.features {
+      padding-top: 0.5rem;
+      border-top: 2px solid #000;
+    }
     .alternate-images { display: flex; flex-direction: column; gap: 3rem; }
     .alternate-images img { width: 100%; height: auto; display: block; }
     .alternate-block { display: flex; flex-direction: column; gap: 1rem; text-align: center; }
@@ -46,6 +49,41 @@
     .minami-email { font-size: 0.875rem; margin: -0.5rem 0 1rem; }
     .minami-email a { color: var(--accent); text-decoration: none; }
     .minami-email a:hover { text-decoration: underline; }
+    .foundations-flyer-block { text-align: center; }
+    .foundations-flyer-wrap {
+      width: 100%;
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 0.75rem;
+      box-sizing: border-box;
+      border: 2px solid #6d28d9;
+      border-radius: var(--radius);
+      background: var(--bg-card);
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .foundations-flyer-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--radius-sm);
+    }
+    .foundations-register-row { margin: 0; }
+    a.btn-foundations-register {
+      display: inline-block;
+      padding: 0.65rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+    a.btn-foundations-register:hover { background: var(--accent-hover); }
   </style>
 </head>
 <body>
@@ -101,6 +139,14 @@
               <label for="session-message">Your message (e.g. session request)</label>
               <textarea id="session-message" placeholder="e.g. Hi, I'd like to schedule a training session. Please let me know your availability."></textarea>
               <button type="button" class="btn-email" id="open-email">Send</button>
+            </div>
+          </div>
+          <div class="alternate-block foundations-flyer-block">
+            <div class="foundations-flyer-wrap">
+              <img src="../images/Master-the-Foundations-Badminton-Flyer.png" width="680" height="1024" alt="Master the Foundations of Badminton — Twin Tigers at Houston Badminton Center. Six 1.5-hour group classes for $99.">
+              <p class="foundations-register-row">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScrkLc1Se8C01zYwDfgheq4_fKnRowRNvnwoA7P8yBK_KJVcw/viewform" class="btn-foundations-register" target="_blank" rel="noopener noreferrer">Click to Registar!</a>
+              </p>
             </div>
           </div>
           <div class="alternate-block">
