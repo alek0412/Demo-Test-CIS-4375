@@ -20,7 +20,7 @@ def create_employee():
         hex_salt=salt.hex()
         stripped_first="".join(list(filter(lambda x:x.isalpha() and x.isascii()),first_name))
         stripped_last="".join(list(filter(lambda x:x.isalpha() and x.isascii()),last_name))
-        email=f"{stripped_first}.{stripped_last}@hbcstaff.com"
+        email=f"{stripped_first}.{stripped_last}@hbcstaff.com".lower()
         query_tuple=(last_name,first_name,email,phone,2,hashed_password,hex_salt)
         employee_query=sql_functions.execute_query(sql_connection,"insert into employee (employee_last_name,employee_first_name,employee_email,employee_phone,employee_rank,employee_password,employee_salt)",query_tuple)
         if type(employee_query)==int:
