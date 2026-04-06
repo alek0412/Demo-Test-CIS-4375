@@ -9,6 +9,7 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
     sendPasswordResetEmail,
     CUSTOMER_EMAIL,
     CUSTOMER_PASSWORD,
+    CUSTOMER_PREVIEW_LOGIN,
     CUSTOMER_SESSION_VALUE,
   } = ctx;
 
@@ -27,7 +28,8 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
       email,
       password,
       CUSTOMER_EMAIL,
-      CUSTOMER_PASSWORD
+      CUSTOMER_PASSWORD,
+      CUSTOMER_PREVIEW_LOGIN
     );
     if (valid) {
       res.writeHead(200, {

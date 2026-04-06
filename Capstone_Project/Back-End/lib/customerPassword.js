@@ -47,9 +47,13 @@ async function findCustomerByResetToken(token) {
 /**
  * @param {string} envEmail
  * @param {string} envPassword
+ * @param {boolean} [previewOnly] — if true, skip DB; match env email/password only (local UI preview)
  */
-async function validateCustomerLogin(email, password, envEmail, envPassword) {
+async function validateCustomerLogin(email, password, envEmail, envPassword, previewOnly) {
   const normalized = normalizeEmail(email);
+  if (previewOnly) {
+    return normalized === normalizeEmail(envEmail) && password === envPassword;
+  }
   const row = await findCustomerByEmail(normalized);
   if (row && row.pwd) {
     try {

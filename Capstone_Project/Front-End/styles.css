@@ -34,6 +34,22 @@ main {
   flex: 1;
 }
 
+/* Text fields — white backgrounds site-wide */
+input[type='text'],
+input[type='email'],
+input[type='tel'],
+input[type='password'],
+input[type='number'],
+input[type='search'],
+input[type='url'],
+input[type='date'],
+input[type='time'],
+input[type='datetime-local'],
+textarea,
+select {
+  background-color: #ffffff;
+}
+
 .page-title-bar {
   flex: 1;
   display: flex;
@@ -482,6 +498,80 @@ header .nav-tab:hover {
   }
 }
 
+/* About page — gallery carousel (3 images per slide; reuses event-carousel nav) */
+.about-gallery-carousel-mount.event-cards--carousel {
+  max-width: 960px;
+}
+
+.about-gallery-carousel .event-carousel__slide {
+  align-items: stretch;
+}
+
+/* Avoid 1px-tall viewport before images/layout settle (JS then sets exact height). */
+.about-gallery-carousel .event-carousel__viewport {
+  min-height: 12rem;
+}
+
+.about-gallery-slide-inner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.about-gallery-item {
+  margin: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #e5e7eb;
+  aspect-ratio: 4 / 3;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.about-gallery-item__open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+  border-radius: inherit;
+  font: inherit;
+}
+
+.about-gallery-item__open img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.about-gallery-slide-inner--partial .about-gallery-item:only-child {
+  grid-column: 1 / -1;
+  max-width: min(33.333%, 280px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-gallery-single .about-gallery-slide-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .about-gallery-slide-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .about-gallery-slide-inner--partial .about-gallery-item:only-child {
+    max-width: 100%;
+  }
+}
+
 .event-image-card {
   margin: 0;
   padding: 0;
@@ -858,6 +948,59 @@ body.event-image-lightbox-open {
 
 .email-compose-fallback a:hover {
   color: var(--accent-hover);
+}
+
+/* Membership actions — suspension / termination (Membership page) */
+.contact-membership-actions {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.contact-membership-actions h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.contact-membership-actions p {
+  margin: 0 0 1rem;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.contact-membership-actions p strong {
+  color: var(--text-primary);
+}
+
+.contact-membership-actions a.btn-membership-form {
+  display: inline-block;
+  padding: 0.6rem 1.15rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-family: inherit;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  border: none;
+}
+
+.contact-membership-actions a.btn-membership-form:hover {
+  background: var(--accent-hover);
+}
+
+.membership-pricing-figure + .contact-membership-actions {
+  margin-top: 1.5rem;
 }
 
 /* Membership — pricing sheet thumbnail & zoom lightbox */

@@ -31,7 +31,12 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@example.com';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
 
-// Customer login — set CUSTOMER_EMAIL and CUSTOMER_PASSWORD in .env (required for production; optional dev default below)
+// Customer login — preview mode: env-only, no DB (set CUSTOMER_PREVIEW_LOGIN=0 to use DB bcrypt)
+const _pv = process.env.CUSTOMER_PREVIEW_LOGIN;
+const CUSTOMER_PREVIEW_LOGIN =
+  _pv === undefined || _pv === ''
+    ? true
+    : !['0', 'false', 'no'].includes(String(_pv).toLowerCase().trim());
 const CUSTOMER_EMAIL = (process.env.CUSTOMER_EMAIL || 'alekespi0412@gmail.com').trim().toLowerCase();
 const CUSTOMER_PASSWORD = process.env.CUSTOMER_PASSWORD || 'Espi22735@';
 
@@ -93,6 +98,7 @@ const server = http.createServer(async (req, res) => {
     ADMIN_PASSWORD,
     CUSTOMER_EMAIL,
     CUSTOMER_PASSWORD,
+    CUSTOMER_PREVIEW_LOGIN,
     CUSTOMER_SESSION_VALUE,
     customerPassword,
     sendPasswordResetEmail,
@@ -124,6 +130,7 @@ const server = http.createServer(async (req, res) => {
     urlPath === '/membership-page-pricing.js' ||
     urlPath === '/admin-membership-pricing.js' ||
     urlPath === '/upcoming-events-home.js' ||
+    urlPath === '/gallery-about.js' ||
     urlPath === '/admin-marketing.js' ||
     urlPath === '/admin-popular-times.js' ||
     urlPath === '/availability-popular-times.js' ||

@@ -30,8 +30,8 @@
     .reach-out--trainers p { color: #001f3f; font-weight: bold; }
     .reach-out label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; }
     .reach-out--trainers label { color: #001f3f; font-weight: bold; }
-    .reach-out select, .reach-out input[readonly], .reach-out input[type="email"], .reach-out #coach-email, .reach-out #minami-to, .reach-out textarea { width: 100%; padding: 0.5rem 0.75rem; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 1rem; box-sizing: border-box; min-height: 2.5rem; }
-    .reach-out #coach-email[readonly], .reach-out #minami-to, .reach-out input[readonly] { background: var(--bg-dark); color: var(--text-muted); }
+    .reach-out select, .reach-out input[readonly], .reach-out input[type="email"], .reach-out #coach-email, .reach-out #minami-to, .reach-out textarea { width: 100%; padding: 0.5rem 0.75rem; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 1rem; box-sizing: border-box; min-height: 2.5rem; background: #ffffff; color: var(--text-primary); }
+    .reach-out #coach-email[readonly], .reach-out #minami-to, .reach-out input[readonly] { background: #ffffff; color: var(--text-muted); }
     .reach-out textarea { min-height: 100px; resize: vertical; }
     .reach-out .btn-email { display: block; width: 100%; padding: 0.65rem 1rem; font-size: 0.9375rem; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; margin-top: 0.5rem; }
     .reach-out .btn-email:hover { background: var(--accent-hover); }
@@ -84,6 +84,16 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     }
     a.btn-foundations-register:hover { background: var(--accent-hover); }
+    .alternate-services-rule {
+      border: none;
+      border-top: 2px solid #000;
+      margin: 0;
+      width: 100vw;
+      max-width: none;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      box-sizing: border-box;
+    }
   </style>
 </head>
 <body>
@@ -93,6 +103,7 @@
         <a href="Client_Dashboard.html" class="logo"><img src="../images/HBC.png" alt="Houston Badminton Center" class="logo-img"></a>
         <div class="nav-tabs">
           <a href="Client_Dashboard.html" class="nav-tab">Dashboard</a>
+          <a href="Client_About.html" class="nav-tab">About Us</a>
           <a href="Client_Availability.html" class="nav-tab">Availability</a>
           <a href="Client_Bookings.html" class="nav-tab">My Bookings</a>
           <a href="Client_Membership.html" class="nav-tab">Membership</a>
@@ -149,6 +160,7 @@
               </p>
             </div>
           </div>
+          <hr class="alternate-services-rule" aria-hidden="true">
           <div class="alternate-block">
             <h2>Minami Massage</h2>
             <p class="desc">Licensed massage therapy and Reiki at the center. Feel better, play better — full body and chair massage available.</p>

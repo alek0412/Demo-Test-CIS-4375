@@ -1,6 +1,12 @@
 # macOS
 .DS_Store
 
+# Dependencies
+node_modules/
+
+# User uploads (runtime)
+Capstone_Project/Front-End/uploads/
+
 # Environment (never commit secrets)
 *.env
 *.env.local
