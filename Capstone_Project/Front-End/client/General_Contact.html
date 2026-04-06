@@ -147,32 +147,12 @@
       text-align: center;
       box-shadow: 0 1px 3px rgba(66, 133, 244, 0.12);
     }
-    .reach-out .contact-location-status {
-      padding: 0.75rem 0.85rem;
-      border-radius: var(--radius-sm);
-      background: #fff;
-      border: 1px solid #dadce0;
-      margin-bottom: 0.75rem;
+    .reach-out .contact-location-map-intro {
+      margin: 0 0 0.85rem;
       font-size: 0.875rem;
       line-height: 1.5;
-      text-align: left;
-      color: #202124;
-    }
-    .reach-out .contact-location-status.is-ok {
-      background: #e6f4ea;
-      border-color: #34a853;
-      color: #137333;
-    }
-    .reach-out .contact-location-status.is-warn {
-      background: #fef7e0;
-      border-color: #fbbc04;
-      color: #b06000;
-    }
-    .reach-out .contact-location-distance {
-      font-size: 1.0625rem;
-      font-weight: 600;
-      margin: 0 0 0.75rem;
-      color: #137333;
+      color: #5f6368;
+      text-align: center;
     }
     .reach-out .contact-location-actions {
       display: flex;
@@ -225,13 +205,6 @@
       height: 100%;
       border: 0;
     }
-    .reach-out .contact-location-note {
-      margin: 0.5rem 0 0;
-      font-size: 0.75rem;
-      color: #5f6368;
-      line-height: 1.45;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
@@ -281,24 +254,27 @@
             <div id="contact-location-panel" class="contact-location-panel">
               <div class="contact-location-panel-inner">
                 <div class="contact-location-wrap">
-                  <div id="contact-location-status" class="contact-location-status" role="status">
-                    Tap <strong>Location</strong> above to open this section. We only ask for your location <em>after</em> you expand it, so you can see distance from where you are.
-                  </div>
-                  <p id="contact-location-distance" class="contact-location-distance" hidden></p>
+                  <p class="contact-location-map-intro">
+                    Greater Houston area — the pin is our facility in Stafford (southwest of downtown).
+                  </p>
                   <div class="contact-location-actions">
                     <a
                       id="contact-directions-generic"
                       class="btn-contact-maps btn-contact-maps-secondary"
-                      href="https://www.google.com/maps/dir/?api=1&amp;destination=10550%20West%20Airport%20Blvd%2C%20Stafford%2C%20TX%2077477"
+                      href="https://www.google.com/maps/dir/?api=1&amp;origin=&amp;destination=10550%20West%20Airport%20Blvd%2C%20Stafford%2C%20TX%2077477"
                       data-address="10550 West Airport Blvd, Stafford, TX 77477"
                       target="_blank"
                       rel="noopener noreferrer"
                     >Open in Google Maps</a>
                   </div>
-                  <div class="contact-map-embed" aria-hidden="true">
-                    <iframe title="Map of Houston Badminton Center" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=10550+West+Airport+Blvd%2C+Stafford%2C+TX+77477&amp;hl=en&amp;z=14&amp;output=embed"></iframe>
+                  <div class="contact-map-embed">
+                    <iframe
+                      title="Map of greater Houston — Houston Badminton Center in Stafford"
+                      loading="lazy"
+                      referrerpolicy="no-referrer-when-downgrade"
+                      src="https://maps.google.com/maps?q=10550+West+Airport+Blvd%2C+Stafford%2C+TX+77477&amp;hl=en&amp;z=10&amp;output=embed"
+                    ></iframe>
                   </div>
-                  <p class="contact-location-note">Your location stays in your browser—we do not send it to our server.</p>
                 </div>
               </div>
             </div>
@@ -321,92 +297,12 @@
   <script src="/Client_Alternative.js"></script>
   <script>
     (function () {
-      var HBC_LAT = 29.63635;
-      var HBC_LNG = -95.58855;
-      var DEST_ENCODED = encodeURIComponent('10550 West Airport Blvd, Stafford, TX 77477');
-      var statusEl = document.getElementById('contact-location-status');
-      var distEl = document.getElementById('contact-location-distance');
       var mapLink = document.getElementById('contact-map-link');
       var panel = document.getElementById('contact-location-panel');
-      var directionsBtn = document.getElementById('contact-directions-generic');
-      if (!statusEl || !distEl || !mapLink || !panel || !directionsBtn) return;
-
-      function haversineMiles(lat1, lon1, lat2, lon2) {
-        var R = 3958.7613;
-        var r1 = (lat1 * Math.PI) / 180;
-        var r2 = (lat2 * Math.PI) / 180;
-        var dLat = ((lat2 - lat1) * Math.PI) / 180;
-        var dLon = ((lon2 - lon1) * Math.PI) / 180;
-        var a =
-          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-          Math.cos(r1) * Math.cos(r2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-      }
-      function formatMi(m) {
-        return m < 10 ? m.toFixed(1) : String(Math.round(m));
-      }
-
-      function applyUserOrigin(lat, lng) {
-        var o = lat + ',' + lng;
-        directionsBtn.setAttribute('data-user-origin', o);
-        directionsBtn.href =
-          'https://www.google.com/maps/dir/?api=1&origin=' +
-          encodeURIComponent(o) +
-          '&destination=' +
-          DEST_ENCODED;
-        var mi = haversineMiles(lat, lng, HBC_LAT, HBC_LNG);
-        distEl.innerHTML =
-          'About ' +
-          formatMi(mi) +
-          ' mi away (straight line). Use <strong>Open in Google Maps</strong> for driving distance.';
-        distEl.hidden = false;
-        statusEl.className = 'contact-location-status is-ok';
-        statusEl.innerHTML =
-          'Your location is set. Use <strong>Open in Google Maps</strong> for driving directions from where you are.';
-      }
-
-      function onGeoFail(err) {
-        statusEl.className = 'contact-location-status is-warn';
-        var msg =
-          'We could not read your location. You can still use the map below and <strong>Open in Google Maps</strong>.';
-        if (err && err.code === 1) {
-          msg =
-            'Location was blocked. Allow location for this site if you want distance from you; otherwise use <strong>Open in Google Maps</strong> and enter your start point.';
-        }
-        statusEl.innerHTML = msg;
-      }
-
-      var geoOpts = { enableHighAccuracy: true, timeout: 20000, maximumAge: 120000 };
-      var geoRequestStarted = false;
-
-      function requestGeoWhenPanelOpens() {
-        if (geoRequestStarted) return;
-        geoRequestStarted = true;
-        if (!navigator.geolocation) {
-          statusEl.className = 'contact-location-status is-warn';
-          statusEl.innerHTML =
-            'This browser does not support location. Use <strong>Open in Google Maps</strong> to get directions.';
-          return;
-        }
-        statusEl.className = 'contact-location-status';
-        statusEl.innerHTML =
-          'Checking your location… If your browser asks, choose <strong>Allow</strong> to see how far you are from the center.';
-        navigator.geolocation.getCurrentPosition(
-          function (pos) {
-            applyUserOrigin(pos.coords.latitude, pos.coords.longitude);
-          },
-          onGeoFail,
-          geoOpts
-        );
-      }
-
+      if (!mapLink || !panel) return;
       mapLink.addEventListener('click', function () {
         var open = panel.classList.toggle('is-open');
         mapLink.setAttribute('aria-expanded', open ? 'true' : 'false');
-        if (open) {
-          requestGeoWhenPanelOpens();
-        }
       });
     })();
   </script>

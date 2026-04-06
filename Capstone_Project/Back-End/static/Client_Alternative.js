@@ -146,20 +146,14 @@
     });
   }
 
-  /** Contact "Open in Google Maps" button: optional data-user-origin="lat,lng" = directions from user to HBC. */
+  /** Contact "Open in Google Maps": explicit empty origin= so the start field is not prefilled as "Your location". */
   var mapLink = document.getElementById('contact-directions-generic');
   if (mapLink) {
     mapLink.addEventListener('click', function (e) {
       var address =
         mapLink.getAttribute('data-address') || '10550 West Airport Blvd, Stafford, TX 77477';
       var dest = encodeURIComponent(address);
-      var origin = mapLink.getAttribute('data-user-origin');
-      var webUrl = origin
-        ? 'https://www.google.com/maps/dir/?api=1&origin=' +
-          encodeURIComponent(origin) +
-          '&destination=' +
-          dest
-        : 'https://www.google.com/maps/dir/?api=1&destination=' + dest;
+      var webUrl = 'https://www.google.com/maps/dir/?api=1&origin=&destination=' + dest;
       var ua = navigator.userAgent || '';
       var isAndroid = /Android/i.test(ua);
       var isApple =
@@ -170,41 +164,14 @@
 
       if (isApple) {
         e.preventDefault();
-        var appUrl = origin
-          ? 'comgooglemaps://?saddr=' +
-            encodeURIComponent(origin) +
-            '&daddr=' +
-            dest +
-            '&directionsmode=driving'
-          : 'comgooglemaps://?daddr=' + dest + '&directionsmode=driving';
-        var fallbackTimer = setTimeout(function () {
-          window.location.href = webUrl;
-        }, 1500);
-        function clearFallback() {
-          clearTimeout(fallbackTimer);
-        }
-        window.addEventListener('pagehide', clearFallback, { once: true });
-        document.addEventListener(
-          'visibilitychange',
-          function onVis() {
-            if (document.visibilityState === 'hidden') {
-              clearFallback();
-              document.removeEventListener('visibilitychange', onVis);
-            }
-          },
-          false
-        );
-        window.location.href = appUrl;
+        window.open(webUrl, '_blank', 'noopener,noreferrer');
         return;
       }
 
       if (isAndroid) {
         e.preventDefault();
         var intentPath =
-          'intent://www.google.com/maps/dir/?api=1' +
-          (origin ? '&origin=' + encodeURIComponent(origin) : '') +
-          '&destination=' +
-          dest;
+          'intent://www.google.com/maps/dir/?api=1&origin=&destination=' + dest;
         var intentUrl =
           intentPath +
           '#Intent;scheme=https;package=com.google.android.apps.maps;S.browser_fallback_url=' +
