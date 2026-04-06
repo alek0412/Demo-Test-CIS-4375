@@ -1,5 +1,6 @@
 import flask
 import dotenv
+import waitress
 from os import environ
 from routes.customer import customer_blueprint
 from routes.employee import employee_blueprint
@@ -11,4 +12,4 @@ flask_server.permanent_session_lifetime=timedelta(days=7)
 flask_server.register_blueprint(customer_blueprint)
 flask_server.register_blueprint(employee_blueprint)
 if __name__ =="__main__":
-    flask_server.run(port=3000,debug=True)
+    waitress.serve(flask_server,port=3000)
