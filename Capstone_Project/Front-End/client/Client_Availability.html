@@ -83,9 +83,11 @@
       <div class="container">
         <h2>Availability</h2>
         <p class="availability-intro" style="color: var(--text-muted); text-align: center;">See our most popular times and decide what works best for you.</p>
-        <div class="availability-pdf">
-          <div class="pdf-canvas-wrap">
-            <div class="pdf-canvas-inner" id="popular-times-pdf"></div>
+        <div id="availability-popular-times-root">
+          <div class="availability-pdf">
+            <div class="pdf-canvas-wrap">
+              <div class="pdf-canvas-inner" id="popular-times-pdf"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -97,37 +99,7 @@
       <p>© 2026 Houston Badminton Center. All rights reserved.</p>
     </div>
   </footer>
-  <script>
-    (function() {
-      if (typeof pdfjsLib === 'undefined') return;
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      var url = '../images/Popular-Times-at-HBC.pdf';
-      var container = document.getElementById('popular-times-pdf');
-      if (!container) return;
-      var maxWidth = 960;
-      var dpr = Math.min(window.devicePixelRatio || 1, 2.5);
-      function renderPage(pdf, pageNum) {
-        pdf.getPage(pageNum).then(function(page) {
-          var baseScale = page.getViewport({ scale: 1 });
-          var scale = (maxWidth / baseScale.width) * dpr;
-          var viewport = page.getViewport({ scale: scale });
-          var canvas = document.createElement('canvas');
-          var ctx = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-          canvas.style.width = (viewport.width / dpr) + 'px';
-          canvas.style.height = (viewport.height / dpr) + 'px';
-          container.appendChild(canvas);
-          page.render({ canvasContext: ctx, viewport: viewport });
-        });
-      }
-      pdfjsLib.getDocument(url).promise.then(function(pdf) {
-        for (var i = 1; i <= pdf.numPages; i++) renderPage(pdf, i);
-      }).catch(function() {
-        container.innerHTML = '<p style="color: var(--text-muted);">Unable to load PDF. <a href="../images/Popular-Times-at-HBC.pdf">Open PDF</a></p>';
-      });
-    })();
-  </script>
+  <script src="/availability-popular-times.js"></script>
   <script src="/client-nav.js"></script>
 </body>
 </html>

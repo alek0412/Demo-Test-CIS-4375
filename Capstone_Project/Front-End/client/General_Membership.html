@@ -220,11 +220,11 @@
         </div>
         <div class="specials-box" id="specials-box" role="button" tabindex="0" aria-expanded="false" aria-label="View current specials">
           <div class="specials-teaser">
-            <span class="teaser-closed">Click here to see our specials!</span>
+            <span class="teaser-closed" id="membership-specials-teaser-closed">Click here to see our specials!</span>
             <span class="teaser-open">Specials</span>
           </div>
           <div class="specials-content">
-            <div class="specials-inner">
+            <div class="specials-inner" id="membership-specials-inner">
               <p><strong>Weekend Happy Hour</strong><br>Saturday and Sunday after 7PM<br>$3 OFF Regular Drop-in Fees<br>Members can bring first-time guests for free</p>
               <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.35); margin: 0.75rem 0;">
               <p style="margin-top: 1rem;"><strong>Day Pass Package</strong><br>Buy nine day passes and get one free!<br><span style="color: rgba(255, 255, 255, 0.85); font-size: 0.9375rem;">(Day passes do not expire)</span></p>
@@ -232,7 +232,7 @@
           </div>
         </div>
         <figure class="membership-pricing-figure">
-          <img id="pricing-sheet-thumb" class="membership-pricing-img" src="../images/HBC_Pricing_Sheet.png" alt="Houston Badminton Center — Pricing: membership, drop-in day passes, court reservations, locker rentals">
+          <div id="membership-pricing-asset-host"></div>
           <figcaption class="membership-pricing-hint">Click the image to zoom in. Use the × in the top-right or press Escape to close.</figcaption>
         </figure>
       </div>
@@ -261,7 +261,8 @@
       });
     })();
   </script>
-  <script src="/membership-pricing-lightbox.js"></script>
+  <script src="/membership-specials-display.js"></script>
+  <script src="/membership-page-pricing.js"></script>
   <script src="/client-nav.js"></script>
 </body>
 </html>

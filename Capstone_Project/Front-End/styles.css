@@ -307,11 +307,373 @@ header .nav-tab:hover {
 
 .event-cards {
   display: grid;
-  gap: 1rem;
-  max-width: 720px;
+  align-items: start;
+  gap: 1.25rem;
+  max-width: 960px;
   margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+/* Upcoming events: layout scales with number of images (set by upcoming-events-home.js) */
+.event-cards.event-cards--count-1 {
+  max-width: 640px;
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.event-cards.event-cards--count-1 .event-image-card {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.event-cards.event-cards--count-2 {
+  max-width: 880px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.event-cards.event-cards--count-3 {
+  max-width: 960px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.event-cards.event-cards--count-4 {
+  max-width: 1000px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.event-cards.event-cards--count-5,
+.event-cards.event-cards--count-6 {
+  max-width: 1100px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+/* Upcoming events: carousel when 2+ images */
+.event-cards.event-cards--carousel {
+  display: block;
+  max-width: 640px;
+}
+
+.event-carousel {
+  width: 100%;
+}
+
+.event-carousel__viewport {
+  overflow: hidden;
+  width: 100%;
+  border-radius: var(--radius);
+  transition: height 0.35s ease;
+}
+
+.event-carousel__track {
+  --event-slide-count: 1;
+  display: flex;
+  align-items: flex-start;
+  width: calc(var(--event-slide-count) * 100%);
+  will-change: transform;
+}
+
+.event-carousel__slide {
+  display: flex;
+  justify-content: center;
+  flex: 0 0 calc(100% / var(--event-slide-count));
+  min-width: 0;
+}
+
+.event-carousel__slide .event-image-card__frame {
+  border-radius: var(--radius);
+}
+
+.event-carousel__nav {
+  display: grid;
+  grid-template-columns: minmax(2.75rem, 1fr) auto minmax(2.75rem, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.event-carousel__nav-slot {
+  display: flex;
+  align-items: center;
+}
+
+.event-carousel__nav-slot--prev {
+  justify-content: flex-start;
+}
+
+.event-carousel__nav-slot--next {
+  justify-content: flex-end;
+}
+
+.event-carousel__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.event-carousel__arrow:hover {
+  border-color: rgba(185, 28, 28, 0.35);
+  background: rgba(185, 28, 28, 0.06);
+  color: var(--accent);
+}
+
+.event-carousel__arrow:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.event-carousel__arrow svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.event-carousel__arrow[hidden] {
+  display: none;
+}
+
+.event-carousel__dots {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.event-carousel__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.event-carousel__dot:hover {
+  background: var(--text-muted);
+}
+
+.event-carousel__dot.is-active {
+  background: var(--accent);
+  transform: scale(1.15);
+}
+
+.event-carousel__dot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .event-carousel__track {
+    transition: none !important;
+  }
+
+  .event-carousel__viewport {
+    transition: none !important;
+  }
+}
+
+.event-image-card {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.event-image-card__frame {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Empty slot: stable placeholder size. With an image, height follows the image aspect ratio */
+.event-image-card__frame:has(.event-image-card__placeholder) {
+  aspect-ratio: 4 / 3;
+  min-height: 140px;
+}
+
+.event-image-card:hover .event-image-card__frame {
+  border-color: rgba(185, 28, 28, 0.2);
+  box-shadow: var(--shadow-md);
+}
+
+.event-image-card__open {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+  border-radius: inherit;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.event-image-card__open:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.event-image-card__open .event-image-card__img {
+  pointer-events: none;
+}
+
+.event-image-card__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Upcoming events: frame hugs image width (no empty side gutters on tall/narrow photos) */
+.event-cards .event-image-card__frame:has(.event-image-card__img) {
+  width: fit-content;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.event-cards .event-image-card__frame:has(.event-image-card__placeholder) {
+  width: 100%;
+}
+
+/* Upcoming events: cap height so tall vertical photos stay on screen (carousel + single) */
+.event-cards .event-image-card__open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  max-height: min(70vh, 42rem);
+}
+
+.event-cards .event-image-card__img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: min(70vh, 42rem);
+  object-fit: contain;
+}
+
+@supports (height: 1dvh) {
+  .event-cards .event-image-card__open {
+    max-height: min(75dvh, 42rem);
+  }
+
+  .event-cards .event-image-card__img {
+    max-height: min(75dvh, 42rem);
+  }
+}
+
+.event-image-card__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.03), rgba(185, 28, 28, 0.04));
+}
+
+@media (max-width: 480px) {
+  .event-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Upcoming events — click to enlarge */
+body.event-image-lightbox-open {
+  overflow: hidden;
+}
+
+.event-image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  margin: 0;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.88);
+  cursor: zoom-out;
+}
+
+.event-image-lightbox[hidden] {
+  display: none !important;
+}
+
+.event-image-lightbox__panel {
+  position: relative;
+  max-width: min(96vw, 1200px);
+  max-height: 90vh;
+  margin: auto;
+  cursor: default;
+}
+
+.event-image-lightbox__img {
+  display: block;
+  max-width: min(96vw, 1200px);
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+}
+
+.event-image-lightbox__close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  z-index: 2;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.event-image-lightbox__close:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.event-image-lightbox__close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+
+/* Legacy static event cards (text layout), if used on any page */
 .event-card {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -384,6 +746,8 @@ header .nav-tab:hover {
     border-bottom: 1px solid var(--border);
   }
 }
+
+
 
 /* Dashboard — FAQ */
 .features--faq h2 {
