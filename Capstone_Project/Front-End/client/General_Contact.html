@@ -232,6 +232,48 @@
       line-height: 1.45;
       text-align: center;
     }
+    .contact-membership-actions {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 1.25rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .contact-membership-actions h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    .contact-membership-actions p {
+      margin: 0 0 1rem;
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .contact-membership-actions p strong {
+      color: var(--text-primary);
+    }
+    .contact-membership-actions a.btn-membership-form {
+      display: inline-block;
+      padding: 0.6rem 1.15rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      border: none;
+    }
+    .contact-membership-actions a.btn-membership-form:hover {
+      background: var(--accent-hover);
+    }
   </style>
 </head>
 <body>
@@ -240,7 +282,8 @@
       <nav>
         <a href="General_Dashboard.html" class="logo"><img src="../images/HBC.png" alt="Houston Badminton Center" class="logo-img"></a>
         <div class="nav-tabs">
-          <a href="General_Dashboard.html" class="nav-tab">Dashboard</a>
+          <a href="General_Dashboard.html" class="nav-tab">Home</a>
+          <a href="General_About.html" class="nav-tab">About Us</a>
           <a href="General_Availability.html" class="nav-tab">Availability</a>
           <a href="General_Membership.html" class="nav-tab">Membership</a>
           <a href="General_AlternateServices.html" class="nav-tab">Alternate Services</a>
@@ -263,6 +306,16 @@
 
     <section class="features">
       <div class="container">
+        <div class="contact-membership-actions">
+          <h2>Membership Actions</h2>
+          <p>Use this form to request a <strong>suspension</strong> (temporary hold) or <strong>termination</strong> of your membership.</p>
+          <a
+            class="btn-membership-form"
+            href="https://docs.google.com/forms/d/e/1FAIpQLScq6geNUvUqirmi5MzF0fRtIF17vmfUG4JxV--DejGkdL-2yQ/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Open suspension / termination form</a>
+        </div>
         <div class="reach-out">
           <p class="intro">Have a question or concern? Send us a message below — or reach us using the address, email, or phone.</p>
           <div class="contact-details">
