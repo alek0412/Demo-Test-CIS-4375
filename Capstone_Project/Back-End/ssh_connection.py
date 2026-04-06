@@ -18,7 +18,4 @@ def ssh_hell():
     sql_connection=create_conn(environ['DB_USER'],environ['DB_PASSWORD'],environ['DB_NAME'],tunnel)
     return sql_connection
 
-def get_connection():
-    if sql_connection is None:
-        raise RuntimeError("SQL connection not initialized! Call ssh_hell() first.")
-    return sql_connection
+secure_connection=ssh_hell()

@@ -3,11 +3,11 @@ import sql_functions
 import datetime
 from flask import request,make_response,Blueprint,session
 from os import urandom
-from ssh_connection import ssh_hell
+from ssh_connection import secure_connection
 from dateutil.relativedelta import relativedelta
 
 customer_blueprint=Blueprint("customer",__name__,template_folder="templates")
-sql_connection=ssh_hell()
+sql_connection=secure_connection
 @customer_blueprint.route("/api/waiver-register",methods=["post"])
 def add_customer():
     request_json=request.get_json()
@@ -22,9 +22,9 @@ def add_customer():
         zip_code=request_json['zip_code']
         birthdate=request_json['birthdate']
         password=request_json['password']
-        query_tuple=(first_name,last_name,phone,email,street_address,city,state,zip_code)
-    except KeyError:
-        return make_response("Missing required parameters.",400)
+        query_tuple=(first_name,last_name,phone,email.lower(),street_address,city,state,zip_code)
+    except (KeyError,TypeError):
+        return make_response("Invalid parameters.",400)
     email_check=sql_functions.execute_read(sql_connection,"Select email from customer;")
     try:
         for database_email in email_check:
@@ -70,12 +70,18 @@ def customer_login():
     elif len(customer_query[0])==0:
         return make_response("Server cannot find your email",400)
     hashed_password=hashlib.pbkdf2_hmac('sha256',password.encode(encoding='utf-8'),bytes.fromhex(customer_query[0]['salt']),50000).hex()
-    if(hashed_password!=customer_query[0]['password']):
+    if hashed_password!=customer_query[0]['password'] or email.lower() != customer_query[0]['email']:
         return make_response("Invalid email or password",403)
+    #Purge employee in session
+    for attribute in session:
+        session.pop(attribute)
     for attribute in customer_query[0]:
-        session[attribute]=customer_query[0][attribute]
+        if attribute not in ["password","salt"]:
+            session[attribute]=customer_query[0][attribute]
+    session['password']=request_json['password']
     session['is_employee']=False
     session['is_manager']=False
+    session['is_customer']=True
     return make_response("Login successful!",200)
 
 @customer_blueprint.route("/api/customer-logout",methods=['post'])    
