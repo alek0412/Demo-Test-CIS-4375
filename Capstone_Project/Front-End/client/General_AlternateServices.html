@@ -25,7 +25,7 @@
       font-weight: 600;
       color: #0c2d3d;
       margin: 0 0 0.65rem;
-      text-align: left;
+      text-align: center;
     }
     .reach-out--tt .tt-coach-bio {
       margin: 0 0 1rem;
@@ -45,8 +45,8 @@
     .reach-out--trainers p { color: #001f3f; font-weight: bold; }
     .reach-out label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; }
     .reach-out--trainers label { color: #001f3f; font-weight: bold; }
-    .reach-out select, .reach-out input[readonly], .reach-out input[type="email"], .reach-out #coach-email, .reach-out #minami-to, .reach-out textarea { width: 100%; padding: 0.5rem 0.75rem; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 1rem; box-sizing: border-box; min-height: 2.5rem; }
-    .reach-out #coach-email[readonly], .reach-out #minami-to, .reach-out input[readonly] { background: var(--bg-dark); color: var(--text-muted); }
+    .reach-out select, .reach-out input[readonly], .reach-out input[type="email"], .reach-out #coach-email, .reach-out #minami-to, .reach-out textarea { width: 100%; padding: 0.5rem 0.75rem; font-family: inherit; font-size: 0.9375rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 1rem; box-sizing: border-box; min-height: 2.5rem; background: #ffffff; color: var(--text-primary); }
+    .reach-out #coach-email[readonly], .reach-out #minami-to, .reach-out input[readonly] { background: #ffffff; color: var(--text-muted); }
     .reach-out textarea { min-height: 100px; resize: vertical; }
     .reach-out .btn-email { display: block; width: 100%; padding: 0.65rem 1rem; font-size: 0.9375rem; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; margin-top: 0.5rem; }
     .reach-out .btn-email:hover { background: var(--accent-hover); }
@@ -57,18 +57,27 @@
       border-color: #7bb8d0;
       margin-top: 1rem;
       text-align: left;
-      position: relative;
       padding-top: 1.25rem;
       padding-right: 1.25rem;
       padding-bottom: 1.25rem;
       padding-left: 1.25rem;
+    }
+    .reach-out--tt .tt-coach-main {
+      min-width: 0;
     }
     .reach-out--tt p, .reach-out--tt li { color: #0c2d3d; }
     .reach-out--tt h3 { font-size: 0.9375rem; font-weight: 700; margin: 1rem 0 0.4rem; color: #0c2d3d; }
     .reach-out--tt ul { margin: 0 0 0.85rem; padding-left: 1.2rem; font-size: 0.9375rem; line-height: 1.5; }
     .reach-out--tt .rates-list { list-style: none; padding-left: 0; }
     .reach-out--tt .rates-list li { margin-bottom: 0.35rem; }
-    .reach-out--tt .contact-prompt { margin: 1rem 0 0.5rem; font-weight: 600; text-align: center; }
+    .reach-out--tt .contact-prompt { margin: 0.75rem 0 0.5rem; font-weight: 600; text-align: center; font-size: 0.875rem; line-height: 1.4; }
+    .reach-out--tt .tt-coach-aside .btn-call-me {
+      margin-top: 0.35rem;
+      margin-bottom: 0;
+      margin-left: 0;
+      margin-right: 0;
+      max-width: 100%;
+    }
     .reach-out--tt .tt-coach-photo-wrap {
       margin: 0;
     }
@@ -82,21 +91,38 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     @media (min-width: 520px) {
+      /* Grid: full-width centered name row, then bio | photo+contact */
       .reach-out--tt {
-        padding-right: 22.5rem;
+        display: grid;
+        grid-template-columns: 1fr 19rem;
+        gap: 1.25rem;
+        align-items: start;
       }
-      .reach-out--tt .tt-coach-photo-wrap {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        width: 19rem;
+      .reach-out--tt .tt-coach-name {
+        grid-column: 1 / -1;
+        margin-bottom: 0.35rem;
+      }
+      .reach-out--tt .tt-coach-aside {
+        grid-column: 2;
+        grid-row: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .reach-out--tt .tt-coach-main {
+        grid-column: 1;
+        grid-row: 2;
+        min-width: 0;
       }
     }
     @media (max-width: 519px) {
-      .reach-out--tt .tt-coach-photo-wrap {
+      .reach-out--tt .tt-coach-aside {
         float: right;
         width: 14rem;
-        margin: 0 0 0.5rem 0.75rem;
+        margin: 0 0 0.75rem 0.75rem;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
       }
       .reach-out--tt .tt-coach-photo-wrap img {
         width: 100%;
@@ -242,27 +268,32 @@
             <h2>Table Tennis Training</h2>
             <p class="desc">Private lessons with Coach Wang at Houston Badminton Center — all ages and skill levels. Reach out to schedule a session or ask about availability.</p>
             <div class="reach-out reach-out--tt">
-              <div class="tt-coach-photo-wrap">
-                <img src="../images/table-tennis-coach-katherine-wang.png" width="511" height="698" alt="Coach Katherine (Huijing) Wang in action, preparing a forehand strike during a table tennis match.">
-              </div>
               <p class="tt-coach-name">Coach Katherine (Huijing) Wang.</p>
-              <p class="tt-coach-bio">Coach Wang was born and raised in China where she trained and coached in the city of Tianjin. She was a member of the China National Youth Table Tennis Team and later coached in Japan. She has won multiple tournaments during her career.</p>
-              <h3>Recent Achievements</h3>
-              <ul>
-                <li><strong>2012 US Open:</strong> Over-30 Women's Champion &amp; Women's Singles 2nd Place</li>
-                <li><strong>2010 US Open:</strong> Over-30 Women's Champion &amp; Women's Singles 3rd Place</li>
-                <li><strong>2008 Badger Open:</strong> Champion - Open Singles, Women's Singles &amp; Open Doubles. Defeated a male USA National team coach in Open Finals</li>
-                <li><strong>2008 Houston Open:</strong> Women's Singles &amp; Open Champion</li>
-              </ul>
-              <h3>Private Lesson Rates</h3>
-              <ul class="rates-list">
-                <li>Student coaching: $50/hour</li>
-                <li>Adult coaching: $60/hour</li>
-              </ul>
-              <p class="contact-prompt">For questions or to schedule a lesson, contact Coach Wang:</p>
-              <a href="tel:+12818189700" class="btn-call-me" aria-label="Call (281) 818-9700">Contact</a>
+              <div class="tt-coach-aside">
+                <div class="tt-coach-photo-wrap">
+                  <img src="../images/table-tennis-coach-katherine-wang.png" width="511" height="698" alt="Coach Katherine (Huijing) Wang in action, preparing a forehand strike during a table tennis match.">
+                </div>
+                <p class="contact-prompt">For questions or to schedule a lesson, contact Coach Wang:</p>
+                <a href="tel:+12818189700" class="btn-call-me" aria-label="Call (281) 818-9700">Contact</a>
+              </div>
+              <div class="tt-coach-main">
+                <p class="tt-coach-bio">Coach Wang was born and raised in China where she trained and coached in the city of Tianjin. She was a member of the China National Youth Table Tennis Team and later coached in Japan. She has won multiple tournaments during her career.</p>
+                <h3>Recent Achievements</h3>
+                <ul>
+                  <li><strong>2012 US Open:</strong> Over-30 Women's Champion &amp; Women's Singles 2nd Place</li>
+                  <li><strong>2010 US Open:</strong> Over-30 Women's Champion &amp; Women's Singles 3rd Place</li>
+                  <li><strong>2008 Badger Open:</strong> Champion - Open Singles, Women's Singles &amp; Open Doubles. Defeated a male USA National team coach in Open Finals</li>
+                  <li><strong>2008 Houston Open:</strong> Women's Singles &amp; Open Champion</li>
+                </ul>
+                <h3>Private Lesson Rates</h3>
+                <ul class="rates-list">
+                  <li>Student coaching: $50/hour</li>
+                  <li>Adult coaching: $60/hour</li>
+                </ul>
+              </div>
             </div>
           </div>
+          <hr class="alternate-services-rule" aria-hidden="true">
           <div class="alternate-block">
             <h2>Minami Massage</h2>
             <p class="desc">Licensed massage therapy and Reiki at the center. Feel better, play better — full body and chair massage available.</p>

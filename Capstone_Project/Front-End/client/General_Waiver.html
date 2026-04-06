@@ -39,7 +39,7 @@
     }
     .waiver-intro .note {
       font-size: 0.9375rem;
-      color: var(--text-muted);
+      color: #000000;
       padding: 1rem 1.25rem;
       background: #e5e7eb;
       border-radius: var(--radius);
@@ -47,7 +47,7 @@
       text-align: left;
     }
     .waiver-intro .note strong {
-      color: var(--text-primary);
+      color: #000000;
     }
     .waiver-form-area {
       max-width: 100%;
@@ -94,7 +94,7 @@
       font-size: 0.9375rem;
       border: 1px solid #d1d5db;
       border-radius: var(--radius-sm);
-      background: #f3f4f6;
+      background: #ffffff;
       color: var(--text-primary);
     }
     .waiver-form-area .birth-date {
@@ -113,6 +113,16 @@
       color: var(--text-primary);
     }
     .waiver-form-area .pref-row:last-child { border-bottom: none; }
+    /* Override .hero p (max-width + margin:auto); keep block visually centered */
+    .waiver-form-area .pref-optional-intro {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      max-width: 40rem;
+      margin: -0.25rem auto 1rem;
+      line-height: 1.45;
+      text-align: center;
+    }
     .waiver-form-area .pref-chks { display: flex; gap: 1rem; }
     .waiver-form-area .pref-chks label { display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0; font-weight: 400; }
     .waiver-form-area .legal-block {
@@ -458,7 +468,8 @@
           </div>
 
           <div class="form-section">
-            <h3>Other Information</h3>
+            <h3>Notification preferences</h3>
+            <p class="pref-optional-intro">Optional — you do not need to select any email or text options below to submit this form.</p>
             <div class="pref-row">
               <span>Subscribe to reminders & notifications</span>
               <div class="pref-chks">
