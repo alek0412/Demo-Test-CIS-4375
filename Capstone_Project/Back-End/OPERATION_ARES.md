@@ -6,6 +6,27 @@ Run these commands **on the EC2 instance** (SSH in first: `ssh -i path/to/HBC-Se
 
 **Important:** Use **PM2** below so the app **keeps running after you close SSH** and can **restart on reboot**. Running only `node server.js` in a terminal ties the process to that session; when you disconnect, the app often stops.
 
+### Order of operations (read this — avoids “port 3000 already in use”)
+
+Do these **in order**. **Do not** start the server until **`npm install`** finishes.
+
+1. `git clone` → `cd` to **`Capstone_Project/Back-End`**
+2. **`cp .env.example .env`** → edit **`.env`** (RDS and any secrets)
+3. **`npm install`**
+4. **Only then** start the app **once** with PM2 (`pm2 start …`) **or** test with **`node server.js`** — **not both at the same time.**
+
+**If port 3000 is already in use:** something is already listening (usually a **previous** `pm2 start` or a leftover `node server.js`). Check:
+
+```bash
+pm2 list
+```
+
+- If **`reservation-app`** is already **online**, you **do not** run `pm2 start` again. After `git pull` / `npm install`, use **`pm2 restart reservation-app`** only.
+- If you need a **clean** start: `pm2 stop reservation-app` → `pm2 delete reservation-app`, **then** `pm2 start server.js --name reservation-app`.
+- **Do not** run **`node server.js`** in the shell while PM2 is already running the same app — that tries to open port 3000 twice and triggers **EADDRINUSE**.
+
+**Routine code updates** (repo already cloned, PM2 already managing the app): `git pull` → `npm install` → **`pm2 restart reservation-app`**. You should **not** need to kill processes or fight port 3000.
+
 ---
 
 ## Redeploy after Operation TRON (reattach from GitHub)
@@ -29,7 +50,7 @@ Use this when you **removed the app** with **Operation TRON** (`rm -rf` the repo
 
    Set **`DB_PASSWORD`**, **`DB_HOST`**, **`DB_USER`**, **`DB_NAME`**, and any other values (same as before — keep a private copy outside the repo).
 
-3. **Install and start under PM2**
+3. **Install dependencies, then start under PM2** (install **before** `pm2 start` — see **Order of operations** above)
 
    ```bash
    npm install
@@ -153,7 +174,7 @@ Log in as admin and use the Customers tab.
 | `pm2 stop reservation-app` | Stop the app |
 | `pm2 delete reservation-app` | Remove app from PM2 (then you can `pm2 start` again) |
 
-**After `git pull` on the server:** usually `pm2 restart reservation-app`.
+**After `git pull` on the server:** `npm install` (if `package.json` changed), then **`pm2 restart reservation-app`**. Do **not** run a second `pm2 start` if the app is already listed in `pm2 list`.
 
 ---
 
