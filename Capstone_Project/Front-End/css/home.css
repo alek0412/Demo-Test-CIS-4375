@@ -3,34 +3,33 @@
 .hero { padding-top: 1.5rem; padding-bottom: 0.5rem; }
   section.features { padding-top: 0.5rem; }
 
+  @property --ftv-border-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
+  @property --shell-border-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
+
   /* First-time visitor — premium panel */
   .ftv-shell {
     margin: 2.75rem auto 2.75rem;
     max-width: 680px;
     position: relative;
-    padding: 2px;
-    border-radius: 26px;
-    background: linear-gradient(
-      90deg,
-      #991b1b 0%,
-      #ef4444 25%,
-      #fca5a5 45%,
-      #b91c1c 55%,
-      #dc2626 75%,
-      #991b1b 100%
-    );
-    background-size: 200% 100%;
-    animation: ftv-sheen 8s ease-in-out infinite;
+    padding: 0;
+    border-radius: 24px;
     box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.6) inset,
-      0 24px 48px -12px rgba(15, 23, 42, 0.18),
-      0 12px 24px -8px rgba(185, 28, 28, 0.12);
+      0 20px 50px -18px rgba(56, 189, 248, 0.28),
+      0 8px 24px -10px rgba(15, 23, 42, 0.08);
   }
   .ftv-shell::before {
-    content: "";
+    content: none;
     position: absolute;
     inset: -40%;
-    background: radial-gradient(ellipse 50% 40% at 50% 0%, rgba(185, 28, 28, 0.14), transparent 65%);
+    background: radial-gradient(ellipse 50% 40% at 50% 0%, rgba(59, 130, 246, 0.14), transparent 65%);
     pointer-events: none;
     z-index: 0;
   }
@@ -44,22 +43,28 @@
     overflow: hidden;
     text-align: left;
     box-sizing: border-box;
+    border: 4px solid transparent;
     background:
-      radial-gradient(120% 80% at 100% -20%, rgba(185, 28, 28, 0.06), transparent 50%),
-      radial-gradient(90% 60% at -10% 100%, rgba(59, 130, 246, 0.05), transparent 45%),
-      linear-gradient(180deg, #ffffff 0%, #fafbfc 55%, #f4f5f7 100%);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.95) inset,
-      0 -1px 0 rgba(0, 0, 0, 0.03) inset;
+      radial-gradient(120% 80% at 100% -20%, rgba(34, 211, 238, 0.08), transparent 50%) padding-box,
+      radial-gradient(90% 60% at -10% 100%, rgba(125, 211, 252, 0.08), transparent 45%) padding-box,
+      linear-gradient(180deg, #ffffff 0%, #fafbfc 55%, #f4f5f7 100%) padding-box,
+      conic-gradient(
+        from var(--ftv-border-angle),
+        #06b6d4 0turn,
+        #22d3ee 0.2turn,
+        #38bdf8 0.4turn,
+        #60a5fa 0.6turn,
+        #3b82f6 0.8turn,
+        #06b6d4 1turn
+      ) border-box;
+    animation: ftv-border-loop 10s linear infinite;
+    box-shadow: none;
     transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .ftv-shell:hover .first-time-visitor {
     transform: translateY(-3px);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.95) inset,
-      0 -1px 0 rgba(0, 0, 0, 0.03) inset,
       0 32px 64px -16px rgba(15, 23, 42, 0.2);
   }
   .first-time-visitor .ftv-sheen {
@@ -70,15 +75,15 @@
     height: 4px;
     background: linear-gradient(
       90deg,
-      #991b1b 0%,
-      #ef4444 25%,
-      #fca5a5 45%,
-      #b91c1c 55%,
-      #dc2626 75%,
-      #991b1b 100%
+      #06b6d4 0%,
+      #22d3ee 25%,
+      #38bdf8 50%,
+      #60a5fa 75%,
+      #3b82f6 100%
     );
     background-size: 200% 100%;
     animation: ftv-sheen 8s ease-in-out infinite;
+    display: none;
   }
   @keyframes ftv-sheen {
     0%,
@@ -87,6 +92,30 @@
     }
     50% {
       background-position: 100% 50%;
+    }
+  }
+  @keyframes ftv-title-flow {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+  @keyframes ftv-border-loop {
+    0% {
+      --ftv-border-angle: 0deg;
+    }
+    100% {
+      --ftv-border-angle: 360deg;
+    }
+  }
+  @keyframes ftv-shell-loop {
+    0% {
+      --shell-border-angle: 0deg;
+    }
+    100% {
+      --shell-border-angle: -360deg;
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -118,22 +147,22 @@
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #b91c1c;
+    color: #1d4ed8;
     margin: 0 0 0.65rem;
     line-height: 1.2;
     padding: 0.35rem 0.65rem 0.35rem 0.55rem;
     border-radius: 999px;
-    background: linear-gradient(180deg, rgba(185, 28, 28, 0.1) 0%, rgba(185, 28, 28, 0.05) 100%);
-    border: 1px solid rgba(185, 28, 28, 0.18);
-    box-shadow: 0 1px 2px rgba(185, 28, 28, 0.06);
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.08);
   }
   .ftv-eyebrow::before {
     content: "";
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: linear-gradient(145deg, #fca5a5, #b91c1c);
-    box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.15);
+    background: linear-gradient(145deg, #bfdbfe, #1d4ed8);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.16);
     flex-shrink: 0;
   }
   .ftv-title {
@@ -142,24 +171,44 @@
     letter-spacing: -0.045em;
     line-height: 1.12;
     margin: 0;
-    color: #0f172a;
-  }
-  .ftv-title-accent {
-    background: linear-gradient(110deg, #b91c1c 0%, #dc2626 40%, #0f172a 95%);
+    background: linear-gradient(90deg, #06b6d4 0%, #22d3ee 25%, #38bdf8 50%, #60a5fa 75%, #3b82f6 100%);
+    background-size: 200% 100%;
+    animation: ftv-title-flow 8s linear infinite;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
   }
+  .ftv-title-accent {
+    background: inherit;
+    -webkit-background-clip: inherit;
+    background-clip: inherit;
+    color: inherit;
+    -webkit-text-fill-color: inherit;
+  }
   .ftv-header .ftv-intro {
     margin: 0.75rem 0 0;
     font-size: 1.0625rem;
     line-height: 1.65;
-    color: #64748b;
+    color: #000000;
     font-weight: 450;
   }
   .ftv-section {
     margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 0.75rem;
+  }
+  .ftv-step-label {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+  }
+  .ftv-section--step2 {
+    margin-top: 0.6rem;
   }
   .ftv-waiver-btn {
     display: flex;
@@ -179,19 +228,32 @@
     border: none;
     border-radius: 14px;
     cursor: pointer;
-    background: linear-gradient(145deg, #b91c1c 0%, #991b1b 45%, #7f1d1d 100%);
+    background: linear-gradient(145deg, #2563eb 0%, #1d4ed8 45%, #1e40af 100%);
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.2) inset,
-      0 8px 20px -6px rgba(185, 28, 28, 0.55),
-      0 2px 6px rgba(127, 29, 29, 0.35);
+      0 8px 20px -6px rgba(37, 99, 235, 0.5),
+      0 2px 6px rgba(30, 64, 175, 0.35);
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
   }
   .ftv-waiver-btn:hover {
     filter: brightness(1.06);
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.25) inset,
-      0 12px 28px -6px rgba(185, 28, 28, 0.5),
-      0 4px 10px rgba(127, 29, 29, 0.3);
+      0 12px 28px -6px rgba(37, 99, 235, 0.45),
+      0 4px 10px rgba(30, 64, 175, 0.3);
+  }
+  .ftv-waiver-btn--step2 {
+    background: linear-gradient(145deg, #4f46e5 0%, #4338ca 45%, #6d28d9 100%);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.2) inset,
+      0 8px 20px -6px rgba(79, 70, 229, 0.52),
+      0 2px 6px rgba(109, 40, 217, 0.35);
+  }
+  .ftv-waiver-btn--step2:hover {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.25) inset,
+      0 12px 28px -6px rgba(79, 70, 229, 0.5),
+      0 4px 10px rgba(109, 40, 217, 0.3);
   }
   .ftv-waiver-btn:active {
     transform: scale(0.99);
@@ -284,7 +346,7 @@
     transition: color 0.2s ease, background-size 0.25s ease;
   }
   .ftv-link-external:hover {
-    color: #b91c1c !important;
+    color: #1d4ed8 !important;
     background-size: 100% 2px;
   }
   .ftv-sub {
@@ -294,6 +356,17 @@
     margin: 0.55rem 0 0;
     line-height: 1.5;
     font-weight: 450;
+  }
+  .ftv-sub--center {
+    text-align: center;
+  }
+  .ftv-sub--after-waiver {
+    margin-top: 6rem;
+  }
+  .ftv-sub--queue {
+    margin-top: 3rem;
+    color: #000000 !important;
+    font-weight: 700 !important;
   }
   .first-time-visitor .first-time-list {
     margin: 1rem 0 0;
@@ -318,7 +391,7 @@
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: #b91c1c;
+    background: #2563eb;
     margin-top: 0.5rem;
   }
   .first-time-visitor .first-time-queuing-note {
@@ -353,39 +426,38 @@
     box-shadow: 0 0 12px rgba(14, 165, 233, 0.45);
   }
   .ftv-video-frame {
-    position: relative;
-    padding: 0.5rem;
-    border-radius: 18px;
-    background: linear-gradient(160deg, #1e293b 0%, #0f172a 40%, #020617 100%);
-    box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-      0 16px 40px -12px rgba(15, 23, 42, 0.45);
+    position: static;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
   .ftv-video-frame::after {
-    content: "";
-    position: absolute;
-    inset: 0.5rem;
-    border-radius: 13px;
-    pointer-events: none;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
-    z-index: 1;
+    content: none;
   }
   .first-time-visitor .first-time-video-embed {
     position: relative;
     z-index: 0;
     margin-top: 0;
-    border-radius: 12px;
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
+    border-radius: 0;
+    overflow: visible;
+    aspect-ratio: auto;
     max-width: 100%;
-    background: #000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    background: transparent;
+    box-shadow: none;
   }
   .first-time-visitor .first-time-video-embed iframe {
     width: 100%;
-    height: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    min-height: 320px;
     border: 0;
     display: block;
+  }
+  @media (max-width: 640px) {
+    .first-time-visitor .first-time-video-embed iframe {
+      min-height: 220px;
+    }
   }
   .hero .first-time-visitor p {
     max-width: none;
@@ -404,11 +476,8 @@
 /* ========== General Home — full-page premium (scoped to this page only) ========== */
   .gh-home {
     --gh-line-to-eyebrow-gap: 3.5rem;
-    background-color: #f8fafc;
-    background-image:
-      radial-gradient(ellipse 120% 70% at 50% -30%, rgba(185, 28, 28, 0.09), transparent 55%),
-      radial-gradient(ellipse 80% 50% at 100% 40%, rgba(59, 130, 246, 0.05), transparent 45%),
-      radial-gradient(ellipse 60% 40% at 0% 80%, rgba(185, 28, 28, 0.04), transparent 50%);
+    background-color: #ffffff;
+    background-image: none;
     background-attachment: fixed;
   }
   @media (prefers-reduced-motion: reduce) {
@@ -423,7 +492,9 @@
     isolation: isolate;
   }
   .gh-home .hero::before {
-    content: "";
+    content: none !important;
+    display: none !important;
+    background: none !important;
     position: absolute;
     inset: -2rem -50vw 0;
     left: 50%;
@@ -563,11 +634,11 @@
   .gh-home .features--upcoming-events {
     position: relative;
     padding: var(--gh-line-to-eyebrow-gap) 0 1.25rem;
-    border-top: 1px solid rgba(15, 23, 42, 0.06);
-    background: linear-gradient(180deg, rgba(241, 245, 249, 0.85) 0%, rgba(248, 250, 252, 0.95) 45%, rgba(255, 255, 255, 0.5) 100%);
+    border-top: none;
+    background: #ffffff;
   }
   .gh-home .features--upcoming-events::before {
-    content: "";
+    content: none;
     position: absolute;
     top: 0;
     left: 0;
@@ -587,6 +658,23 @@
     margin-bottom: 0.6rem;
     line-height: 1.15;
   }
+  .gh-home .features--upcoming-events h2 {
+    color: #b91c1c;
+  }
+  .gh-home .features--faq h2 {
+    font-size: clamp(1.5rem, 4.2vw, 1.875rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.12;
+    text-transform: none;
+    background: linear-gradient(90deg, #14532d 0%, #15803d 25%, #22c55e 50%, #4ade80 75%, #86efac 100%);
+    background-size: 200% 100%;
+    animation: ftv-title-flow 8s linear infinite;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
   .gh-home .features--upcoming-events .features-lead,
   .gh-home .features--faq .features-lead {
     color: #64748b;
@@ -596,24 +684,45 @@
     margin: 0 auto 2.25rem;
     font-weight: 500;
   }
+  .gh-home .features--upcoming-events .features-lead {
+    color: #000000;
+  }
+  .gh-home .features--faq .features-lead {
+    color: #000000;
+  }
   .gh-home .ghp-events-shell {
     position: relative;
-    max-width: 920px;
+    width: fit-content;
+    max-width: min(100%, 920px);
     margin: 0 auto;
-    padding: 2px;
-    border-radius: 26px;
-    background: linear-gradient(
-      135deg,
-      rgba(185, 28, 28, 0.35) 0%,
-      rgba(220, 38, 38, 0.15) 40%,
-      rgba(99, 102, 241, 0.12) 100%
-    );
-    background-size: 200% 200%;
-    animation: ftv-sheen 10s ease-in-out infinite;
+    padding: 4px;
+    border-radius: 28px;
+    overflow: hidden;
+    isolation: isolate;
+    background: none;
     box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.5) inset,
-      0 20px 50px -18px rgba(15, 23, 42, 0.15),
-      0 8px 24px -10px rgba(185, 28, 28, 0.1);
+      0 0 0 1px rgba(185, 28, 28, 0.25) inset,
+      0 20px 50px -18px rgba(185, 28, 28, 0.18),
+      0 8px 24px -10px rgba(15, 23, 42, 0.08);
+  }
+  .gh-home .ghp-events-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: conic-gradient(
+      from 0deg,
+      #ff6b6b 0deg,
+      #ff6b6b 26deg,
+      #ef4444 72deg,
+      #dc2626 140deg,
+      #b91c1c 220deg,
+      #7f1d1d 300deg,
+      #ff6b6b 360deg
+    );
+    animation: ghp-events-border-spin 10s linear infinite;
+    transform-origin: center;
+    z-index: 0;
   }
   .gh-home .ghp-events-shell:hover .ghp-events-shell-inner {
     border-color: rgba(185, 28, 28, 0.22);
@@ -622,8 +731,10 @@
       0 0 0 1px rgba(185, 28, 28, 0.08);
   }
   .gh-home .ghp-events-shell-inner {
+    position: relative;
+    z-index: 1;
     border-radius: 24px;
-    padding: 1.5rem 1.25rem 1.35rem;
+    padding: 1.5rem 0.5rem 1.35rem;
     background:
       radial-gradient(100% 80% at 100% 0%, rgba(185, 28, 28, 0.04), transparent 50%),
       linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
@@ -632,11 +743,14 @@
   }
   @media (min-width: 640px) {
     .gh-home .ghp-events-shell-inner {
-      padding: 2rem 1.75rem 1.65rem;
+      padding: 2rem 0.5rem 1.65rem;
     }
   }
   .gh-home .ghp-events-shell-inner .event-cards {
     gap: 1.35rem;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
   }
   .gh-home .ghp-events-shell-inner .event-image-card__frame {
     border-radius: 16px;
@@ -650,12 +764,19 @@
     transform: translateY(-2px);
   }
   @media (prefers-reduced-motion: reduce) {
-    .gh-home .ghp-events-shell {
+    .gh-home .ghp-events-shell::before {
       animation: none;
-      background-position: 50% 50%;
     }
     .gh-home .ghp-events-shell-inner .event-image-card:hover .event-image-card__frame {
       transform: none;
+    }
+  }
+  @keyframes ghp-events-border-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
     }
   }
   .gh-home .ghp-events-shell-inner .event-carousel__viewport {
@@ -678,52 +799,57 @@
   .gh-home .features--faq {
     position: relative;
     padding: var(--gh-line-to-eyebrow-gap) 0 5.5rem;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, #f1f5f9 100%);
-    border-top: 1px solid rgba(15, 23, 42, 0.05);
+    background: #ffffff;
+    border-top: none;
   }
   .gh-home .ghp-faq-shell {
     max-width: 760px;
     margin: 0 auto;
-    padding: 4px;
-    border-radius: 28px;
-    background: linear-gradient(
-      135deg,
-      #14532d 0%,
-      #15803d 25%,
-      #86efac 50%,
-      #15803d 75%,
-      #14532d 100%
-    );
-    background-size: 200% 200%;
-    animation: ftv-sheen 10s ease-in-out infinite;
+    padding: 0;
+    border-radius: 24px;
+    position: relative;
+    overflow: visible;
+    isolation: auto;
+    background: transparent;
     box-shadow:
-      0 0 0 1px rgba(22, 163, 74, 0.25) inset,
-      0 20px 50px -18px rgba(22, 163, 74, 0.18),
+      0 20px 50px -18px rgba(34, 197, 94, 0.28),
       0 8px 24px -10px rgba(15, 23, 42, 0.08);
   }
-  @media (prefers-reduced-motion: reduce) {
-    .gh-home .ghp-faq-shell {
-      animation: none;
-      background-position: 50% 50%;
-    }
-  }
   .gh-home .ghp-faq-shell-inner {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    max-width: none;
+    padding: 0;
     border-radius: 24px;
-    padding: 1.35rem 1.15rem 1.25rem;
     overflow: hidden;
+    text-align: left;
+    box-sizing: border-box;
+    border: 4px solid transparent;
     background:
-      radial-gradient(120% 80% at 100% -20%, rgba(22, 163, 74, 0.08), transparent 50%),
-      radial-gradient(90% 60% at -10% 100%, rgba(134, 239, 172, 0.06), transparent 45%),
-      linear-gradient(180deg, #ffffff 0%, #f0fdf4 55%, #f8fafc 100%);
-    border: 1px solid rgba(255, 255, 255, 0.95);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease;
+      radial-gradient(120% 80% at 100% -20%, rgba(22, 163, 74, 0.08), transparent 50%) padding-box,
+      radial-gradient(90% 60% at -10% 100%, rgba(134, 239, 172, 0.06), transparent 45%) padding-box,
+      linear-gradient(180deg, #ffffff 0%, #f0fdf4 55%, #f8fafc 100%) padding-box,
+      conic-gradient(
+        from var(--ftv-border-angle),
+        #14532d 0turn,
+        #15803d 0.2turn,
+        #22c55e 0.4turn,
+        #4ade80 0.6turn,
+        #86efac 0.8turn,
+        #14532d 1turn
+      ) border-box;
+    animation: ftv-border-loop 10s linear infinite;
+    box-shadow: none;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .gh-home .ghp-faq-shell-inner .faq-list {
+    padding: 1.35rem 1.15rem 1.25rem;
   }
   .gh-home .ghp-faq-shell:hover .ghp-faq-shell-inner {
     transform: translateY(-3px);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.95) inset,
-      0 24px 56px -20px rgba(22, 163, 74, 0.12);
+    box-shadow: 0 32px 64px -16px rgba(15, 23, 42, 0.2);
   }
   @media (prefers-reduced-motion: reduce) {
     .gh-home .ghp-faq-shell:hover .ghp-faq-shell-inner {
@@ -731,7 +857,7 @@
     }
   }
   @media (min-width: 640px) {
-    .gh-home .ghp-faq-shell-inner {
+    .gh-home .ghp-faq-shell-inner .faq-list {
       padding: 1.75rem 1.5rem 1.5rem;
     }
   }
@@ -792,7 +918,7 @@
   .gh-home footer {
     margin-top: 0;
     padding: 2.25rem 0;
-    background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+    background: #ffffff;
     border-top: 1px solid rgba(15, 23, 42, 0.08);
   }
   .gh-home footer .container p {
@@ -880,7 +1006,9 @@
   padding: 0;
   border: none;
   border-radius: 999px;
-  background-color: #b91c1c;
+  background: linear-gradient(90deg, #06b6d4 0%, #22d3ee 25%, #38bdf8 50%, #60a5fa 75%, #3b82f6 100%);
+  background-size: 200% 100%;
+  animation: ftv-title-flow 8s linear infinite;
   pointer-events: none;
 }
 
@@ -1325,6 +1453,47 @@
   background-clip: border-box;
 }
 
+/* Temporary dark mode for General_Dashboard */
+.gh-home.dark-mode {
+  background-color: #0b1220;
+  color: #e5e7eb;
+}
+.gh-home.dark-mode .gh-site-header {
+  background: rgba(11, 18, 32, 0.85);
+  border-bottom-color: rgba(148, 163, 184, 0.25);
+}
+.gh-home.dark-mode .hero::before {
+  content: none;
+}
+.gh-home.dark-mode .hero .hero-tagline,
+.gh-home.dark-mode .features-lead {
+  color: #cbd5e1;
+}
+.gh-home.dark-mode .features--upcoming-events,
+.gh-home.dark-mode .features--faq,
+.gh-home.dark-mode footer {
+  background: #0b1220;
+}
+.gh-home.dark-mode .features--upcoming-events h2,
+.gh-home.dark-mode .features--faq h2 {
+  color: #f8fafc;
+}
+.gh-home.dark-mode .ghp-events-shell-inner,
+.gh-home.dark-mode .ghp-faq-shell-inner,
+.gh-home.dark-mode .first-time-visitor {
+  background:
+    radial-gradient(120% 80% at 100% -20%, rgba(96, 165, 250, 0.12), transparent 50%),
+    linear-gradient(180deg, #111827 0%, #0f172a 100%);
+  border-color: rgba(148, 163, 184, 0.18);
+}
+.gh-home.dark-mode .ftv-header .ftv-intro,
+.gh-home.dark-mode .ftv-sub {
+  color: #cbd5e1;
+}
+.gh-home.dark-mode .ftv-link-external {
+  color: #e2e8f0 !important;
+}
+
 .gh-home .gh-hero-blend-line {
   background-color: #2563eb;
   background-image: none;
@@ -1446,5 +1615,298 @@
 .gh-home .gh-hero-title__text::after {
   background-image: linear-gradient(90deg, #b91c1c 0%, #ef4444 55%, #b91c1c 100%);
   animation: gh-title-red-enter 55.5s linear infinite;
+}
+
+/* Home hero title cycle:
+   green hold 10s -> blue sweep 8.5s -> blue hold 10s
+   -> red sweep 8.5s -> red hold 10s -> green sweep 8.5s (55.5s total) */
+.gh-home .gh-hero-title__text {
+  position: relative;
+  color: #16a34a !important;
+  background: none !important;
+  -webkit-text-fill-color: #16a34a !important;
+  animation: none !important;
+}
+.gh-home .gh-hero-title__text::before,
+.gh-home .gh-hero-title__text::after {
+  content: attr(data-title) !important;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  white-space: inherit;
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.25) 14%,
+    rgba(0, 0, 0, 0.6) 30%,
+    rgba(0, 0, 0, 0.85) 44%,
+    rgba(0, 0, 0, 1) 58%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.25) 14%,
+    rgba(0, 0, 0, 0.6) 30%,
+    rgba(0, 0, 0, 0.85) 44%,
+    rgba(0, 0, 0, 1) 58%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  -webkit-mask-size: 220% 100%;
+  mask-size: 220% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 110% 50%;
+  mask-position: 110% 50%;
+}
+.gh-home .gh-hero-title__text::before {
+  color: #2563eb !important;
+  -webkit-text-fill-color: #2563eb !important;
+  z-index: 1;
+  animation: gh-hero-blue-cycle 55.5s linear infinite !important;
+}
+.gh-home .gh-hero-title__text::after {
+  color: #b91c1c !important;
+  -webkit-text-fill-color: #b91c1c !important;
+  z-index: 2;
+  animation: gh-hero-red-cycle 55.5s linear infinite !important;
+}
+@keyframes gh-hero-blue-cycle {
+  0%,
+  18.018% {
+    opacity: 0;
+    -webkit-mask-position: 110% 50%;
+    mask-position: 110% 50%;
+  }
+  18.019% {
+    opacity: 1;
+    -webkit-mask-position: 110% 50%;
+    mask-position: 110% 50%;
+  }
+  33.333% {
+    opacity: 1;
+    -webkit-mask-position: -120% 50%;
+    mask-position: -120% 50%;
+  }
+  66.666% {
+    opacity: 1;
+    -webkit-mask-position: -120% 50%;
+    mask-position: -120% 50%;
+  }
+  66.667%,
+  100% {
+    opacity: 0;
+    -webkit-mask-position: 110% 50%;
+    mask-position: 110% 50%;
+  }
+}
+@keyframes gh-hero-red-cycle {
+  0%,
+  51.351% {
+    opacity: 0;
+    -webkit-mask-position: 110% 50%;
+    mask-position: 110% 50%;
+  }
+  51.352% {
+    opacity: 1;
+    -webkit-mask-position: 110% 50%;
+    mask-position: 110% 50%;
+  }
+  66.667% {
+    opacity: 1;
+    -webkit-mask-position: -120% 50%;
+    mask-position: -120% 50%;
+  }
+  84.685% {
+    opacity: 1;
+    -webkit-mask-position: -120% 50%;
+    mask-position: -120% 50%;
+  }
+  100% {
+    opacity: 1;
+    -webkit-mask-position: 110% 50%;
+    mask-position: 110% 50%;
+  }
+}
+
+/* Hero title: green -> blue sweep (left to right), then stay blue */
+.gh-home .gh-hero-title__text {
+  position: relative;
+  color: #16a34a !important;
+  background: none !important;
+  -webkit-text-fill-color: #16a34a !important;
+  animation: none !important;
+}
+.gh-home .gh-hero-title__text::before,
+.gh-home .gh-hero-title__text::after {
+  content: none !important;
+  animation: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+.gh-home .gh-hero-title__text::before {
+  content: attr(data-title) !important;
+  position: absolute;
+  inset: 0;
+  display: block;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  pointer-events: none;
+  white-space: inherit;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  background-image: linear-gradient(90deg, #0ea5e9 0%, #2563eb 45%, #1d4ed8 100%);
+  background-size: 100% 100%;
+  background-position: 0 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 70%,
+    rgba(0, 0, 0, 0.6) 82%,
+    rgba(0, 0, 0, 0.2) 92%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 70%,
+    rgba(0, 0, 0, 0.6) 82%,
+    rgba(0, 0, 0, 0.2) 92%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-size: 200% 100%;
+  mask-size: 200% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0% 50%;
+  mask-position: 0% 50%;
+  clip-path: inset(0 100% 0 0);
+  animation: gh-hero-blue-fill-once 27s linear forwards !important;
+}
+.gh-home .gh-hero-title__text::after {
+  content: attr(data-title) !important;
+  position: absolute;
+  inset: 0;
+  display: block;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  pointer-events: none;
+  white-space: inherit;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  background-image: linear-gradient(90deg, #ef4444 0%, #dc2626 45%, #b91c1c 100%);
+  background-size: 100% 100%;
+  background-position: 0 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 70%,
+    rgba(0, 0, 0, 0.6) 82%,
+    rgba(0, 0, 0, 0.2) 92%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 70%,
+    rgba(0, 0, 0, 0.6) 82%,
+    rgba(0, 0, 0, 0.2) 92%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-size: 200% 100%;
+  mask-size: 200% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0% 50%;
+  mask-position: 0% 50%;
+  clip-path: inset(0 100% 0 0);
+  animation: gh-hero-red-fill-once 27s linear forwards !important;
+}
+@keyframes gh-hero-blue-fill-once {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  37.036% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  37.037% {
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes gh-hero-red-fill-once {
+  0%,
+  68.518% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  68.519% {
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Match hero headline to First time title movement exactly */
+.gh-home .gh-hero-title__text {
+  color: transparent !important;
+  background: linear-gradient(90deg, #16a34a 0%, #22c55e 25%, #2563eb 50%, #3b82f6 75%, #16a34a 100%) !important;
+  background-size: 260% 100% !important;
+  background-position: 0% 50% !important;
+  animation-name: gh-hero-title-flow-force !important;
+  animation-duration: 8s !important;
+  animation-timing-function: linear !important;
+  animation-iteration-count: infinite !important;
+  animation-play-state: running !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  will-change: background-position !important;
+}
+.gh-home .gh-hero-title__text::before,
+.gh-home .gh-hero-title__text::after {
+  content: none !important;
+  animation: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+@keyframes gh-hero-title-flow-force {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* View availability: black button box */
+.gh-home .hero .hero-actions--below-ftv a.gh-btn-premium {
+  color: #ffffff !important;
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(#000000, #000000) padding-box,
+    linear-gradient(90deg, #16a34a 0%, #2563eb 50%, #b91c1c 100%) border-box !important;
+  box-shadow: none !important;
 }
 
