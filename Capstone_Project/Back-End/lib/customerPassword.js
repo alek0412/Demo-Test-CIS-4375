@@ -14,12 +14,24 @@ function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
 }
 
+function verifyPythonPbkdf2Password(plain, pwdHex, saltHex) {
+  if (!plain || !pwdHex || !saltHex || pwdHex.length !== 64) return false;
+  try {
+    const salt = Buffer.from(String(saltHex).trim(), 'hex');
+    if (salt.length === 0) return false;
+    const hash = crypto.pbkdf2Sync(plain, salt, 50000, 32, 'sha256').toString('hex');
+    return hash === pwdHex;
+  } catch (_) {
+    return false;
+  }
+}
+
 async function findCustomerByEmail(email) {
   const normalized = normalizeEmail(email);
   if (!normalized) return null;
   try {
     const { rows } = await db.query(
-      'SELECT customer_id, email, `password` AS pwd FROM customer WHERE LOWER(TRIM(email)) = ? LIMIT 1',
+      'SELECT customer_id, email, `password` AS pwd, salt FROM customer WHERE LOWER(TRIM(email)) = ? LIMIT 1',
       [normalized]
     );
     return rows[0] || null;
@@ -56,10 +68,16 @@ async function validateCustomerLogin(email, password, envEmail, envPassword, pre
   }
   const row = await findCustomerByEmail(normalized);
   if (row && row.pwd) {
-    try {
-      return bcrypt.compareSync(password, row.pwd);
-    } catch (_) {
-      return false;
+    const pwd = String(row.pwd);
+    if (pwd.startsWith('$2')) {
+      try {
+        return bcrypt.compareSync(password, pwd);
+      } catch (_) {
+        return false;
+      }
+    }
+    if (row.salt) {
+      return verifyPythonPbkdf2Password(password, pwd, row.salt);
     }
   }
   if (normalized === normalizeEmail(envEmail) && password === envPassword) {
