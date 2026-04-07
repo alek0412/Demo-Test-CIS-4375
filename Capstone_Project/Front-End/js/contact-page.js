@@ -1,10 +1,30 @@
+/**
+ * Contact page: scroll reveals, optional clipboard copy for phone.
+ */
 (function () {
   "use strict";
-  var mapLink = document.getElementById("contact-map-link");
-  var panel = document.getElementById("contact-location-panel");
-  if (!mapLink || !panel) return;
-  mapLink.addEventListener("click", function () {
-    var open = panel.classList.toggle("is-open");
-    mapLink.setAttribute("aria-expanded", open ? "true" : "false");
-  });
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var reveals = document.querySelectorAll(".contact-reveal");
+  if (!reduce && "IntersectionObserver" in window && reveals.length) {
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add("contact-reveal--visible");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { root: null, rootMargin: "0px 0px -10% 0px", threshold: 0.06 }
+    );
+    reveals.forEach(function (el) {
+      io.observe(el);
+    });
+  } else {
+    reveals.forEach(function (el) {
+      el.classList.add("contact-reveal--visible");
+    });
+  }
 })();

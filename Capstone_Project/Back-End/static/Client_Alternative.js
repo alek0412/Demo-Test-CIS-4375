@@ -127,14 +127,27 @@
 
   var contactSend = document.getElementById('contact-send');
   var contactMessage = document.getElementById('contact-message');
+  var contactName = document.getElementById('contact-name');
+  var contactReplyEmail = document.getElementById('contact-email');
   if (contactSend) {
     contactSend.addEventListener('click', function () {
       var to = 'info@houstonbadmintoncenter.com';
       var subject = 'Question for Houston Badminton Center';
-      var messageText =
+      var bodyCore =
         contactMessage && contactMessage.value
           ? contactMessage.value.trim()
           : "Hi, I have a question for Houston Badminton Center. Please get back to me when you can.";
+      var namePart =
+        contactName && contactName.value ? contactName.value.trim() : '';
+      var replyPart =
+        contactReplyEmail && contactReplyEmail.value
+          ? contactReplyEmail.value.trim()
+          : '';
+      var header = '';
+      if (namePart) header += 'Name: ' + namePart + '\n';
+      if (replyPart) header += 'Reply-to: ' + replyPart + '\n';
+      if (header) header += '\n';
+      var messageText = header + bodyCore;
       window.location.href =
         'mailto:' +
         to +
