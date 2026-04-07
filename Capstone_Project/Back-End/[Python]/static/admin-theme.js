@@ -94,6 +94,73 @@
       renderDropdown(container);
       bindDropdown(container);
     }
+    initBackToTop();
+  }
+
+  function easeInOutQuad(t) {
+    return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  }
+
+  function ensureBackToTopButton() {
+    var existing = document.getElementById('gh-back-top');
+    if (existing) return existing;
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'gh-back-top';
+    btn.setAttribute('aria-label', 'Back to top');
+    btn.setAttribute('aria-hidden', 'true');
+    btn.setAttribute('tabindex', '-1');
+    btn.innerHTML =
+      '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+      '<path fill="currentColor" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>' +
+      '</svg>';
+    document.body.appendChild(btn);
+    return btn;
+  }
+
+  function initBackToTop() {
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var back = ensureBackToTopButton();
+    if (!back) return;
+
+    function toggleBack() {
+      var el = document.documentElement;
+      var scrollTop = window.scrollY || 0;
+      var vh = window.innerHeight;
+      var sh = Math.max(el.scrollHeight, document.body ? document.body.scrollHeight : 0);
+      var atBottom = scrollTop + vh >= sh - 2;
+      if (atBottom) {
+        back.classList.add('gh-back-top--visible');
+        back.setAttribute('aria-hidden', 'false');
+        back.removeAttribute('tabindex');
+      } else {
+        back.classList.remove('gh-back-top--visible');
+        back.setAttribute('aria-hidden', 'true');
+        back.setAttribute('tabindex', '-1');
+      }
+    }
+
+    toggleBack();
+    window.addEventListener('scroll', toggleBack, { passive: true });
+    window.addEventListener('resize', toggleBack, { passive: true });
+
+    back.addEventListener('click', function () {
+      var start = window.scrollY || 0;
+      if (reduce || start <= 0) {
+        window.scrollTo(0, 0);
+        return;
+      }
+      var duration = Math.min(3800, Math.max(900, start * 0.95));
+      var t0 = performance.now();
+      function step(now) {
+        var p = Math.min((now - t0) / duration, 1);
+        var y = start * (1 - easeInOutQuad(p));
+        window.scrollTo(0, y);
+        if (p < 1) window.requestAnimationFrame(step);
+      }
+      window.requestAnimationFrame(step);
+    });
   }
 
   if (document.readyState === 'loading') {

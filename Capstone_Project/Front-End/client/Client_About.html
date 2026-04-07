@@ -3,296 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About Us — Houston Badminton Center</title>
+  <title>About Us - Houston Badminton Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css">
-  <style>
-    .hero { padding-top: 1.5rem; padding-bottom: 0.5rem; }
-    section.features { padding-top: 0.5rem; }
-
-    .our-facility-title {
-      text-align: center;
-      font-family: "Playfair Display", Georgia, serif;
-      font-size: clamp(2rem, 4.5vw, 3rem);
-      font-style: italic;
-      font-weight: 600;
-      color: #1f2937;
-      margin: 0 0 1.25rem;
-    }
-
-    .facility-hero {
-      max-width: 56rem;
-      margin: 0 auto;
-      padding: 0;
-      border-radius: var(--radius) var(--radius) 0 0;
-      overflow: hidden;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      border-bottom: none;
-      line-height: 0;
-    }
-    .facility-hero img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .facility-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      width: 100%;
-      max-width: 56rem;
-      margin: 0 auto 2.5rem;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-    }
-    .facility-hero + .facility-grid {
-      border-radius: 0 0 var(--radius) var(--radius);
-      border-top: none;
-      margin-top: 0;
-    }
-    .facility-col {
-      padding: 1.35rem 1.5rem 1.5rem;
-      color: #111827;
-      font-size: 0.9375rem;
-      line-height: 1.55;
-    }
-    .facility-col--blue { background: #aee2eb; }
-    .facility-col--mint { background: #98e2b1; }
-    .facility-col h3 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin: 1rem 0 0.35rem;
-      color: #1f2937;
-    }
-    .facility-col h3:first-child { margin-top: 0; }
-    .facility-col ul {
-      margin: 0 0 0.65rem;
-      padding-left: 1.2rem;
-    }
-    .facility-col li { margin-bottom: 0.35rem; }
-
-    @media (max-width: 768px) {
-      .facility-grid { grid-template-columns: 1fr; }
-    }
-
-    .about-community {
-      max-width: 44rem;
-      margin: 0 auto 1.75rem;
-      padding: 0 0.5rem;
-    }
-    .about-community h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin: 0 0 0.5rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.35rem;
-    }
-    .about-community p {
-      margin: 0;
-      color: var(--text-muted);
-      font-size: 0.9375rem;
-      line-height: 1.6;
-    }
-
-    /* Pickleball — full viewport width; ~60/40 split; natural image ratio */
-    .pt-tt-wrap {
-      margin: 2.5rem 0 2.5rem;
-      padding: 0;
-    }
-    .pickleball-section-title-wrap {
-      margin-top: 2.5rem;
-    }
-    .pickleball-section-title-wrap .our-facility-title {
-      margin-bottom: 1.25rem;
-    }
-    .pt-tt-wrap--full {
-      width: 100%;
-      max-width: none;
-      margin: 0 0 2.5rem;
-      padding: 0;
-    }
-    .pt-tt-split-row--pickle {
-      display: grid;
-      grid-template-columns: minmax(0, 60vw) minmax(0, 1fr);
-      align-items: stretch;
-      gap: 0;
-      width: 100%;
-    }
-    .pt-tt-split-row__photo--pickle {
-      position: relative;
-      min-height: 0;
-      min-width: 0;
-      overflow: hidden;
-      background: #e5e5e5;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-    .pt-tt-split-row__photo--pickle img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-    .pt-tt-panel--pickle {
-      background: #98ffd1;
-      font-family: Montserrat, Inter, sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      padding: 3.25rem 1.25rem 1.75rem;
-      box-sizing: border-box;
-      min-height: 100%;
-    }
-    .pt-tt-kicker {
-      text-align: center;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      text-transform: none;
-      letter-spacing: 0.01em;
-      color: #374151;
-      margin: 0 0 1rem;
-    }
-    .pt-tt-prose {
-      max-width: 28rem;
-      margin: 0 auto;
-      font-size: 0.875rem;
-      font-weight: 400;
-      line-height: 1.6;
-      color: #1f2937;
-      flex: 1 1 auto;
-    }
-    .pt-tt-prose p { margin: 0 0 0.75rem; }
-    .pt-tt-prose p:last-child { margin-bottom: 0; }
-    .pt-tt-prose a.pt-tt-map {
-      color: #15803d;
-      font-weight: 600;
-      text-decoration: none;
-    }
-    .pt-tt-prose a.pt-tt-map:hover { text-decoration: underline; }
-    .pt-tt-pickle-logo-art {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      margin: 1.15rem auto 0;
-      max-width: min(28rem, 100%);
-    }
-    .pt-tt-pickle-logo-icon {
-      display: block;
-      width: auto;
-      max-width: min(100%, 420px);
-      height: auto;
-    }
-    .pt-tt-pickle-footer {
-      margin-top: auto;
-      padding-top: 1rem;
-      text-align: center;
-    }
-    .pt-tt-pickle-footer .pt-tt-map {
-      font-size: 0.875rem;
-    }
-
-    /* Pickleball — channel videos */
-    .pt-tt-videos-wrap {
-      margin: 2.25rem auto 2.5rem;
-      max-width: 56rem;
-      padding: 0 0.5rem;
-    }
-    .pt-tt-videos-title {
-      font-family: "Playfair Display", Georgia, serif;
-      font-size: clamp(1.35rem, 3vw, 1.75rem);
-      font-style: italic;
-      font-weight: 600;
-      color: #1f2937;
-      text-align: center;
-      margin: 0 0 0.35rem;
-    }
-    .pt-tt-videos-channel {
-      text-align: center;
-      font-size: 0.875rem;
-      margin: 0 0 1.25rem;
-    }
-    .pt-tt-videos-channel a {
-      color: var(--accent);
-      font-weight: 500;
-      text-decoration: none;
-    }
-    .pt-tt-videos-channel a:hover {
-      text-decoration: underline;
-    }
-    .pt-tt-videos-note {
-      text-align: center;
-      font-size: 0.8125rem;
-      color: var(--text-muted);
-      margin: -0.35rem 0 1.1rem;
-    }
-    .pt-tt-videos-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-      align-items: start;
-    }
-    .pt-tt-video-embed {
-      position: relative;
-      aspect-ratio: 16 / 9;
-      width: 100%;
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: #0f172a;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    }
-    .pt-tt-video-embed iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    /* Gallery (below Videos) */
-    .about-gallery-wrap {
-      margin: 2.5rem auto 2.5rem;
-      max-width: 56rem;
-      padding: 0 0.5rem;
-    }
-    .about-gallery-title {
-      font-family: "Playfair Display", Georgia, serif;
-      font-size: clamp(1.35rem, 3vw, 1.75rem);
-      font-style: italic;
-      font-weight: 600;
-      color: #1f2937;
-      text-align: center;
-      margin: 0 0 0.35rem;
-    }
-    .about-gallery-lead {
-      text-align: center;
-      font-size: 0.8125rem;
-      color: var(--text-muted);
-      margin: 0 0 1.25rem;
-      line-height: 1.5;
-    }
-    @media (max-width: 768px) {
-      .pt-tt-split-row--pickle {
-        grid-template-columns: 1fr;
-      }
-      .pt-tt-split-row__photo--pickle {
-        order: -1;
-      }
-      .pt-tt-panel--pickle {
-        padding: 3.25rem 1.5rem 1.75rem;
-      }
-      .pt-tt-videos-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="../css/about.css">
+  <noscript><link rel="stylesheet" href="../css/about-noscript.css"></noscript>
 </head>
-<body>
+<body class="about-page">
+  <a href="#main-content" class="gh-skip-link">Skip to main content</a>
   <header>
     <div class="container">
       <nav>
@@ -314,127 +34,160 @@
     </div>
   </header>
 
-  <main>
-    <section class="hero">
+  <main id="main-content" tabindex="-1">
+    <section class="about-hero about-reveal">
+      <div class="about-hero__bg" aria-hidden="true"></div>
       <div class="container">
-        <h1>About Us</h1>
-        <p>Houston's first dedicated badminton facility</p>
+        <div class="about-hero__inner">
+          <p class="about-hero__eyebrow">About Houston Badminton Center</p>
+          <h1 class="about-hero__title">Built for play, training, and community.</h1>
+          <p class="about-hero__lead">Houston's first dedicated badminton facility, created for beginners, families, and competitive players who want a better place to train and grow.</p>
+          <ul class="about-hero__stats">
+            <li><span>12</span> Competition-ready courts</li>
+            <li><span>30 ft</span> Ceiling clearance</li>
+            <li><span>7 days</span> Active community</li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <section class="features">
+    <section class="about-intro about-reveal">
+      <div class="container about-intro__grid">
+        <div class="about-intro__copy">
+          <h2>A home court for every level</h2>
+          <p>From your first rally to tournament-level training, HBC gives you space, quality courts, and a welcoming atmosphere to improve. We focus on making every visit feel smooth, energetic, and worth coming back for.</p>
+        </div>
+        <blockquote class="about-intro__quote">
+          <p>"We built HBC to give Houston a true badminton destination - one that balances high-level training with a friendly, open community."</p>
+          <cite>Houston Badminton Center Team</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="features about-facility about-reveal">
       <div class="container">
-        <h2 class="our-facility-title">Our facility</h2>
-        <figure class="facility-hero">
-          <img src="../images/HBC-Facility.png" width="1024" height="576" alt="Aerial view of Houston Badminton Center: building with green and blue accents, solar panels on the roof, and parking">
+        <div class="about-section-head">
+          <p class="about-section-head__eyebrow">The Facility</p>
+          <h2 class="about-section-head__title">Designed to help you play your best</h2>
+          <p class="about-section-head__lead">A premium environment with thoughtful details for comfort, safety, and performance.</p>
+        </div>
+        <figure class="about-facility__figure">
+          <img src="../images/HBC-Facility.png" width="1024" height="576" alt="Aerial view of Houston Badminton Center with courts and parking">
         </figure>
-        <div class="facility-grid">
-          <div class="facility-col facility-col--blue">
-            <h3>12 Courts</h3>
-            <ul>
-              <li>Eight (8) high quality maplewood sports courts</li>
-              <li>Four (4) courts with BWF-approved Nagase Kenko badminton mats on top of wood flooring</li>
-              <li>Anchored sports floor system with 64% shock absorption (badminton standard 55%–75%; good for knees)</li>
-              <li>Matte finish on wood flooring provides a low specular reflectance value to avoid glare</li>
-              <li>BWF-approved Victor net posts</li>
-              <li>6 feet between courts and 8 feet behind courts</li>
-            </ul>
-            <h3>High Ceilings</h3>
-            <p style="margin:0 0 0.65rem;">30 foot clearance</p>
-            <h3>Dark colored walls and ceiling</h3>
-            <ul>
-              <li>Provides contrast for good shuttlecock visibility</li>
-            </ul>
-            <h3>Strip lighting positioned between courts</h3>
-            <ul>
-              <li>Provides even light distribution and reduces glare</li>
-            </ul>
+        <div class="about-facility__grid">
+          <article class="about-fcard about-fcard--blue">
+            <h3>Courts and lighting</h3>
+            <div class="about-fcard__block">
+              <h4>12 premium courts</h4>
+              <ul>
+                <li>8 high-quality maplewood sports courts</li>
+                <li>4 courts with BWF-approved Nagase Kenko mats</li>
+                <li>Anchored sports floor system with 64% shock absorption</li>
+              </ul>
+            </div>
+            <div class="about-fcard__block">
+              <h4>Built for visibility</h4>
+              <ul>
+                <li>Matte wood finish to reduce glare</li>
+                <li>Dark walls and ceiling for shuttle contrast</li>
+                <li>Strip lighting positioned between courts</li>
+              </ul>
+            </div>
+          </article>
+          <article class="about-fcard about-fcard--mint">
+            <h3>Comfort and amenities</h3>
+            <div class="about-fcard__block">
+              <h4>Player-ready spaces</h4>
+              <ul>
+                <li>30-foot ceiling clearance</li>
+                <li>Upstairs mezzanine with workout area</li>
+                <li>Media room for kids and parents</li>
+              </ul>
+            </div>
+            <div class="about-fcard__block">
+              <h4>On-site support</h4>
+              <ul>
+                <li>Locker and shower rooms (shampoo/bodywash provided)</li>
+                <li>Pro shop and racket stringing service</li>
+                <li>Rental rackets, drinks, and snacks available</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <div class="about-pb-head about-reveal">
+      <div class="about-section-head">
+        <p class="about-section-head__eyebrow">Pickleball</p>
+        <h2 class="about-section-head__title">More ways to play at HBC</h2>
+      </div>
+    </div>
+    <section class="about-pb about-reveal">
+      <div class="about-pb__split">
+        <div class="about-pb__photo">
+          <img src="../images/pickleball-court.png" width="1024" height="651" alt="Pickleball play at Houston Badminton Center">
+        </div>
+        <div class="about-pb__panel">
+          <p class="about-pb__kicker">at Houston Badminton Center</p>
+          <div class="about-pb__prose">
+            <p>Open play on weekdays, 10am-5pm. Memberships and drop-in play are available. Contact us for current hours outside that window.</p>
+            <p>Membership rates are typically <strong>$20-$27.50</strong> per month depending on the plan. Drop-in play is <strong>$5-$7</strong> per session.</p>
+            <p>Learn more at <a href="https://www.google.com/maps/search/?api=1&amp;query=12233+Robin+Blvd,+Houston,+TX+77045" target="_blank" rel="noopener noreferrer">Houston Pickleball Center</a> - 12233 Robin Blvd, Houston, TX 77045.</p>
           </div>
-          <div class="facility-col facility-col--mint">
-            <h3>Solar panels</h3>
-            <p style="margin:0 0 0.65rem;">On-site renewable energy</p>
-            <h3>Upstairs Mezzanine</h3>
-            <ul>
-              <li>Includes a weight room and workout equipment along with a large open area for hosting parties/events</li>
-            </ul>
-            <h3>Air Conditioning and Heating</h3>
-            <ul>
-              <li>Air dispersion system designed to give low velocity air distribution, limiting impact on shuttlecock flight</li>
-            </ul>
-            <h3>Media Room</h3>
-            <ul>
-              <li>Comfortable, relaxing and furnished area for kids and parents</li>
-            </ul>
-            <h3>Men and Women Locker/Shower Rooms</h3>
-            <ul>
-              <li>Shampoo and bodywash provided; towels are not provided</li>
-            </ul>
-            <h3>Drinks and Snacks Available</h3>
-            <h3>Pro Shop</h3>
-            <ul>
-              <li>Stringing service, managed by Sportsnet International</li>
-            </ul>
-            <h3>Rental Rackets Available</h3>
+          <div class="about-pb__logo">
+            <img src="../images/houston-pickleball-center-logo.png?v=7" width="492" height="266" alt="Houston Pickleball Center logo" decoding="async">
+          </div>
+          <div class="about-pb__footer">
+            <a href="https://www.google.com/maps/search/?api=1&amp;query=12233+Robin+Blvd,+Houston,+TX+77045" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="container pickleball-section-title-wrap">
-        <h2 class="our-facility-title">Pickleball</h2>
-      </div>
-
-      <div class="pt-tt-wrap pt-tt-wrap--full">
-        <div class="pt-tt-split-row--pickle">
-          <div class="pt-tt-split-row__photo--pickle">
-            <img src="../images/pickleball-court.png" width="1024" height="651" alt="Pickleball play at Houston Badminton Center">
-          </div>
-          <div class="pt-tt-panel--pickle">
-            <p class="pt-tt-kicker">at the Houston Badminton Center</p>
-            <div class="pt-tt-prose">
-              <p>Open play on weekdays, 10am–5pm. Memberships and drop-in play are available — contact us for current hours outside that window.</p>
-              <p>Membership rates are typically <strong>$20–$27.50</strong> per month depending on the plan. Drop-in play is <strong>$5–$7</strong> per session.</p>
-              <p>Learn more at <a class="pt-tt-map" href="https://www.google.com/maps/search/?api=1&amp;query=12233+Robin+Blvd,+Houston,+TX+77045" target="_blank" rel="noopener noreferrer">Houston Pickleball Center</a> — 12233 Robin Blvd, Houston, TX 77045.</p>
-            </div>
-            <div class="pt-tt-pickle-logo-art">
-              <img class="pt-tt-pickle-logo-icon" src="../images/houston-pickleball-center-logo.png?v=7" width="492" height="266" alt="Houston Pickleball Center" decoding="async">
-            </div>
-            <div class="pt-tt-pickle-footer">
-              <a class="pt-tt-map" href="https://www.google.com/maps/search/?api=1&amp;query=12233+Robin+Blvd,+Houston,+TX+77045" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
-            </div>
-          </div>
+    <section class="about-videos about-reveal">
+      <div class="container">
+        <div class="about-videos__head">
+          <h2 class="about-videos__title">Featured Videos</h2>
+          <p class="about-videos__channel"><a href="https://www.youtube.com/channel/UCoZHjfDKo4TyZi8O5agjHIQ" target="_blank" rel="noopener noreferrer">Tuyen Van - YouTube channel</a></p>
+          <p class="about-videos__note">Featured videos, newest to oldest (left to right).</p>
         </div>
-      </div>
-
-      <div class="container pt-tt-videos-wrap">
-        <h2 class="pt-tt-videos-title">Videos</h2>
-        <p class="pt-tt-videos-channel">
-          <a href="https://www.youtube.com/channel/UCoZHjfDKo4TyZi8O5agjHIQ" target="_blank" rel="noopener noreferrer">Tuyen Van — YouTube channel</a>
-        </p>
-        <p class="pt-tt-videos-note">Featured videos, newest to oldest (left to right).</p>
-        <!-- Publish order: le1G47d1dNs (2020-11) → fil1-l7-DME (2017-10) → yzVneBHNR50 (2016-06) -->
-        <div class="pt-tt-videos-grid">
-          <div class="pt-tt-video-embed">
+        <div class="about-videos__grid">
+          <div class="about-video-embed">
             <iframe src="https://www.youtube-nocookie.com/embed/le1G47d1dNs" title="2v1 badminton with Kenneth Goh vs. Tuyen Van and Chiew Hong Lee" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
           </div>
-          <div class="pt-tt-video-embed">
+          <div class="about-video-embed">
             <iframe src="https://www.youtube-nocookie.com/embed/fil1-l7-DME" title="2017 South ORC in Houston, Texas" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
           </div>
-          <div class="pt-tt-video-embed">
+          <div class="about-video-embed">
             <iframe src="https://www.youtube-nocookie.com/embed/yzVneBHNR50" title="Houston Badminton Center Summer Camp" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="container about-gallery-wrap">
-        <h2 class="about-gallery-title">Gallery</h2>
-        <p class="about-gallery-lead">Snapshots from Houston Badminton Center — courts, programs, and community.</p>
+    <section class="about-gallery-wrap about-reveal">
+      <div class="container">
+        <div class="about-section-head">
+          <p class="about-section-head__eyebrow">Gallery</p>
+          <h2 class="about-section-head__title">A look inside HBC</h2>
+          <p class="about-section-head__lead">Snapshots from Houston Badminton Center - courts, programs, and community.</p>
+        </div>
         <div id="about-gallery-root"></div>
       </div>
+    </section>
 
+    <section class="about-community about-reveal">
       <div class="container">
-        <div class="about-community">
-          <h2>Community</h2>
-          <p>We welcome players of all ages and skill levels. Whether you are training for competition or picking up a racket for the first time, HBC is your place to play.</p>
+        <div class="about-community__panel">
+          <div class="about-community__inner">
+            <p class="about-community__eyebrow">Community First</p>
+            <h2 class="about-community__title">Come for the game, stay for the people.</h2>
+            <p class="about-community__text">Whether you are training for competition or picking up a racket for the first time, HBC is built to welcome you. We are proud to be a home for every age, skill level, and playing style.</p>
+            <div class="about-community__actions">
+              <a href="Client_Contact.html" class="btn btn-ghost">Talk to our team</a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -442,10 +195,11 @@
 
   <footer>
     <div class="container">
-      <p>© 2026 Houston Badminton Center. All rights reserved.</p>
+      <p>&copy; 2026 Houston Badminton Center. All rights reserved.</p>
     </div>
   </footer>
   <script src="/gallery-about.js"></script>
+  <script src="/about-page.js"></script>
   <script src="/client-nav.js"></script>
 </body>
 </html>
