@@ -2,12 +2,12 @@ import dotenv
 from os import environ
 from sql_functions import create_conn
 from sshtunnel import SSHTunnelForwarder
-dotenv.load_dotenv("backend_access.env")
 tunnel=None
 sql_connection=None
 
 def ssh_hell():
     global tunnel,sql_connection
+    dotenv.load_dotenv("backend_access.env")
     tunnel =SSHTunnelForwarder(
         (environ['SSH_HOST'],22),
         ssh_pkey=environ['SSH_PKEY'],

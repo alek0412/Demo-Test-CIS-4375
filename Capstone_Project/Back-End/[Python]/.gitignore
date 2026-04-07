@@ -15,6 +15,3 @@ Capstone_Project/Front-End/uploads/
 
 # EC2 / SSH keys (never commit)
 *.pem
-
-# Python cache files
-./__pycache__/

@@ -22,9 +22,17 @@ def add_customer():
         zip_code=request_json['zip_code']
         birthdate=request_json['birthdate']
         password=request_json['password']
+        emergency_first=request_json['emergency_first']
+        emergency_last=request_json['emergency_last']
+        relationship=request_json['relationship']
+        emergency_phone=request_json['emergency_phone']
+        emergency_email=request_json['emergency_email']
         query_tuple=(first_name,last_name,phone,email.lower(),street_address,city,state,zip_code)
+        emergency_tuple=(emergency_first,emergency_last,relationship,emergency_phone,emergency_email)
     except (KeyError,TypeError):
         return make_response("Invalid parameters.",400)
+    if emergency_phone==phone or emergency_email == email:
+        make_response("You cannot have the same contact information for emergency contacts",400)
     email_check=sql_functions.execute_read(sql_connection,"Select email from customer;")
     try:
         for database_email in email_check:
@@ -39,22 +47,27 @@ def add_customer():
         query_tuple+=(2,birthdate)
     else:
         query_tuple+=(3,birthdate)
-    salt=urandom(16)
+    salt=urandom(20)
     password_hash=hashlib.pbkdf2_hmac('sha256',password.encode(encoding='utf-8'),salt,50000)
     salted_password=password_hash.hex()
     updated_salt=salt.hex()
     query_tuple+=(salted_password,updated_salt)
     user_query="insert into customer(customer_first_name,customer_last_name,phone,email,street_address,city,state,zip_code,membership_status,birthdate,password,salt) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    emergency_query="insert into emergency_contact(emergency_first,emergency_last,relationship,emergency_phone,emergency_email,customer_id) values(%s,%s,%s,%s,%s,%s)"
     create_query=sql_functions.execute_query(sql_connection,user_query,query_tuple)
     if type(create_query)==int:
         return make_response("Server is unable to create customer",503)
-    customer_id=sql_functions.execute_read(sql_connection,"Select customer_id from customer where email = %s;",(email,))[0]["customer_id"]
+    customer_id=sql_functions.execute_read(sql_connection,"Select customer_id from customer where email = %s;",(email,))
+    print(customer_id)
     if type(customer_id)==int:
         print(f"Error code: {customer_id}")
         return make_response("Server is unable to fetch customer",503)
-    waiver_query=sql_functions.execute_query(sql_connection,"insert into waiver (customer_id,waiver_status) values(%s,%s)",(customer_id,2))
+    waiver_query=sql_functions.execute_query(sql_connection,"insert into waiver (customer_id,waiver_status) values(%s,%s)",(customer_id[0]['customer_id'],2))
     if type(waiver_query)==int:
         return make_response("Server is unable to create waiver",503)
+    emergency_execute=sql_functions.execute_query(sql_connection,emergency_query,emergency_tuple+(customer_id[0]['customer_id'],))
+    if type(emergency_execute)==int:
+        return make_response("Server is unable to create emergency contact",503)
     return make_response("Customer created successfully!",201)
 @customer_blueprint.route("/api/customer-login",methods=["post"])
 def customer_login():
@@ -105,3 +118,27 @@ def customer_remove():
         session.pop(attribute,None)
     return make_response("Successfully deleted customer!",200)    
 
+@customer_blueprint.route("/api/customer",methods=['patch'])
+def update_details():
+    fields = ["last_name", "first_name", "email", "street_address","city", "state", "zip_code", "password"]
+    request_json=request.get_json()
+    for field in fields:
+        try:
+            if field =="password":
+                new_salt=urandom(20)
+                new_password = hashlib.pbkdf2_hmac("sha256",request_json['password'],new_salt,50000).hex()
+                new_salt=new_salt.hex()
+                new_password_query=sql_functions.execute_query(sql_connection,"update customer set password = %s,salt=%s where email = %s",(new_password,new_salt,session['email']))
+                if type(new_password_query)==int:
+                    return make_response("Unable to update password",503)
+            else:
+                new_entry_query=sql_functions.execute_query(sql_connection,f"update customer set {field}"+"%s where email =%s",(request_json[field],session['email']))
+                if type(new_entry_query)==int:
+                    return make_response(f"Unable to update {field}",503)
+            session[field] = request_json[field]
+        except KeyError:
+            pass 
+        session.modified=True
+        return make_response("Successfully updated customer!",200)      
+           
+              
