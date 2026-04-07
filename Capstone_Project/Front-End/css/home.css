@@ -129,11 +129,11 @@
   }
   .ftv-inner {
     position: relative;
-    padding: 1.85rem 1.65rem 1.65rem;
+    padding: 1rem 1.65rem 1.65rem;
   }
   @media (min-width: 480px) {
     .ftv-inner {
-      padding: 2.15rem 2.1rem 1.85rem;
+      padding: 1.3rem 2.1rem 1.85rem;
     }
   }
   .ftv-header {
@@ -171,6 +171,7 @@
     letter-spacing: -0.045em;
     line-height: 1.12;
     margin: 0;
+    text-align: center;
     background: linear-gradient(90deg, #06b6d4 0%, #22d3ee 25%, #38bdf8 50%, #60a5fa 75%, #3b82f6 100%);
     background-size: 200% 100%;
     animation: ftv-title-flow 8s linear infinite;
@@ -187,7 +188,7 @@
     -webkit-text-fill-color: inherit;
   }
   .ftv-header .ftv-intro {
-    margin: 0.75rem 0 0;
+    margin: 2.25rem 0 0;
     font-size: 1.0625rem;
     line-height: 1.65;
     color: #000000;

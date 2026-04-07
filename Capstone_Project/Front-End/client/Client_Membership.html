@@ -3,189 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Memberships Available — Houston Badminton Center</title>
+  <title>Membership — Houston Badminton Center</title>
+  <meta name="description" content="Membership plans, day passes, court reservations, and locker rentals at Houston Badminton Center.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css">
-  <style>
-  .hero { padding-top: 1.5rem; padding-bottom: 0.5rem; }
-  section.features { padding-top: 0.5rem; }
-  @keyframes specials-enter {
-    from {
-      opacity: 0;
-      transform: translateY(20px) scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-  @keyframes specials-line-sweep {
-    0% { background-position: -200% 0; }
-    42% { background-position: 200% 0; }
-    42.001%, 100% { background-position: 200% 0; }
-  }
-  .specials-box {
-    max-width: 560px;
-    margin: 0 auto 1.5rem;
-    background: #b91c1c;
-    border: 1px solid #991b1b;
-    border-radius: var(--radius);
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-    animation: specials-enter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  }
-  .specials-box.is-open {
-    animation: specials-enter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-  .specials-box.is-open::before {
-    animation: none;
-    opacity: 0;
-  }
-  .specials-box::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      110deg,
-      transparent 0%,
-      transparent 35%,
-      rgba(255, 255, 255, 0.2) 45%,
-      rgba(255, 255, 255, 0.35) 50%,
-      rgba(255, 255, 255, 0.2) 55%,
-      transparent 65%,
-      transparent 100%
-    );
-    background-size: 200% 100%;
-    animation: specials-line-sweep 12s ease-in-out infinite;
-    pointer-events: none;
-    border-radius: inherit;
-  }
-  .specials-box:not(.is-open):hover {
-    transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 24px rgba(185, 28, 28, 0.25);
-  }
-  .specials-box.is-open:hover {
-    transform: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-  .specials-box .specials-teaser {
-    padding: 1rem 1.25rem;
-    text-align: center;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #ffffff;
-    position: relative;
-    min-height: 1.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  .specials-box .teaser-closed,
-  .specials-box .teaser-open {
-    display: block;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-  .specials-box .teaser-open {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .specials-box.is-open .teaser-closed {
-    opacity: 0;
-    transform: scale(0.95);
-    pointer-events: none;
-  }
-  .specials-box.is-open .teaser-open {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-    pointer-events: none;
-    animation: specials-text-form 0.35s ease-out;
-  }
-  @keyframes specials-text-form {
-    from {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-  }
-  .specials-box:not(.is-open) .teaser-closed {
-    animation: specials-text-form-closed 0.4s ease-out;
-  }
-  @keyframes specials-text-form-closed {
-    from {
-      opacity: 0;
-      transform: scale(0.92);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-  .specials-box .specials-teaser::after {
-    content: "▼";
-    font-size: 0.65rem;
-    font-weight: 400;
-    opacity: 0.9;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    display: inline-block;
-  }
-  .specials-box.is-open .specials-teaser::after {
-    transform: rotate(-180deg);
-  }
-  .specials-box .specials-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease;
-  }
-  .specials-box.is-open .specials-content {
-    max-height: 280px;
-  }
-  .specials-box .specials-inner {
-    padding: 0 1.25rem 1.25rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
-  }
-  .specials-box .specials-inner p {
-    margin: 0 0 1rem;
-    font-size: 0.9375rem;
-    line-height: 1.5;
-    color: #ffffff;
-  }
-  .specials-box .specials-inner p:last-child {
-    margin-bottom: 0;
-  }
-  .features .pricing-lead {
-    text-align: center;
-  }
-  .features .pricing-lead h2 {
-    margin-bottom: 0.35rem;
-  }
-  .features .pricing-lead .pricing-note {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    color: var(--text-muted);
-    text-align: center;
-    line-height: 1.5;
-  }
-</style>
+  <link rel="stylesheet" href="../css/membership-page.css">
 </head>
-<body>
+<body class="mem-page">
+  <a href="#main-content" class="mem-skip-link">Skip to main content</a>
+
   <header>
     <div class="container">
       <nav>
@@ -207,40 +35,154 @@
     </div>
   </header>
 
-  <main>
-    <section class="hero">
+  <main id="main-content" tabindex="-1">
+    <section id="section-hero" class="mem-hero hero" aria-labelledby="mem-hero-title">
+      <div class="mem-hero__bg" aria-hidden="true"></div>
       <div class="container">
-        <h1>Memberships Available</h1>
-        <p>Plans and pricing we offer at Houston Badminton Center.</p>
+        <div class="mem-hero__inner">
+          <h1 id="mem-hero-title" class="mem-hero__title">Membership built for court time</h1>
+          <p class="mem-hero__lead">
+            Transparent pricing for memberships, day passes, reservations, and lockers—so you can plan your visits and focus on the game.
+          </p>
+          <ul class="mem-hero__stats">
+            <li><span>Plans</span> Memberships &amp; day passes</li>
+            <li><span>Live</span> Published pricing sheet</li>
+            <li><span>Easy</span> Court reservations &amp; lockers</li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <section class="features">
+    <nav class="mem-toc" aria-label="On this page">
       <div class="container">
-        <div class="pricing-lead">
-          <h2>Pricing</h2>
-          <p class="pricing-note">Membership, day passes, court reservations, and locker rentals. Sales tax will be added to prices below.</p>
+        <div class="mem-toc__inner">
+          <ul class="mem-toc__list">
+            <li><a href="#section-benefits">Member benefits</a></li>
+            <li><a href="#section-rates">Rates &amp; specials</a></li>
+            <li><a href="#section-actions">Account changes</a></li>
+          </ul>
         </div>
-        <div class="specials-box" id="specials-box" role="button" tabindex="0" aria-expanded="false" aria-label="View current specials">
-          <div class="specials-teaser">
-            <span class="teaser-closed" id="membership-specials-teaser-closed">Click here to see our specials!</span>
-            <span class="teaser-open">Specials</span>
+      </div>
+    </nav>
+
+    <section id="section-benefits" class="mem-section mem-values" aria-labelledby="mem-benefits-title" tabindex="-1">
+      <div class="container">
+        <header class="mem-section-head mem-section-head--center mem-reveal">
+          <span class="mem-step" aria-hidden="true">01</span>
+          <div class="mem-section-head__copy">
+            <p class="mem-values__kicker">Why members choose HBC</p>
+            <h2 id="mem-benefits-title">Everything you need to stay on the court</h2>
+            <p class="mem-section-lead">From flexible entry options to clear rates—our membership experience is designed around real weekly play, not fine print.</p>
           </div>
-          <div class="specials-content">
-            <div class="specials-inner" id="membership-specials-inner">
-              <p><strong>Weekend Happy Hour</strong><br>Saturday and Sunday after 7PM<br>$3 OFF Regular Drop-in Fees<br>Members can bring first-time guests for free</p>
-              <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.35); margin: 0.75rem 0;">
-              <p style="margin-top: 1rem;"><strong>Day Pass Package</strong><br>Buy nine day passes and get one free!<br><span style="color: rgba(255, 255, 255, 0.85); font-size: 0.9375rem;">(Day passes do not expire)</span></p>
+        </header>
+        <div class="mem-values__surface">
+          <div class="mem-grid">
+            <article class="mem-card mem-reveal">
+              <div class="mem-card__icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19h16M7 16l3-8 4 5 4-9"/><circle cx="9" cy="8" r="1.5" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <h3>Reservations &amp; walk-ins</h3>
+              <p>Book ahead when it’s busy—or drop in when the schedule allows. Your membership supports both rhythms.</p>
+            </article>
+            <article class="mem-card mem-reveal">
+              <div class="mem-card__icon mem-card__icon--accent" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M8 8l4-4 4 4M8 16l4 4 4-4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <h3>Member-forward pricing</h3>
+              <p>See the full sheet below—membership, day passes, court blocks, and lockers in one place.</p>
+            </article>
+            <article class="mem-card mem-reveal">
+              <div class="mem-card__icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <h3>Bring a friend</h3>
+              <p>Specials and promos (when active) reward members—check the red banner for what’s running now.</p>
+            </article>
+            <article class="mem-card mem-reveal">
+              <div class="mem-card__icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16M16 4v16"/></svg>
+              </div>
+              <h3>Lockers &amp; add-ons</h3>
+              <p>Rent locker space when you want gear on-site—details on the official pricing asset.</p>
+            </article>
+            <article class="mem-card mem-reveal">
+              <div class="mem-card__icon mem-card__icon--accent" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <h3>Holds &amp; changes</h3>
+              <p>Need a suspension or termination? Use the secure Google form—we’ll route it to the desk.</p>
+            </article>
+            <article class="mem-card mem-reveal">
+              <div class="mem-card__icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <h3>Always current</h3>
+              <p>This page pulls the latest pricing image or PDF from our system—what you see is what we publish.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="section-rates" class="mem-section features mem-pricing" aria-labelledby="mem-pricing-heading" tabindex="-1">
+      <div class="container">
+        <header class="mem-section-head mem-section-head--center mem-reveal">
+          <span class="mem-step" aria-hidden="true">02</span>
+          <div class="mem-section-head__copy">
+            <p class="mem-section-eyebrow">Transparency</p>
+            <h2 id="mem-pricing-heading">Rates &amp; promotions</h2>
+            <p class="pricing-note">Membership, day passes, court reservations, and locker rentals. Sales tax will be added to prices below.</p>
+          </div>
+        </header>
+
+        <div class="mem-panel mem-panel--highlight mem-reveal">
+          <div
+            class="specials-box"
+            id="specials-box"
+            role="button"
+            tabindex="0"
+            aria-expanded="false"
+            aria-label="View current specials"
+          >
+            <div class="specials-teaser">
+              <span class="teaser-closed" id="membership-specials-teaser-closed">Click here to see our specials!</span>
+              <span class="teaser-open">Specials</span>
+            </div>
+            <div class="specials-content">
+              <div class="specials-inner" id="membership-specials-inner">
+                <p><strong>Weekend Happy Hour</strong><br>Saturday and Sunday after 7PM<br>$3 OFF Regular Drop-in Fees<br>Members can bring first-time guests for free</p>
+                <hr class="specials-inner-divider">
+                <p class="specials-package-p"><strong>Day Pass Package</strong><br>Buy nine day passes and get one free!<br><span class="specials-package-note">(Day passes do not expire)</span></p>
+              </div>
             </div>
           </div>
         </div>
-        <figure class="membership-pricing-figure">
-          <div id="membership-pricing-asset-host"></div>
-          <figcaption class="membership-pricing-hint">Click the image to zoom in. Use the × in the top-right or press Escape to close.</figcaption>
-        </figure>
-        <div class="contact-membership-actions">
-          <h2>Membership Actions</h2>
-          <p>Use this form to request a <strong>suspension</strong> (temporary hold) or <strong>termination</strong> of your membership.</p>
+
+        <div class="mem-panel mem-panel--sheet mem-reveal">
+          <h3 class="mem-subhead" id="mem-sheet-heading">Official pricing sheet</h3>
+          <p class="mem-subhead-note">Published from our admin system. Select the preview below to open a full-screen view (Esc to close).</p>
+          <div class="mem-pricing__sheet-wrap">
+            <figure class="membership-pricing-figure" aria-labelledby="mem-sheet-heading">
+              <div id="membership-pricing-asset-host"></div>
+              <figcaption class="membership-pricing-hint">Click the image to zoom in. Use the × in the top-right or press Escape to close.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="section-actions" class="mem-section mem-account" aria-labelledby="mem-actions-heading" tabindex="-1">
+      <div class="container">
+        <header class="mem-section-head mem-section-head--center mem-reveal">
+          <span class="mem-step" aria-hidden="true">03</span>
+          <div class="mem-section-head__copy">
+            <p class="mem-section-eyebrow">Forms</p>
+            <h2 id="mem-actions-heading">Membership actions</h2>
+            <p class="mem-section-lead">Request a <strong>suspension</strong> (temporary hold) or <strong>termination</strong> through our secure form. Staff will follow up as needed.</p>
+          </div>
+        </header>
+        <div class="contact-membership-actions mem-reveal">
+          <p class="mem-cta-hint">Google Forms · opens in a new tab</p>
           <a
             class="btn-membership-form"
             href="https://docs.google.com/forms/d/e/1FAIpQLScq6geNUvUqirmi5MzF0fRtIF17vmfUG4JxV--DejGkdL-2yQ/viewform"
@@ -257,6 +199,14 @@
       <p>© 2026 Houston Badminton Center. All rights reserved.</p>
     </div>
   </footer>
+
+  <button type="button" id="gh-back-top" aria-label="Back to top" aria-hidden="true" tabindex="-1">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </svg>
+  </button>
+
+  <script src="/membership-page.js"></script>
   <script>
     (function() {
       var box = document.getElementById('specials-box');

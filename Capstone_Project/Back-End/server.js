@@ -136,7 +136,8 @@ const server = http.createServer(async (req, res) => {
     urlPath === '/availability-popular-times.js' ||
     urlPath === '/admin-membership-specials.js' ||
     urlPath === '/membership-specials-display.js' ||
-    urlPath === '/membership-pricing-lightbox.js'
+    urlPath === '/membership-pricing-lightbox.js' ||
+    urlPath === '/membership-page.js'
   ) {
     const staticPath = path.join(__dirname, 'static', path.basename(urlPath));
     fs.stat(staticPath, (err, stat) => {

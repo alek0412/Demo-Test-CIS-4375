@@ -1,11 +1,574 @@
-/* General_Membership.html & Client_Membership.html */
-.hero {
-  padding-top: 1.5rem;
-  padding-bottom: 0.5rem;
+/* Membership — General_Membership.html & Client_Membership.html (premium “mem-page” shell) */
+
+.mem-page {
+  /* Match About Us page tokens (about.css / .about-page) */
+  --mem-ink: #0f172a;
+  --mem-muted: #475569;
+  --mem-surface: rgba(255, 255, 255, 0.72);
+  --mem-border: rgba(15, 23, 42, 0.08);
+  --mem-glow: rgba(6, 182, 212, 0.35);
+  --mem-accent: #b91c1c;
+  --mem-accent-soft: rgba(185, 28, 28, 0.12);
+  --about-hero-tint: linear-gradient(135deg, #f8fafc 0%, #eff6ff 38%, #f0fdf4 72%, #fefce8 100%);
+  --mem-section-y: clamp(2.5rem, 5vw, 4rem);
+  --mem-band: #eef2f7;
+  background: #ffffff;
+  color: var(--mem-ink);
+}
+
+#section-hero,
+#section-benefits,
+#section-rates,
+#section-actions {
+  scroll-margin-top: 1.5rem;
+}
+
+.mem-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.mem-skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  width: auto;
+  height: auto;
+  padding: 0.65rem 1rem;
+  background: #111827;
+  color: #fff;
+  border-radius: 10px;
+  z-index: 100000;
+  outline: 2px solid #22d3ee;
+}
+
+/* —— Jump navigation (reset global `nav` grid from styles.css — only header should use that layout) —— */
+nav.mem-toc,
+.mem-toc {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  grid-template-columns: none;
+  gap: 0;
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 0.85rem 0;
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px -20px rgba(15, 23, 42, 0.15);
+  text-align: center;
+}
+.mem-toc .container {
+  display: block;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.mem-toc__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  text-align: center;
+}
+@media (min-width: 520px) {
+  .mem-toc__inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.65rem 1rem;
+  }
+}
+.mem-toc__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mem-toc__list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.mem-toc__list li:not(:last-child)::after {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  flex-shrink: 0;
+}
+.mem-toc a {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+  text-decoration: none;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.mem-toc a:hover {
+  background: rgba(6, 182, 212, 0.1);
+  color: #0369a1;
+}
+.mem-toc a:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+/* —— Section system —— */
+.mem-section {
+  padding: var(--mem-section-y) 0;
+}
+.mem-section-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem 1.25rem;
+  align-items: start;
+  max-width: 52rem;
+  margin: 0 auto 2rem;
+  text-align: left;
+}
+@media (min-width: 640px) {
+  .mem-section-head {
+    gap: 1.25rem 1.75rem;
+    margin-bottom: 2.25rem;
+  }
+}
+.mem-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 14px;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0369a1;
+  background: linear-gradient(145deg, rgba(6, 182, 212, 0.18), rgba(59, 130, 246, 0.08));
+  border: 1px solid rgba(6, 182, 212, 0.28);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  flex-shrink: 0;
+}
+.mem-section-head__copy {
+  min-width: 0;
+}
+.mem-section-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b91c1c;
+  margin: 0 0 0.35rem;
+}
+/* Section h2: match .about-section-head__title (about.css) */
+.mem-section-head h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.85rem, 4vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 0.65rem;
+  color: var(--mem-ink);
+}
+.mem-section-lead,
+.mem-values__sub {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--mem-muted);
+  max-width: 40rem;
+}
+
+.mem-section-head--center {
+  text-align: center;
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+.mem-section-head--center .mem-step {
+  justify-self: center;
+}
+.mem-section-head--center .mem-section-lead,
+.mem-section-head--center .pricing-note {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mem-section-head .pricing-note {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--mem-muted);
+  text-align: inherit;
+}
+
+.mem-values {
+  padding: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(241, 245, 249, 0.65) 30%, rgba(241, 245, 249, 0.65) 70%, transparent 100%);
+  border-top: 1px solid rgba(15, 23, 42, 0.05);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+}
+.mem-values .mem-values__kicker {
+  margin-top: 0;
+}
+.mem-values__surface {
+  padding: 1.25rem;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid var(--mem-border);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 24px 48px -36px rgba(15, 23, 42, 0.2);
+}
+@media (min-width: 640px) {
+  .mem-values__surface {
+    padding: 1.75rem 1.5rem 1.65rem;
+  }
+}
+
+.mem-pricing {
+  padding: 0;
+}
+.mem-panel {
+  margin-bottom: 1.75rem;
+}
+.mem-panel:last-child {
+  margin-bottom: 0;
+}
+.mem-panel--sheet {
+  padding: 1.35rem 1.25rem 1.5rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .mem-panel--sheet {
+    padding: 1.65rem 1.5rem 1.75rem;
+  }
+}
+.mem-subhead {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem;
+  color: var(--mem-ink);
+  text-align: center;
+}
+.mem-subhead-note {
+  margin: 0 auto 1.15rem;
+  max-width: 40rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--mem-muted);
+  text-align: center;
+}
+
+.mem-account {
+  padding-bottom: calc(var(--mem-section-y) + 0.5rem);
+  background: linear-gradient(180deg, transparent, rgba(254, 242, 242, 0.35) 40%, transparent);
+}
+.mem-account .mem-section-head {
+  margin-bottom: 1.5rem;
+}
+
+/* —— Hero (same pattern as About page: tint, noise, Playfair title, stat pills) —— */
+.mem-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(3rem, 7vw, 5rem);
+  margin: 0 0 0.5rem;
+}
+
+.mem-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--about-hero-tint);
+}
+.mem-hero__bg::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(59, 130, 246, 0.14), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 85% 15%, rgba(16, 185, 129, 0.12), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 90%, rgba(185, 28, 28, 0.07), transparent 45%);
+}
+.mem-hero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+
+.mem-hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.mem-hero__inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+/* Hero title/lead/stats: same as .about-hero__title / __lead / __stats (about.css) */
+.mem-hero__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(2.35rem, 6vw, 3.65rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: var(--mem-ink);
+  margin: 0 0 1.1rem;
+}
+
+.mem-hero__lead {
+  font-size: clamp(1.0625rem, 2.1vw, 1.2rem);
+  line-height: 1.65;
+  color: var(--mem-muted);
+  margin: 0 auto 1.75rem;
+  max-width: 38rem;
+}
+
+.mem-hero__stats {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem 1rem;
+  margin: 0 0 2rem;
+  padding: 0;
+}
+.mem-hero__stats li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--mem-ink);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--mem-border);
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+.mem-hero__stats li span {
+  color: var(--mem-accent);
+  font-weight: 800;
+  font-size: 0.875rem;
+}
+@media (max-width: 640px) {
+  .mem-hero__stats {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .mem-hero__stats li {
+    justify-content: center;
+  }
+}
+
+.mem-values__kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b91c1c;
+  margin: 0 0 0.5rem;
+}
+
+.mem-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  perspective: 1200px;
+}
+@media (min-width: 600px) {
+  .mem-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 980px) {
+  .mem-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.15rem;
+  }
+}
+
+.mem-card {
+  position: relative;
+  padding: 1.35rem 1.25rem 1.4rem;
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.88) 100%);
+  border: 1px solid var(--mem-border);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 18px 40px -24px rgba(15, 23, 42, 0.2);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.25s ease;
+  transform-style: preserve-3d;
+}
+.mem-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.35), transparent 42%, rgba(185, 28, 28, 0.2));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.mem-card:hover {
+  transform: translateY(-4px) rotateX(2deg);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 28px 56px -28px rgba(6, 182, 212, 0.35);
+  border-color: rgba(6, 182, 212, 0.22);
+}
+.mem-card:hover::before {
+  opacity: 1;
+}
+
+.mem-card__icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  margin-bottom: 0.85rem;
+  background: linear-gradient(145deg, rgba(6, 182, 212, 0.15), rgba(59, 130, 246, 0.08));
+  color: #0369a1;
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+.mem-card__icon--accent {
+  background: linear-gradient(145deg, rgba(185, 28, 28, 0.12), rgba(248, 113, 113, 0.08));
+  color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.2);
+}
+
+.mem-card h3 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.45rem;
+  color: var(--mem-ink);
+}
+.mem-card p {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.58;
+  color: var(--mem-muted);
+}
+
+/* —— Pricing region —— */
+
+.mem-pricing__sheet-wrap {
+  margin-bottom: 0;
+}
+
+.mem-page .membership-pricing-figure {
+  max-width: 640px;
+  padding: 1rem;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #ffffff, #f1f5f9);
+  border: 1px solid var(--mem-border);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 24px 48px -32px rgba(15, 23, 42, 0.25);
+}
+.mem-page .membership-pricing-img {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+}
+.mem-page .membership-pricing-img:hover {
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+.mem-page .contact-membership-actions {
+  padding: 1.5rem 1.5rem 1.6rem;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(185, 28, 28, 0.06), rgba(255, 255, 255, 0.95));
+  border: 1px solid rgba(185, 28, 28, 0.15);
+  box-shadow: 0 18px 44px -30px rgba(185, 28, 28, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 36rem;
+  margin: 0 auto;
+  text-align: center;
+}
+.mem-page .mem-cta-hint {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--mem-muted);
+  text-align: center;
+  max-width: 28rem;
+}
+.mem-page .contact-membership-actions .btn-membership-form {
+  align-self: center;
+  text-align: center;
+  min-width: min(100%, 14rem);
+}
+
+/* —— Scroll reveal —— */
+.mem-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mem-reveal.mem-reveal--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* —— Existing specials + pricing lead (from prior page) —— */
+/* Do not strip vertical padding from .mem-hero (it shares .hero for legacy reasons) */
+.hero:not(.mem-hero) {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 section.features {
-  padding-top: 0.5rem;
+  padding-top: 0;
 }
+
 @keyframes specials-enter {
   from {
     opacity: 0;
@@ -184,16 +747,13 @@ section.features {
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.9375rem;
 }
-.features .pricing-lead {
-  text-align: center;
-}
-.features .pricing-lead h2 {
-  margin-bottom: 0.35rem;
-}
-.features .pricing-lead .pricing-note {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: var(--text-muted);
-  text-align: center;
-  line-height: 1.5;
+@media (prefers-reduced-motion: reduce) {
+  .mem-card:hover {
+    transform: none;
+  }
+  .mem-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
