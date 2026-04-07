@@ -6,80 +6,14 @@
   <title>Houston Badminton Center — Book With Ease</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
-  <style>
-  .hero { padding-top: 1.5rem; padding-bottom: 0.5rem; }
-  section.features { padding-top: 0.5rem; }
-  .first-time-visitor {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 560px;
-    padding: 1.25rem 1.5rem;
-    background: #b91c1c;
-    border-radius: var(--radius);
-    border: 1px solid #991b1b;
-    text-align: center;
-  }
-  .first-time-visitor h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #ffffff;
-  }
-  .first-time-visitor p {
-    font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin-bottom: 0.5rem;
-    line-height: 1.5;
-  }
-  .first-time-visitor p:last-child {
-    margin-bottom: 0;
-  }
-  .first-time-visitor a {
-    color: #ffffff;
-    font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-  .first-time-visitor a:hover {
-    color: rgba(255, 255, 255, 0.85);
-  }
-  .first-time-visitor .first-time-list {
-    margin: 0.25rem auto 0;
-    padding-left: 0;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: left;
-  }
-  .first-time-visitor .first-time-list li {
-    font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin-bottom: 0.4rem;
-    line-height: 1.5;
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-  }
-  .first-time-visitor .first-time-list li:last-child {
-    margin-bottom: 0;
-  }
-  .first-time-visitor .first-time-list li .list-dot {
-    flex-shrink: 0;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #ffffff;
-    margin-top: 0.5rem;
-  }
-</style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/home.css">
 </head>
-<body>
-  <header>
+<body class="gh-home">
+  <a href="#main-content" class="gh-skip-link">Skip to main content</a>
+
+  <header class="gh-site-header">
     <div class="container">
       <nav>
         <a href="General_Dashboard.html" class="logo"><img src="../images/HBC.png" alt="Houston Badminton Center" class="logo-img"></a>
@@ -98,63 +32,141 @@
     </div>
   </header>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <section class="hero">
       <div class="container">
-        <h1>Book Your Reservation in Minutes</h1>
-        <p>Choose a time, confirm your details, and you're set. Simple and reliable</p>
-        <div class="hero-actions">
-          <a href="General_Availability.html" class="btn btn-ghost">View availability</a>
+        <div class="gh-hero-eyebrow">
+          <span class="gh-hero-eyebrow__dot" aria-hidden="true"></span>
+          <span class="gh-hero-eyebrow__text">Getting started</span>
         </div>
-        <div class="first-time-visitor">
-          <h3>First time visitor?</h3>
-          <p><strong>Complete the waiver <a href="General_Waiver.html">here</a>.</strong></p>
-          <ul class="first-time-list">
-            <li><span class="list-dot" aria-hidden="true"></span>Guardians must complete the waiver for minors under the age of 18.</li>
-            <li><span class="list-dot" aria-hidden="true"></span>Wear athletic clothing and non-marking shoes.</li>
-          </ul>
-          <p style="margin-top: 0.75rem; margin-bottom: 0;"><a href="Client_OpenPlay.html">How to Play at the Houston Badminton Center</a></p>
+
+        <h1 class="gh-hero-title">
+          <span class="gh-hero-title__inner">
+            <span class="gh-hero-title__text" data-title="Welcome to Houston Badminton Center">Welcome to Houston Badminton Center</span>
+          </span>
+        </h1>
+
+        <p class="hero-tagline">
+          Reserve a court, join open play, or drop in when you’re ready. Here’s everything you need for a smooth first visit—and every visit after.
+        </p>
+
+        <div class="ftv-shell gh-reveal">
+          <div class="first-time-visitor">
+            <div class="ftv-sheen" aria-hidden="true"></div>
+            <div class="ftv-inner">
+              <header class="ftv-header">
+                <p class="ftv-eyebrow">First visit</p>
+                <h2 class="ftv-title">New here? <span class="ftv-title-accent">Start smart.</span></h2>
+                <p class="ftv-intro">
+                  Complete the waiver before you play, dress for the court, and skim our quick guide so you know what to expect when you walk in.
+                </p>
+              </header>
+
+              <div class="ftv-section">
+                <a href="General_Waiver.html" class="ftv-waiver-btn">
+                  <span>Complete the waiver</span>
+                  <span class="ftv-waiver-arrow" aria-hidden="true">→</span>
+                </a>
+              </div>
+
+              <div class="ftv-divider">Then watch</div>
+
+              <div class="ftv-play-head">
+                <p class="ftv-section-label">Quick guide</p>
+                <span class="ftv-play-badge">Video</span>
+              </div>
+
+              <p class="ftv-video-block">
+                <span class="ftv-video-frame">
+                  <span class="first-time-video-embed">
+                    <iframe
+                      src="https://www.youtube-nocookie.com/embed/yzVneBHNR50"
+                      title="Houston Badminton Center Summer Camp"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                      loading="lazy"></iframe>
+                  </span>
+                </span>
+              </p>
+
+              <p class="first-time-queuing-note">
+                Tip: weekday mornings and mid-afternoons are often quieter; evenings and weekends fill up fast—reserve or call ahead if you want a specific time.
+              </p>
+
+              <ul class="first-time-list">
+                <li><span class="list-dot" aria-hidden="true"></span>Guardians must complete the waiver for minors under the age of 18.</li>
+                <li><span class="list-dot" aria-hidden="true"></span>Wear athletic clothing and non-marking shoes.</li>
+              </ul>
+
+              <p class="ftv-sub">
+                <a href="Client_OpenPlay.html" class="ftv-link-external">How to play at Houston Badminton Center</a>
+              </p>
+            </div>
+          </div>
         </div>
+
+        <div class="hero-actions hero-actions--below-ftv">
+          <a href="General_Availability.html" class="gh-btn-premium">
+            <span class="gh-btn-premium__label">View availability</span>
+          </a>
+        </div>
+
+        <hr class="gh-hero-blend-line" aria-hidden="true">
       </div>
     </section>
 
-    <section class="features features--upcoming-events">
+    <section class="features features--upcoming-events gh-reveal" id="section-events" aria-labelledby="heading-events">
       <div class="container">
-        <h2>Upcoming events</h2>
-        <p class="features-lead">Tournaments, clinics, and specials at the center. Times and details can change—check with the front desk or your email for the latest.</p>
-        <div id="upcoming-events-root"></div>
+        <p class="ghp-eyebrow">Events</p>
+        <h2 id="heading-events">Upcoming events</h2>
+        <p class="features-lead">
+          Tournaments, clinics, and specials at the center. Times and details can change—check with the front desk or your email for the latest.
+        </p>
+        <div class="ghp-events-shell">
+          <div class="ghp-events-shell-inner">
+            <div id="upcoming-events-root"></div>
+          </div>
+        </div>
+        <hr class="gh-events-shell-line" aria-hidden="true">
       </div>
     </section>
 
-    <section class="features features--faq">
+    <section class="features features--faq gh-reveal" id="section-faq" aria-labelledby="heading-faq">
       <div class="container">
-        <h2>Frequently asked questions</h2>
-        <p class="features-lead">Quick answers about visiting Houston Badminton Center. Ask the front desk if you need more detail.</p>
-        <div class="faq-list">
-          <details class="faq-item">
-            <summary>Do I have to be a member to play?</summary>
-            <p class="faq-answer">Drop-in guests are always welcome and can get a day pass.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Do I have to reserve a court?</summary>
-            <p class="faq-answer">Reservations are recommended during busy hours so you have a court when you arrive. Walk-ins are welcome when space allows—check with the front desk.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Do I need to bring my own racket and shuttlecocks? What else should I bring?</summary>
-            <p class="faq-answer">You can bring your own equipment or rent rackets and buy shuttles at the front desk. Wear athletic clothing and clean, non-marking court shoes.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Can I come by myself and find someone to play with?</summary>
-            <p class="faq-answer">Yes. Open play and social times are a good way to meet other players. Staff can suggest when the gym tends to be busiest with people looking for games.</p>
-          </details>
-          <details class="faq-item">
-            <summary>When is a good time to come?</summary>
-            <p class="faq-answer">Weekday mornings and mid-afternoons are often quieter; evenings and weekends are usually busier. Use our <a href="General_Availability.html">availability</a> page or call ahead if you want a specific experience.</p>
-          </details>
+        <p class="ghp-eyebrow">Help center</p>
+        <h2 id="heading-faq">Frequently asked questions</h2>
+        <p class="features-lead">
+          Quick answers about visiting Houston Badminton Center. Ask the front desk if you need more detail.
+        </p>
+        <div class="ghp-faq-shell">
+          <div class="ghp-faq-shell-inner">
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>Do I have to be a member to play?</summary>
+                <p class="faq-answer">Drop-in guests are always welcome and can get a day pass.</p>
+              </details>
+              <details class="faq-item">
+                <summary>Do I have to reserve a court?</summary>
+                <p class="faq-answer">Reservations are recommended during busy hours so you have a court when you arrive. Walk-ins are welcome when space allows—check with the front desk.</p>
+              </details>
+              <details class="faq-item">
+                <summary>Do I need to bring my own racket and shuttlecocks? What else should I bring?</summary>
+                <p class="faq-answer">You can bring your own equipment or rent rackets and buy shuttles at the front desk. Wear athletic clothing and clean, non-marking court shoes.</p>
+              </details>
+              <details class="faq-item">
+                <summary>Can I come by myself and find someone to play with?</summary>
+                <p class="faq-answer">Yes. Open play and social times are a good way to meet other players. Staff can suggest when the gym tends to be busiest with people looking for games.</p>
+              </details>
+              <details class="faq-item">
+                <summary>When is a good time to come?</summary>
+                <p class="faq-answer">Weekday mornings and mid-afternoons are often quieter; evenings and weekends are usually busier. Use our <a href="General_Availability.html">availability</a> page or call ahead if you want a specific experience.</p>
+              </details>
+            </div>
+          </div>
         </div>
       </div>
     </section>
-
   </main>
 
   <footer>
@@ -162,7 +174,15 @@
       <p>© 2026 Houston Badminton Center. All rights reserved.</p>
     </div>
   </footer>
+
+  <button type="button" id="gh-back-top" aria-label="Back to top" aria-hidden="true" tabindex="-1">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </svg>
+  </button>
+
   <script src="/upcoming-events-home.js"></script>
   <script src="/client-nav.js"></script>
+  <script src="../js/general-dashboard.js"></script>
 </body>
 </html>

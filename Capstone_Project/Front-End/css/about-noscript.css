@@ -1,0 +1,2 @@
+/* No-JS fallback for scroll-reveal on About pages */
+.about-reveal { opacity: 1 !important; transform: none !important; }

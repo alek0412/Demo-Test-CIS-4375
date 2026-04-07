@@ -1,0 +1,243 @@
+/* Fragment: scroll anchors, eyebrow, blend line layout, events HR, skip, sticky header, reveals, back-to-top — loaded into home.css */
+
+#main-content:focus {
+  outline: none;
+}
+.gh-home #section-events,
+.gh-home #section-faq {
+  scroll-margin-top: 5.75rem;
+}
+
+.gh-home .gh-hero-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  margin: 0 auto 0.75rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  padding: 0.35rem 0.7rem 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
+}
+.gh-home .gh-hero-eyebrow__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #000000;
+  box-shadow: none;
+  flex-shrink: 0;
+}
+.gh-home .gh-hero-eyebrow__text {
+  letter-spacing: inherit;
+  color: #16a34a;
+  animation: gh-title-back-fallback 52.5s linear infinite;
+}
+.gh-home .gh-hero-blend-line {
+  height: 3px;
+  width: 100vw;
+  max-width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 1rem auto 0;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+.gh-home .hero .hero-actions--below-ftv {
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.gh-home .features--upcoming-events .gh-events-shell-line {
+  height: 3px;
+  width: 100vw;
+  max-width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 3.5rem auto 0;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background-color: #b91c1c;
+  pointer-events: none;
+}
+
+/* Skip link, sticky header, hero extras, motion, back-to-top */
+.gh-skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: #0f172a;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.35);
+  transition: top 0.2s ease;
+}
+.gh-skip-link:focus {
+  top: 1rem;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.gh-home .gh-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: saturate(1.2) blur(14px);
+  -webkit-backdrop-filter: saturate(1.2) blur(14px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+}
+@supports not (backdrop-filter: blur(14px)) {
+  .gh-home .gh-site-header {
+    background: rgba(255, 255, 255, 0.96);
+  }
+}
+.gh-reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.gh-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gh-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
+.gh-home .features--upcoming-events,
+.gh-home .features--faq {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
+}
+#gh-back-top {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.5rem);
+  position: fixed;
+  right: 1.15rem;
+  bottom: 1.15rem;
+  z-index: 200;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(145deg, #b91c1c 0%, #991b1b 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 10px 28px -6px rgba(185, 28, 28, 0.55);
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
+}
+#gh-back-top:hover {
+  filter: brightness(1.05);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 14px 36px -8px rgba(185, 28, 28, 0.5);
+}
+#gh-back-top:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 3px;
+}
+#gh-back-top[hidden] {
+  display: none !important;
+}
+#gh-back-top.gh-back-top--visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  #gh-back-top {
+    transition: opacity 0.85s ease;
+    transform: translateY(0);
+  }
+  #gh-back-top.gh-back-top--visible {
+    transform: translateY(0);
+  }
+}
+@media (max-width: 640px) {
+  body.gh-home {
+    overflow-x: hidden;
+  }
+  .gh-home .container {
+    padding-left: max(1rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  }
+  .gh-home .gh-site-header {
+    padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+    padding-bottom: 1rem;
+  }
+  .gh-home .hero {
+    padding-top: 1.5rem;
+    padding-bottom: 0.75rem;
+  }
+  .gh-home .hero .hero-tagline {
+    font-size: 1rem;
+    line-height: 1.62;
+  }
+  .ftv-header .ftv-intro {
+    font-size: 1rem;
+    line-height: 1.58;
+  }
+  .ftv-shell {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .gh-home .features--upcoming-events .features-lead,
+  .gh-home .features--faq .features-lead {
+    font-size: 1rem;
+  }
+  .gh-home #section-events,
+  .gh-home #section-faq {
+    scroll-margin-top: 4.25rem;
+  }
+  .gh-home footer {
+    padding-bottom: calc(2.25rem + env(safe-area-inset-bottom, 0px));
+  }
+  #gh-back-top {
+    right: max(1rem, calc(0.5rem + env(safe-area-inset-right, 0px)));
+    bottom: max(1rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)));
+  }
+  .gh-home a,
+  .gh-home button {
+    -webkit-tap-highlight-color: rgba(15, 23, 42, 0.07);
+  }
+}

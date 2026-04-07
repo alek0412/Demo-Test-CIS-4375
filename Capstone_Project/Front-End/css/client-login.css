@@ -1,0 +1,120 @@
+/* Client_Login.html */
+.login-choice-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.login-choice-page main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+.login-choice-wrap {
+  max-width: 420px;
+  width: 100%;
+  background: #e8f4fc;
+  border: 2px solid #2196f3;
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.login-choice-wrap h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #000000;
+}
+.login-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  overflow: hidden;
+}
+.login-tab {
+  flex: 1;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.login-tab:hover {
+  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.03);
+}
+.login-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: var(--bg-dark);
+}
+.login-panel {
+  display: none;
+  padding: 1.5rem;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  overflow: hidden;
+}
+.login-panel.active {
+  display: block;
+}
+.login-panel label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.375rem;
+}
+.login-panel input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  background: #ffffff;
+  color: var(--text-primary);
+}
+.login-panel input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.login-panel .login-error {
+  color: var(--accent);
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+.login-panel .login-error[hidden] {
+  display: none;
+}
+.login-panel .btn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: #fff;
+}
+.login-panel .btn:hover {
+  background: var(--accent-hover);
+}
+.login-panel .btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

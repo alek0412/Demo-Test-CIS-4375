@@ -1,0 +1,12 @@
+/* Simple inner pages — hero + features spacing (bookings, reserve, profile, etc.) */
+.hero {
+  padding-top: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+section.features {
+  padding-top: 0.5rem;
+}
+.features .placeholder-muted {
+  color: var(--text-muted);
+  text-align: center;
+}
