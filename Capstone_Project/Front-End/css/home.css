@@ -243,6 +243,8 @@
       0 4px 10px rgba(30, 64, 175, 0.3);
   }
   .ftv-waiver-btn--step2 {
+    margin-left: -0.2rem;
+    width: calc(100% + 0.2rem);
     background: linear-gradient(145deg, #4f46e5 0%, #4338ca 45%, #6d28d9 100%);
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.2) inset,
