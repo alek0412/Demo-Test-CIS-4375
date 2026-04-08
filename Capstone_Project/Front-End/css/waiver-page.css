@@ -682,6 +682,31 @@
   margin-right: auto;
 }
 
+.waiver-form-message {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.waiver-form-message[hidden] {
+  display: none !important;
+}
+.waiver-form-message--error {
+  background: rgba(185, 28, 28, 0.08);
+  color: #991b1b;
+  border: 1px solid rgba(185, 28, 28, 0.25);
+}
+.waiver-form-message--success {
+  background: rgba(22, 163, 74, 0.1);
+  color: #166534;
+  border: 1px solid rgba(22, 163, 74, 0.28);
+}
+
+.waiver-password-hint {
+  margin: 0 0 0.5rem;
+}
+
 @media (max-width: 900px) {
   .waiver-form-area .form-row {
     grid-template-columns: 1fr;

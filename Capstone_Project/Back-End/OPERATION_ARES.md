@@ -8,12 +8,16 @@ Run these commands **on the EC2 instance** (SSH in first: `ssh -i path/to/HBC-Se
 
 ### Order of operations (read this — avoids “port 3000 already in use”)
 
-Do these **in order**. **Do not** start the server until **`npm install`** finishes.
+The public site is **Node** on **port 3000**. **Waiver registration** (`/api/waiver-register`) is handled by **Flask (Python)** on **port 3001**; Node **proxies** to Flask. On a single EC2 instance you normally run **both** under PM2. Only **3000** needs to be open in the security group for browsers; **3001** can stay **localhost-only**.
 
-1. `git clone` → `cd` to **`Capstone_Project/Back-End`**
-2. **`cp .env.example .env`** → edit **`.env`** (RDS and any secrets)
-3. **`npm install`**
-4. **Only then** start the app **once** with PM2 (`pm2 start …`) **or** test with **`node server.js`** — **not both at the same time.**
+Do these **in order**. **Do not** start the servers until installs finish.
+
+1. `git clone` → set up **Node** in **`Capstone_Project/Back-End`** and **Python** in **`Capstone_Project/Back-End/[Python]`** (quote the path: `cd "[Python]"` if your shell treats brackets oddly).
+2. **`cp .env.example .env`** in **Back-End** → edit **`.env`** (RDS and secrets). Set **`FLASK_WAIVER_URL=http://127.0.0.1:3001`** unless Flask runs elsewhere (default matches local Flask).
+3. Create **`backend_access.env`** in **`Back-End/[Python]/`** (not in git) with **`SECRET_KEY`**, SSH tunnel vars (**`SSH_HOST`**, **`SSH_PKEY`**, **`SSH_USER`**), and DB vars (**`DB_HOST`**, **`DB_PORT`**, **`DB_USER`**, **`DB_PASSWORD`**, **`DB_NAME`**) — same database as RDS; Python uses the tunnel in `ssh_connection.py`.
+4. **`npm install`** in **Back-End**.
+5. **Python deps** (once per instance / after new venv): e.g. `pip3 install waitress flask python-dotenv mysql-connector-python sshtunnel python-dateutil`.
+6. **Only then** start **Flask** then **Node** with PM2 (**or** test with foreground commands) — **do not** run two listeners on the same port.
 
 **If port 3000 is already in use:** something is already listening (usually a **previous** `pm2 start` or a leftover `node server.js`). Check:
 
@@ -21,11 +25,12 @@ Do these **in order**. **Do not** start the server until **`npm install`** finis
 pm2 list
 ```
 
-- If **`reservation-app`** is already **online**, you **do not** run `pm2 start` again. After `git pull` / `npm install`, use **`pm2 restart reservation-app`** only.
-- If you need a **clean** start: `pm2 stop reservation-app` → `pm2 delete reservation-app`, **then** `pm2 start server.js --name reservation-app`.
+- If **`reservation-app`** is already **online**, you **do not** run `pm2 start` again. After `git pull` / `npm install`, use **`pm2 restart reservation-app`** only. If you run **Flask** under PM2 as **`waiver-api`**, restart it after Python changes: **`pm2 restart waiver-api`**.
+- If you need a **clean** start: `pm2 stop reservation-app` → `pm2 delete reservation-app`, **then** `pm2 start server.js --name reservation-app`. Same idea for **`waiver-api`** if you need to reset Flask.
 - **Do not** run **`node server.js`** in the shell while PM2 is already running the same app — that tries to open port 3000 twice and triggers **EADDRINUSE**.
+- **Port 3001** is for **Flask only**. If **`EADDRINUSE`** on 3001, check **`pm2 list`** for a duplicate **`waiver-api`** or a stray **`python … flask_server.py`**.
 
-**Routine code updates** (repo already cloned, PM2 already managing the app): `git pull` → `npm install` → **`pm2 restart reservation-app`**. You should **not** need to kill processes or fight port 3000.
+**Routine code updates** (repo already cloned, PM2 already managing the app): `git pull` → **`npm install`** (if Node deps changed) → **`pip3 install …`** (if you added Python packages) → **`pm2 restart waiver-api`** (if Python changed) → **`pm2 restart reservation-app`**. You should **not** need to kill processes or fight port 3000 unless something was started twice.
 
 ---
 
@@ -48,15 +53,26 @@ Use this when you **removed the app** with **Operation TRON** (`rm -rf` the repo
    nano .env
    ```
 
-   Set **`DB_PASSWORD`**, **`DB_HOST`**, **`DB_USER`**, **`DB_NAME`**, and any other values (same as before — keep a private copy outside the repo).
+   Set **`DB_PASSWORD`**, **`DB_HOST`**, **`DB_USER`**, **`DB_NAME`**, **`FLASK_WAIVER_URL`** (if needed), and any other values (same as before — keep a private copy outside the repo). Recreate **`[Python]/backend_access.env`** the same way as in **§2b**.
 
 3. **Install dependencies, then start under PM2** (install **before** `pm2 start` — see **Order of operations** above)
 
    ```bash
    npm install
+   pip3 install waitress flask python-dotenv mysql-connector-python sshtunnel python-dateutil
+   ```
+
+   Start **Flask** first (port **3001**), then **Node** (port **3000**):
+
+   ```bash
+   cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End/[Python]
+   pm2 start flask_server.py --name waiver-api --interpreter python3
+   cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End
    pm2 start server.js --name reservation-app
    pm2 save
    ```
+
+   Ensure **`backend_access.env`** exists in **`[Python]`** before starting **`waiver-api`** (see **§ Python / Flask waiver service** below).
 
 4. **`pm2 startup`** — On **this same instance**, if you already ran **`pm2 startup`** once, you **usually skip this**. Only run **`pm2 startup`** (and the **`sudo env PATH=...`** line it prints) on a **new server** or if systemd was never set up.
 
@@ -93,9 +109,30 @@ nano .env
 
 Optionally set **`ADMIN_EMAIL`**, **`ADMIN_PASSWORD`**, **`CUSTOMER_*`**, and **SMTP** variables for production (see comments inside `.env.example`).
 
+**Waiver proxy (Node → Flask):** set **`FLASK_WAIVER_URL=http://127.0.0.1:3001`** in **`.env`** when Flask runs on the same EC2 instance (this is the default in code if unset). Change it only if the waiver API is on another host/port.
+
 - **Save and exit in nano:** Ctrl+O, Enter, Ctrl+X.
 
 **After updates from Git:** your `.env` stays on the server; only run `git pull`. Re-copy `.env.example` only if new variables were added and you need to merge them by hand.
+
+---
+
+## 2b. Python / Flask waiver service (`backend_access.env`)
+
+The **General Waiver** form posts to Node; Node proxies to **Flask** (`routes/customer.py` → **`POST /api/waiver-register`**). Flask loads **`backend_access.env`** from the **`[Python]`** working directory (not the same file as **Back-End `.env`**).
+
+```bash
+cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End/[Python]
+nano backend_access.env
+```
+
+You need at least:
+
+- **`SECRET_KEY`** — Flask session secret (any long random string).
+- **`SSH_HOST`**, **`SSH_USER`**, **`SSH_PKEY`** — bastion/jump host and path to the **private key** on the EC2 instance (see `ssh_connection.py`).
+- **`DB_HOST`**, **`DB_PORT`**, **`DB_USER`**, **`DB_PASSWORD`**, **`DB_NAME`** — RDS endpoint and credentials (MySQL is reached **through** the tunnel).
+
+**Do not commit** `backend_access.env`. Keep a backup off the server.
 
 ---
 
@@ -104,6 +141,13 @@ Optionally set **`ADMIN_EMAIL`**, **`ADMIN_PASSWORD`**, **`CUSTOMER_*`**, and **
 ```bash
 cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End
 npm install
+```
+
+**Python (waiver API):**
+
+```bash
+cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End/[Python]
+pip3 install waitress flask python-dotenv mysql-connector-python sshtunnel python-dateutil
 ```
 
 ---
@@ -125,7 +169,24 @@ ps aux | grep "node server.js"
 kill <PID>
 ```
 
-**4c. Start the app under PM2**
+**4c. Start Flask (waiver API) under PM2 — port 3001**
+
+Flask must be running **before** users submit the waiver (or Node will return 503 when proxying). PM2’s working directory must be **`[Python]`** so **`backend_access.env`** loads.
+
+```bash
+cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End/[Python]
+pm2 start flask_server.py --name waiver-api --interpreter python3
+```
+
+Check logs:
+
+```bash
+pm2 logs waiver-api --lines 50
+```
+
+You should see the tunnel/DB connection messages from your Python stack when the app starts.
+
+**4d. Start Node under PM2 — port 3000**
 
 ```bash
 cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End
@@ -133,7 +194,7 @@ pm2 start server.js --name reservation-app
 pm2 save
 ```
 
-You should see PM2 list the app as **online**. Check logs:
+You should see PM2 list both apps as **online**. Check Node logs:
 
 ```bash
 pm2 logs reservation-app --lines 50
@@ -141,7 +202,7 @@ pm2 logs reservation-app --lines 50
 
 Look for: `Server running at http://localhost:3000/`
 
-**4d. Start PM2 on EC2 reboot (strongly recommended)**
+**4e. Start PM2 on EC2 reboot (strongly recommended)**
 
 ```bash
 pm2 startup
@@ -169,18 +230,26 @@ Log in as admin and use the Customers tab.
 | Command | What it does |
 |---------|----------------|
 | `pm2 list` | Show running apps |
-| `pm2 logs reservation-app` | Stream logs (Ctrl+C to exit) |
-| `pm2 restart reservation-app` | Restart after `git pull` or code changes |
-| `pm2 stop reservation-app` | Stop the app |
-| `pm2 delete reservation-app` | Remove app from PM2 (then you can `pm2 start` again) |
+| `pm2 logs reservation-app` | Stream Node logs (Ctrl+C to exit) |
+| `pm2 logs waiver-api` | Stream Flask / waiver API logs |
+| `pm2 restart reservation-app` | Restart Node after `git pull` or code changes |
+| `pm2 restart waiver-api` | Restart Flask after Python or `backend_access.env` changes |
+| `pm2 stop reservation-app` | Stop the Node app |
+| `pm2 delete reservation-app` | Remove Node from PM2 (then you can `pm2 start` again) |
+| `pm2 stop waiver-api` / `pm2 delete waiver-api` | Same for Flask |
 
-**After `git pull` on the server:** `npm install` (if `package.json` changed), then **`pm2 restart reservation-app`**. Do **not** run a second `pm2 start` if the app is already listed in `pm2 list`.
+**After `git pull` on the server:** `npm install` (if `package.json` changed), **`pm2 restart waiver-api`** (if Python changed), then **`pm2 restart reservation-app`**. Do **not** run a second `pm2 start` if the app is already listed in `pm2 list`.
 
 ---
 
 ## 7. Optional: quick test without PM2 (development only)
 
-Only for a short sanity check. **Do not** rely on this for production — closing SSH will often stop the process.
+Only for a short sanity check. **Do not** rely on this for production — closing SSH will often stop the process. For waiver tests, run **Flask in one SSH session** and **Node in another** (Flask **3001** first).
+
+```bash
+cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End/[Python]
+python3 flask_server.py
+```
 
 ```bash
 cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End
@@ -191,8 +260,9 @@ node server.js
 
 ## Checklist
 
-- EC2 security group allows **inbound TCP port 3000** (and 22 for SSH).
-- **`Back-End/.env` exists** (created from **`cp .env.example .env`**) with correct **`DB_PASSWORD`**, **`DB_USER`**, **`DB_NAME`**, **`DB_HOST`**.
-- App is running under **PM2** (`pm2 list` shows **reservation-app** online), not only a foreground `node server.js`.
+- EC2 security group allows **inbound TCP port 3000** (and 22 for SSH). **Port 3001** does **not** need to be public if Node and Flask are on the same instance.
+- **`Back-End/.env` exists** (created from **`cp .env.example .env`**) with correct **`DB_PASSWORD`**, **`DB_USER`**, **`DB_NAME`**, **`DB_HOST`**, and **`FLASK_WAIVER_URL`** if Flask is not at **`http://127.0.0.1:3001`**.
+- **`Back-End/[Python]/backend_access.env`** exists with **`SECRET_KEY`** and SSH/DB variables for the Python tunnel and RDS.
+- **Both** processes are running under **PM2**: **`waiver-api`** (Flask, **3001**) and **`reservation-app`** (Node, **3000**), not only foreground terminals.
 
-**Result:** The app is running on EC2 and pulling code from GitHub (CLU). Use **Operation TRON** when you want to remove it; use **Redeploy after Operation TRON** (above) when you clone again on the same instance.
+**Result:** The app is running on EC2 and pulling code from GitHub (CLU). Waiver registration works when **waiver-api** is online and can reach RDS through your tunnel. Use **Operation TRON** when you want to remove it; use **Redeploy after Operation TRON** (above) when you clone again on the same instance.

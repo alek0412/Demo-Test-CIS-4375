@@ -79,7 +79,7 @@
             <div class="form-row">
               <div>
                 <label for="mobile">Mobile Phone</label>
-                <input type="tel" id="mobile" name="mobile">
+                <input type="tel" id="mobile" name="mobile" required autocomplete="tel">
               </div>
               <div>
                 <label for="email">Email</label>
@@ -127,6 +127,91 @@
                 </div>
               </div>
             </div>
+            <div class="form-row single">
+              <div>
+                <label for="street-address">Street address</label>
+                <input type="text" id="street-address" name="street_address" required autocomplete="street-address">
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" required autocomplete="address-level2">
+              </div>
+              <div>
+                <label for="state">State</label>
+                <select id="state" name="state" required autocomplete="address-level1">
+                  <option value="">Select</option>
+                  <option value="AL">Alabama</option>
+                  <option value="AK">Alaska</option>
+                  <option value="AZ">Arizona</option>
+                  <option value="AR">Arkansas</option>
+                  <option value="CA">California</option>
+                  <option value="CO">Colorado</option>
+                  <option value="CT">Connecticut</option>
+                  <option value="DE">Delaware</option>
+                  <option value="FL">Florida</option>
+                  <option value="GA">Georgia</option>
+                  <option value="HI">Hawaii</option>
+                  <option value="ID">Idaho</option>
+                  <option value="IL">Illinois</option>
+                  <option value="IN">Indiana</option>
+                  <option value="IA">Iowa</option>
+                  <option value="KS">Kansas</option>
+                  <option value="KY">Kentucky</option>
+                  <option value="LA">Louisiana</option>
+                  <option value="ME">Maine</option>
+                  <option value="MD">Maryland</option>
+                  <option value="MA">Massachusetts</option>
+                  <option value="MI">Michigan</option>
+                  <option value="MN">Minnesota</option>
+                  <option value="MS">Mississippi</option>
+                  <option value="MO">Missouri</option>
+                  <option value="MT">Montana</option>
+                  <option value="NE">Nebraska</option>
+                  <option value="NV">Nevada</option>
+                  <option value="NH">New Hampshire</option>
+                  <option value="NJ">New Jersey</option>
+                  <option value="NM">New Mexico</option>
+                  <option value="NY">New York</option>
+                  <option value="NC">North Carolina</option>
+                  <option value="ND">North Dakota</option>
+                  <option value="OH">Ohio</option>
+                  <option value="OK">Oklahoma</option>
+                  <option value="OR">Oregon</option>
+                  <option value="PA">Pennsylvania</option>
+                  <option value="RI">Rhode Island</option>
+                  <option value="SC">South Carolina</option>
+                  <option value="SD">South Dakota</option>
+                  <option value="TN">Tennessee</option>
+                  <option value="TX" selected>Texas</option>
+                  <option value="UT">Utah</option>
+                  <option value="VT">Vermont</option>
+                  <option value="VA">Virginia</option>
+                  <option value="WA">Washington</option>
+                  <option value="WV">West Virginia</option>
+                  <option value="WI">Wisconsin</option>
+                  <option value="WY">Wyoming</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label for="zip-code">ZIP code</label>
+                <input type="text" id="zip-code" name="zip_code" required inputmode="numeric" autocomplete="postal-code" maxlength="10">
+              </div>
+              <div>
+                <label for="password">Create password</label>
+                <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" aria-describedby="password-hint">
+              </div>
+            </div>
+            <div class="form-row single">
+              <div>
+                <p id="password-hint" class="pref-optional-intro waiver-password-hint">At least 8 characters. You’ll use this to log in to book courts.</p>
+                <label for="password-confirm">Confirm password</label>
+                <input type="password" id="password-confirm" name="password_confirm" required minlength="8" autocomplete="new-password">
+              </div>
+            </div>
           </div>
 
           <div class="form-section">
@@ -134,27 +219,27 @@
             <div class="form-row">
               <div>
                 <label for="emergency-first-name">First name</label>
-                <input type="text" id="emergency-first-name" name="emergency_first_name" autocomplete="given-name">
+                <input type="text" id="emergency-first-name" name="emergency_first_name" required autocomplete="given-name">
               </div>
               <div>
                 <label for="emergency-last-name">Last name</label>
-                <input type="text" id="emergency-last-name" name="emergency_last_name" autocomplete="family-name">
+                <input type="text" id="emergency-last-name" name="emergency_last_name" required autocomplete="family-name">
               </div>
             </div>
             <div class="form-row">
               <div>
                 <label for="emergency-relationship">Relationship</label>
-                <input type="text" id="emergency-relationship" name="emergency_relationship" autocomplete="off" placeholder="e.g. Parent, spouse">
+                <input type="text" id="emergency-relationship" name="emergency_relationship" required autocomplete="off" placeholder="e.g. Parent, spouse">
               </div>
               <div>
                 <label for="emergency-phone">Phone number</label>
-                <input type="tel" id="emergency-phone" name="emergency_phone" autocomplete="tel">
+                <input type="tel" id="emergency-phone" name="emergency_phone" required autocomplete="tel">
               </div>
             </div>
             <div class="form-row single">
               <div>
                 <label for="emergency-email">Email</label>
-                <input type="email" id="emergency-email" name="emergency_email" autocomplete="email">
+                <input type="email" id="emergency-email" name="emergency_email" required autocomplete="email">
               </div>
             </div>
           </div>
@@ -215,7 +300,8 @@
               <label for="agree">I agree with the above terms *</label>
             </div>
             <div class="waiver-submit-block">
-              <button type="submit" class="btn-register">Complete registration &amp; join HBC</button>
+              <div id="waiver-form-message" class="waiver-form-message" role="alert" hidden></div>
+              <button type="submit" class="btn-register" id="waiver-submit-btn">Complete registration &amp; join HBC</button>
               <p class="waiver-submit-hint">After you submit, you’re cleared to book courts and jump into games. Welcome to the club.</p>
             </div>
           </div>
@@ -229,24 +315,7 @@
       <p>© 2026 Houston Badminton Center. All rights reserved.</p>
     </div>
   </footer>
-  <script>
-    (function () {
-      var yearSelect = document.querySelector('select[name="birth_year"]');
-      if (yearSelect) {
-        var y = new Date().getFullYear();
-        for (var i = y; i >= y - 100; i--) {
-          var opt = document.createElement('option');
-          opt.value = i;
-          opt.textContent = i;
-          yearSelect.appendChild(opt);
-        }
-      }
-      document.getElementById('waiver-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        alert('Waiver submission will be connected to the server later.');
-      });
-    })();
-  </script>
+  <script src="../js/general-waiver.js"></script>
   <script src="/client-nav.js"></script>
 </body>
 </html>
