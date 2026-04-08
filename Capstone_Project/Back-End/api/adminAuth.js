@@ -4,7 +4,7 @@
 module.exports = async function handleAdminAuth(req, res, ctx) {
   const { pathname, parseBody, ADMIN_EMAIL, ADMIN_PASSWORD, hasAdminSessionCookie } = ctx;
 
-  if (req.method === 'POST' && pathname === '/api/login') {
+  if (req.method === 'POST' && pathname === '/api/admin/login') {
     let data = {};
     try {
       data = await parseBody(req);
@@ -29,7 +29,7 @@ module.exports = async function handleAdminAuth(req, res, ctx) {
     return true;
   }
 
-  if (req.method === 'POST' && pathname === '/api/logout') {
+  if (req.method === 'POST' && pathname === '/api/admin/logout') {
     res.writeHead(200, {
       'Content-Type': 'application/json',
       'Set-Cookie': 'admin_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',

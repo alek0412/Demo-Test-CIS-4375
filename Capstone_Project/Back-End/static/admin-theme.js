@@ -84,7 +84,7 @@
       logoutBtn.className = 'admin-logout-btn';
       logoutBtn.textContent = 'Log Out';
       logoutBtn.addEventListener('click', function () {
-        fetch('/api/logout', { method: 'POST', credentials: 'same-origin' })
+        fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' })
           .then(function () { window.location.href = '/client/General_Dashboard.html'; })
           .catch(function () { window.location.href = '/client/General_Dashboard.html'; });
       });

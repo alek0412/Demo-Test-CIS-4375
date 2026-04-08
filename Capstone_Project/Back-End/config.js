@@ -5,8 +5,25 @@
 module.exports = {
   port: process.env.PORT || 3000,
 
-  /** Base URL for Flask (customer.py) waiver registration — no trailing slash. Node proxies POST /api/waiver-register here. */
-  flaskWaiverBaseUrl: String(process.env.FLASK_WAIVER_URL || 'http://127.0.0.1:3001').replace(/\/$/, ''),
+  /**
+   * Flask (Python) base URL — no trailing slash.
+   * Node proxies customer auth, waiver, employee login, and court APIs here (same paths as routes/*.py).
+   * Set FLASK_API_URL= (empty) to disable Flask and use Node-only customer preview / skip waiver proxy.
+   */
+  flaskApiBaseUrl: (() => {
+    if (process.env.FLASK_API_URL !== undefined) {
+      return String(process.env.FLASK_API_URL).replace(/\/$/, '');
+    }
+    if (process.env.FLASK_WAIVER_URL !== undefined) {
+      return String(process.env.FLASK_WAIVER_URL).replace(/\/$/, '');
+    }
+    return 'http://127.0.0.1:3001';
+  })(),
+
+  /** @deprecated use flaskApiBaseUrl — kept for older references */
+  get flaskWaiverBaseUrl() {
+    return this.flaskApiBaseUrl;
+  },
 
   db: {
     host: process.env.DB_HOST || 'reservation-capstone-db.czltypivanye.us-east-1.rds.amazonaws.com',

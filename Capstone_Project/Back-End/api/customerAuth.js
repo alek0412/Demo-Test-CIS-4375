@@ -1,39 +1,10 @@
 /**
- * Customer auth, waiver registration, password reset, /api/customer-me
+ * Customer auth, waiver registration (proxied to Flask), password reset, /api/customer-me
  */
-const http = require('http');
-const https = require('https');
-const { URL } = require('url');
+const { proxyToFlask, writeFlaskResponse } = require('../lib/flaskHttp');
 
-function proxyPostJson(targetUrl, jsonObj) {
-  const body = Buffer.from(JSON.stringify(jsonObj), 'utf8');
-  const u = new URL(targetUrl);
-  const lib = u.protocol === 'https:' ? https : http;
-  const port = u.port ? Number(u.port, 10) : u.protocol === 'https:' ? 443 : 80;
-  return new Promise((resolve, reject) => {
-    const req = lib.request(
-      {
-        hostname: u.hostname,
-        port,
-        path: u.pathname + (u.search || ''),
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': body.length,
-        },
-      },
-      (r) => {
-        const chunks = [];
-        r.on('data', (c) => chunks.push(c));
-        r.on('end', () => {
-          resolve({ status: r.statusCode || 502, body: Buffer.concat(chunks).toString('utf8') });
-        });
-      }
-    );
-    req.on('error', reject);
-    req.write(body);
-    req.end();
-  });
+function flaskBase(config) {
+  return (config && (config.flaskApiBaseUrl || config.flaskWaiverBaseUrl)) || '';
 }
 
 module.exports = async function handleCustomerAuth(req, res, ctx) {
@@ -49,6 +20,9 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
     config,
   } = ctx;
 
+  const base = flaskBase(config);
+  const cookieHeader = req.headers.cookie || '';
+
   if (req.method === 'POST' && pathname === '/api/customer-login') {
     let data = {};
     try {
@@ -57,6 +31,47 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
       return true;
+    }
+    if (base) {
+      try {
+        const upstream = await proxyToFlask(base, 'POST', '/api/customer-login', {
+          body: JSON.stringify(data),
+          cookie: cookieHeader,
+          contentType: 'application/json',
+        });
+        if (upstream.statusCode === 200) {
+          const nodeCustomerCookie =
+            'customer_session=' +
+            encodeURIComponent(CUSTOMER_SESSION_VALUE) +
+            '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
+          const cookies = [...upstream.setCookies, nodeCustomerCookie];
+          res.writeHead(200, { 'Content-Type': 'application/json', 'Set-Cookie': cookies });
+          res.end(
+            JSON.stringify({
+              success: true,
+              message: (upstream.body || '').trim() || 'Login successful!',
+            })
+          );
+          return true;
+        }
+        const msg = (upstream.body || '').trim() || 'Invalid email or password';
+        const code =
+          upstream.statusCode >= 400 && upstream.statusCode < 600 ? upstream.statusCode : 401;
+        res.writeHead(code, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: msg }));
+        return true;
+      } catch (err) {
+        console.error('[customer-login] Flask:', err.message);
+        res.writeHead(503, { 'Content-Type': 'application/json' });
+        res.end(
+          JSON.stringify({
+            success: false,
+            message:
+              'Could not reach customer login (Flask). Start flask_server.py on port 3001.',
+          })
+        );
+        return true;
+      }
     }
     const email = (data.email || '').trim().toLowerCase();
     const password = data.password || '';
@@ -82,6 +97,24 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
   }
 
   if (req.method === 'POST' && pathname === '/api/customer-logout') {
+    if (base) {
+      try {
+        const upstream = await proxyToFlask(base, 'POST', '/api/customer-logout', {
+          body: null,
+          cookie: cookieHeader,
+        });
+        const clearNode = 'customer_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax';
+        const cookies = [...upstream.setCookies, clearNode];
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Set-Cookie': cookies });
+        res.end(JSON.stringify({ success: true }));
+        return true;
+      } catch (err) {
+        console.error('[customer-logout] Flask:', err.message);
+        res.writeHead(503, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: 'Could not reach Flask.' }));
+        return true;
+      }
+    }
     res.writeHead(200, {
       'Content-Type': 'application/json',
       'Set-Cookie': 'customer_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
@@ -95,7 +128,6 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
       res.writeHead(status, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(obj));
     };
-    const base = (config && config.flaskWaiverBaseUrl) || '';
     try {
       let data = {};
       try {
@@ -115,13 +147,18 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
         return true;
       }
       if (!base) {
-        sendJson(503, { success: false, message: 'Waiver registration is not configured (FLASK_WAIVER_URL).' });
+        sendJson(503, {
+          success: false,
+          message: 'Waiver registration is not configured (set FLASK_API_URL or FLASK_WAIVER_URL).',
+        });
         return true;
       }
-      const target = new URL('/api/waiver-register', base.endsWith('/') ? base.slice(0, -1) : base).href;
       let upstream;
       try {
-        upstream = await proxyPostJson(target, data);
+        upstream = await proxyToFlask(base, 'POST', '/api/waiver-register', {
+          body: JSON.stringify(data),
+          contentType: 'application/json',
+        });
       } catch (err) {
         console.error('[waiver-register] proxy:', err.message);
         sendJson(503, {
@@ -132,16 +169,19 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
         return true;
       }
       const msg = (upstream.body || '').trim();
-      if (upstream.status === 201) {
-        res.writeHead(201, {
-          'Content-Type': 'application/json',
-          'Set-Cookie':
-            'customer_session=' + encodeURIComponent(CUSTOMER_SESSION_VALUE) + '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
-        });
+      if (upstream.statusCode === 201) {
+        const cookies = [
+          ...upstream.setCookies,
+          'customer_session=' +
+            encodeURIComponent(CUSTOMER_SESSION_VALUE) +
+            '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
+        ];
+        res.writeHead(201, { 'Content-Type': 'application/json', 'Set-Cookie': cookies });
         res.end(JSON.stringify({ success: true, message: msg || 'Customer created successfully!' }));
         return true;
       }
-      const status = upstream.status >= 400 && upstream.status < 600 ? upstream.status : 502;
+      const status =
+        upstream.statusCode >= 400 && upstream.statusCode < 600 ? upstream.statusCode : 502;
       sendJson(status, { success: false, message: msg || 'Registration failed.' });
     } catch (err) {
       console.error('[waiver-register]', err);
@@ -226,6 +266,33 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ loggedIn }));
     return true;
+  }
+
+  if ((req.method === 'PATCH' || req.method === 'DELETE') && pathname === '/api/customer') {
+    if (!base) {
+      return false;
+    }
+    try {
+      let bodyOpt = null;
+      let contentType;
+      if (req.method === 'PATCH') {
+        const data = await parseBody(req);
+        bodyOpt = JSON.stringify(data);
+        contentType = 'application/json';
+      }
+      const upstream = await proxyToFlask(base, req.method, '/api/customer', {
+        body: bodyOpt,
+        cookie: cookieHeader,
+        contentType,
+      });
+      writeFlaskResponse(res, upstream);
+      return true;
+    } catch (err) {
+      console.error('[api/customer]', err.message);
+      res.writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('Unable to reach Flask.');
+      return true;
+    }
   }
 
   return false;

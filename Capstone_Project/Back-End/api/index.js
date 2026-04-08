@@ -3,6 +3,7 @@
  */
 const handlers = [
   require('./adminAuth'),
+  require('./flaskApiProxy'),
   require('./adminCustomerCrud'),
   require('./customerAuth'),
   require('./upcomingEventsRoutes'),

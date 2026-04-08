@@ -90,7 +90,7 @@
         adminBtn.textContent = 'Signing in…';
         var email = document.getElementById('admin-email').value.trim();
         var password = document.getElementById('admin-password').value;
-        fetch('/api/login', {
+        fetch('/api/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: email, password: password }),
