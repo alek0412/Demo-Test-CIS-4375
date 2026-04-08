@@ -62,7 +62,7 @@ def add_customer():
     if type(customer_id)==int:
         print(f"Error code: {customer_id}")
         return make_response("Server is unable to fetch customer",503)
-    waiver_query=sql_functions.execute_query(sql_connection,"insert into waiver (customer_id,waiver_status) values(%s,%s)",(customer_id[0]['customer_id'],2))
+    waiver_query=sql_functions.execute_query(sql_connection,"insert into waiver (customer_id,waiver_status) values(%s,%s);update customer set waiver_id=%s where customer_id=%s",(customer_id[0]['customer_id'],2)+(customer_id[0]['customer_id'],)*2)
     if type(waiver_query)==int:
         return make_response("Server is unable to create waiver",503)
     emergency_execute=sql_functions.execute_query(sql_connection,emergency_query,emergency_tuple+(customer_id[0]['customer_id'],))
