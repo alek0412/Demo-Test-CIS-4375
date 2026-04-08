@@ -10,6 +10,15 @@
   var link = document.querySelector('.nav-auth-link');
   if (!link) return;
 
+  var path = (window.location && window.location.pathname ? window.location.pathname : '').toLowerCase();
+  var onClientPage = /\/client\/client_.*\.html$/.test(path) || /client_.*\.html$/.test(path);
+  if (onClientPage) {
+    var membershipTab = document.querySelector('a.nav-tab[href="Client_Membership.html"]');
+    if (membershipTab && membershipTab.parentElement) {
+      membershipTab.parentElement.removeChild(membershipTab);
+    }
+  }
+
   var GENERAL = '/client/General_Dashboard.html';
   var LOGIN_TAB_ADMIN_KEY = 'hbc_login_tab';
   var CUSTOMER_FLAG = 'hbc_customer_logged_in';

@@ -4,6 +4,11 @@
  */
 (function () {
   'use strict';
+  var HIDDEN_CUSTOMER_COLUMNS = { password: true, salt: true };
+
+  function isVisibleCustomerColumn(colName) {
+    return !HIDDEN_CUSTOMER_COLUMNS[String(colName || '').toLowerCase()];
+  }
 
   // Auth check
   fetch('/api/me', { credentials: 'same-origin' })
@@ -74,7 +79,7 @@
           if (searchWrap) searchWrap.classList.remove('is-hidden');
           var countWrap = document.getElementById('customer-result-count');
           if (countWrap) countWrap.classList.remove('is-hidden');
-          var cols = Object.keys(rows[0]);
+          var cols = Object.keys(rows[0]).filter(isVisibleCustomerColumn);
           var customerIdColInner = cols.find(function (c) {
             return c.toLowerCase() === 'customer_id';
           });
@@ -130,7 +135,9 @@
       var filterBtn = document.getElementById('customer-filter-btn');
       var filterDropdown = document.getElementById('customer-filter-dropdown');
 
-      var cols = rows && rows.length && !rows[0]._error ? Object.keys(rows[0]) : [];
+      var cols = rows && rows.length && !rows[0]._error
+        ? Object.keys(rows[0]).filter(isVisibleCustomerColumn)
+        : [];
       var customerIdCol = cols.find(function (c) {
         return c.toLowerCase() === 'customer_id';
       });

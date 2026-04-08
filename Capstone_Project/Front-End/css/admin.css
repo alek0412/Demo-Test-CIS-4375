@@ -1577,6 +1577,11 @@ body[data-theme="dark"] .admin-marketing-input {
   line-height: 1.45;
 }
 /* Membership specials — outer section: no card box (only inner special blocks stay boxed) */
+
+/* Hide Courts tab across admin navigation only. */
+.admin-nav-link[href="Admin_Courts.html"] {
+  display: none !important;
+}
 .admin-membership-open-section {
   padding: 0;
   background: transparent;
