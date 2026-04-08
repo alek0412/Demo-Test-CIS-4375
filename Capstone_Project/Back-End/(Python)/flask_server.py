@@ -13,7 +13,10 @@ flask_server.permanent_session_lifetime=timedelta(days=7)
 flask_server.register_blueprint(customer_blueprint)
 flask_server.register_blueprint(employee_blueprint)
 flask_server.register_blueprint(court_blueprint)
+flask_server.debug=True
 if __name__ =="__main__":
     waitress.serve(flask_server,port=3001)
+    
+
     
     

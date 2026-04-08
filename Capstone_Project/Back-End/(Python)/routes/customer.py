@@ -52,22 +52,23 @@ def add_customer():
     salted_password=password_hash.hex()
     updated_salt=salt.hex()
     query_tuple+=(salted_password,updated_salt)
-    user_query="insert into customer(customer_first_name,customer_last_name,phone,email,street_address,city,state,zip_code,membership_status,birthdate,password,salt) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    emergency_query="insert into emergency_contact(emergency_first,emergency_last,relationship,emergency_phone,emergency_email,customer_id) values(%s,%s,%s,%s,%s,%s)"
+    user_query="insert into customer(customer_first_name,customer_last_name,phone,email,street_address,city,state,zip_code,membership_status,birthdate,password,salt) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+    emergency_query="insert into emergency_contact(emergency_first,emergency_last,relationship,emergency_phone,emergency_email,customer_id) values(%s,%s,%s,%s,%s,%s);"
     create_query=sql_functions.execute_query(sql_connection,user_query,query_tuple)
     if type(create_query)==int:
         return make_response("Server is unable to create customer",503)
     customer_id=sql_functions.execute_read(sql_connection,"Select customer_id from customer where email = %s;",(email,))
-    print(customer_id)
     if type(customer_id)==int:
-        print(f"Error code: {customer_id}")
         return make_response("Server is unable to fetch customer",503)
-    waiver_query=sql_functions.execute_query(sql_connection,"insert into waiver (customer_id,waiver_status) values(%s,%s);update customer set waiver_id=%s where customer_id=%s",(customer_id[0]['customer_id'],2)+(customer_id[0]['customer_id'],)*2)
+    waiver_query=sql_functions.execute_query(sql_connection,"insert into waiver (customer_id,waiver_status) values(%s,%s);",(customer_id[0]['customer_id'],2))
     if type(waiver_query)==int:
         return make_response("Server is unable to create waiver",503)
     emergency_execute=sql_functions.execute_query(sql_connection,emergency_query,emergency_tuple+(customer_id[0]['customer_id'],))
     if type(emergency_execute)==int:
         return make_response("Server is unable to create emergency contact",503)
+    add_waiver_id=sql_functions.execute_query(sql_connection,"update customer set waiver_id=%s where customer_id=%s",(customer_id[0]['customer_id'],)*2)
+    if type(add_waiver_id)==int:
+        return make_response("Server is unable to create waiver id",503)
     return make_response("Customer created successfully!",201)
 @customer_blueprint.route("/api/customer-login",methods=["post"])
 def customer_login():
@@ -80,14 +81,13 @@ def customer_login():
     customer_query=sql_functions.execute_read(sql_connection,"select * from customer where email = %s",(email,))
     if type(customer_query)==int:
         return make_response("Server is unable to get anything",503)
-    elif len(customer_query[0])==0:
+    elif len(customer_query)==0:
         return make_response("Server cannot find your email",400)
     hashed_password=hashlib.pbkdf2_hmac('sha256',password.encode(encoding='utf-8'),bytes.fromhex(customer_query[0]['salt']),50000).hex()
     if hashed_password!=customer_query[0]['password'] or email.lower() != customer_query[0]['email']:
         return make_response("Invalid email or password",403)
     #Purge employee in session
-    for attribute in session:
-        session.pop(attribute)
+    session.clear()
     for attribute in customer_query[0]:
         if attribute not in ["password","salt"]:
             session[attribute]=customer_query[0][attribute]
@@ -99,8 +99,7 @@ def customer_login():
 
 @customer_blueprint.route("/api/customer-logout",methods=['post'])    
 def customer_logout():
-    for attribute in session:
-        session.pop(attribute,None)
+    session.clear()
     return make_response("Successfully logged out!",200)
 
 @customer_blueprint.route("/api/customer",methods=['delete'])
@@ -114,8 +113,7 @@ def customer_remove():
     delete_customer=sql_functions.execute_query(sql_connection,"delete from customer where customer_id=%s",(session['customer_id'],))
     if type(delete_customer)==int:
         return make_response("Unable to delete customer",503)
-    for attribute in session:
-        session.pop(attribute,None)
+    session.clear()
     return make_response("Successfully deleted customer!",200)    
 
 @customer_blueprint.route("/api/customer",methods=['patch'])

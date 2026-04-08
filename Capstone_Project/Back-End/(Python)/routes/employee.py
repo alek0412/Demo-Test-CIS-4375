@@ -45,8 +45,7 @@ def login_employee():
     if hashed_password != employee_query[0]['employee_password'] or email.lower() != employee_query[0]['employee_email']:
         return make_response("Invalid email or password",403)
     #Purge customer in session
-    for attribute in session:
-        session.pop(attribute)
+    session.clear()
     #Add employee details
     for attribute in employee_query[0]:
         if attribute not in ["employee_password","employee_salt"]:
@@ -60,6 +59,5 @@ def login_employee():
     return make_response("Login successful",200)
 @employee_blueprint.route("/api/logout",methods=['post'])
 def employee_signout():
-    for attribute in session:
-        session.pop(attribute,None)
+    session.clear()
     return make_response("Successfully logged out!",200)
