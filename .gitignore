@@ -17,4 +17,4 @@ Capstone_Project/Front-End/uploads/
 *.pem
 
 # Python cache files
-./__pycache__/
+*.pyc

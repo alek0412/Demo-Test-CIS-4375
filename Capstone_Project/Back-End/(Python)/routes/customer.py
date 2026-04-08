@@ -106,10 +106,10 @@ def customer_logout():
 def customer_remove():
     delete_reservations=sql_functions.execute_query(sql_connection,"delete from reservation where customer_id =%s",values=(session['customer_id'],))
     if type(delete_reservations)==int:
-        return make_response("Unable to delete reservations",503)
+        return make_response("Unable to delete from reservations",503)
     delete_waiver=sql_functions.execute_query(sql_connection,"delete from waiver where customer_id = %s",(session['customer_id'],))
     if type(delete_waiver)==int:
-        return make_response("Unable to delete waiver",503)
+        return make_response("Unable to delete from waiver",503)
     delete_customer=sql_functions.execute_query(sql_connection,"delete from customer where customer_id=%s",(session['customer_id'],))
     if type(delete_customer)==int:
         return make_response("Unable to delete customer",503)
