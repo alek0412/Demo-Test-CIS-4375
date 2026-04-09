@@ -11,6 +11,7 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
   const {
     pathname,
     parseBody,
+    db,
     customerPassword,
     sendPasswordResetEmail,
     CUSTOMER_EMAIL,
@@ -22,6 +23,22 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
 
   const base = flaskBase(config);
   const cookieHeader = req.headers.cookie || '';
+
+  async function lookupCustomerFirstName(email) {
+    const normalized = String(email || '').trim().toLowerCase();
+    if (!normalized || !db || typeof db.query !== 'function') return '';
+    try {
+      const { rows } = await db.query(
+        'SELECT customer_first_name FROM customer WHERE LOWER(TRIM(email)) = ? LIMIT 1',
+        [normalized]
+      );
+      const first = rows && rows[0] ? rows[0].customer_first_name : '';
+      return String(first || '').trim();
+    } catch (err) {
+      console.error('[customer-login] first-name lookup:', err.message);
+      return '';
+    }
+  }
 
   if (req.method === 'POST' && pathname === '/api/customer-login') {
     let data = {};
@@ -40,6 +57,7 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
           contentType: 'application/json',
         });
         if (upstream.statusCode === 200) {
+          const firstName = await lookupCustomerFirstName(data.email);
           const nodeCustomerCookie =
             'customer_session=' +
             encodeURIComponent(CUSTOMER_SESSION_VALUE) +
@@ -50,6 +68,7 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
             JSON.stringify({
               success: true,
               message: (upstream.body || '').trim() || 'Login successful!',
+              firstName,
             })
           );
           return true;
@@ -83,12 +102,13 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
       CUSTOMER_PREVIEW_LOGIN
     );
     if (valid) {
+      const firstName = await lookupCustomerFirstName(email);
       res.writeHead(200, {
         'Content-Type': 'application/json',
         'Set-Cookie':
           'customer_session=' + encodeURIComponent(CUSTOMER_SESSION_VALUE) + '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
       });
-      res.end(JSON.stringify({ success: true }));
+      res.end(JSON.stringify({ success: true, firstName }));
       return true;
     }
     res.writeHead(401, { 'Content-Type': 'application/json' });

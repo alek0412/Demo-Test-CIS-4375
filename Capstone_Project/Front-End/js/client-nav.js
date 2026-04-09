@@ -9,25 +9,6 @@
 (function () {
   var FOOTER_COPY = '\u00a9 2026 HOUSTON BADMINTON CENTER. ALL RIGHTS RESERVED.';
   var FOOTER_COPY_CLASS = 'hbc-copyright';
-  var SHARED_GENERAL_PAGES = {
-    '/client/client_contact.html': '/client/General_Contact.html',
-    '/client/client_alternateservices.html': '/client/General_AlternateServices.html',
-    '/client/client_availability.html': '/client/General_Availability.html',
-    'client_contact.html': '/client/General_Contact.html',
-    'client_alternateservices.html': '/client/General_AlternateServices.html',
-    'client_availability.html': '/client/General_Availability.html'
-  };
-
-  function redirectClientPagesToGeneral() {
-    var rawPath = (window.location && window.location.pathname ? window.location.pathname : '').toLowerCase();
-    var normalized = rawPath.replace(/\/+$/, '');
-    var leaf = normalized.split('/').pop() || '';
-    var target = SHARED_GENERAL_PAGES[normalized] || SHARED_GENERAL_PAGES[leaf];
-    if (!target) return;
-    if (window.location.pathname.toLowerCase() === target.toLowerCase()) return;
-    window.location.replace(target);
-  }
-
   function applyUnifiedFooterCopy() {
     var footer = document.querySelector('footer');
     if (!footer) return;
@@ -44,7 +25,6 @@
   }
 
   applyUnifiedFooterCopy();
-  redirectClientPagesToGeneral();
 
   var link = document.querySelector('.nav-auth-link');
   if (!link) return;
@@ -70,18 +50,32 @@
       }
     });
 
-    var sharedNavMappings = [
-      { clientHref: 'Client_Contact.html', generalHref: 'General_Contact.html' },
-      { clientHref: '/client/Client_Contact.html', generalHref: '/client/General_Contact.html' },
-      { clientHref: 'Client_AlternateServices.html', generalHref: 'General_AlternateServices.html' },
-      { clientHref: '/client/Client_AlternateServices.html', generalHref: '/client/General_AlternateServices.html' },
-      { clientHref: 'Client_Availability.html', generalHref: 'General_Availability.html' },
-      { clientHref: '/client/Client_Availability.html', generalHref: '/client/General_Availability.html' }
-    ];
-    sharedNavMappings.forEach(function (mapping) {
-      var tab = document.querySelector('.nav-tabs a.nav-tab[href="' + mapping.clientHref + '"]');
-      if (tab) tab.setAttribute('href', mapping.generalHref);
-    });
+    var navTabsContainer = document.querySelector('.nav-tabs');
+    if (navTabsContainer) {
+      var profileTab =
+        navTabsContainer.querySelector('a.nav-tab[href="Client_Profile.html"]') ||
+        navTabsContainer.querySelector('a.nav-tab[href="/client/Client_Profile.html"]');
+      if (!profileTab) {
+        profileTab = document.createElement('a');
+        profileTab.className = 'nav-tab';
+        profileTab.href = 'Client_Profile.html';
+        profileTab.textContent = 'Profile';
+      } else {
+        profileTab.href = 'Client_Profile.html';
+      }
+
+      var altServicesTab =
+        navTabsContainer.querySelector('a.nav-tab[href="Client_AlternateServices.html"]') ||
+        navTabsContainer.querySelector('a.nav-tab[href="/client/Client_AlternateServices.html"]') ||
+        navTabsContainer.querySelector('a.nav-tab[href="General_AlternateServices.html"]') ||
+        navTabsContainer.querySelector('a.nav-tab[href="/client/General_AlternateServices.html"]');
+
+      if (altServicesTab && altServicesTab.nextSibling !== profileTab) {
+        navTabsContainer.insertBefore(profileTab, altServicesTab.nextSibling);
+      } else if (!profileTab.parentElement) {
+        navTabsContainer.appendChild(profileTab);
+      }
+    }
   }
 
   var GENERAL = '/client/General_Dashboard.html';
@@ -97,6 +91,7 @@
   function clearCustomerFlag() {
     try {
       sessionStorage.removeItem(CUSTOMER_FLAG);
+      sessionStorage.removeItem('hbc_customer_first_name');
     } catch (e) {}
   }
 

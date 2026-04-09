@@ -246,6 +246,21 @@
   cursor: not-allowed;
 }
 
+.login-panel .btn-preview-entry {
+  margin-top: 0.6rem;
+  background: #ffffff;
+  color: #166534;
+  border: 1.5px solid rgba(22, 101, 52, 0.35);
+  box-shadow: none;
+}
+
+.login-panel .btn-preview-entry:hover {
+  background: #f0fdf4;
+  color: #14532d;
+  border-color: rgba(20, 83, 45, 0.45);
+  box-shadow: none;
+}
+
 @media (max-width: 940px) {
   .login-hero__card {
     grid-template-columns: 1fr;

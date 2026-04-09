@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css">
-  <style>.hero { padding-top: 1.5rem; padding-bottom: 0.5rem; } section.features { padding-top: 0.5rem; }</style>
+  <link rel="stylesheet" href="../css/client-profile.css">
 </head>
-<body>
+<body class="client-profile-page">
   <header>
     <div class="container">
       <nav>
@@ -33,26 +33,141 @@
   </header>
 
   <main>
-    <section class="hero">
-      <div class="container">
-        <h1>Your Profile</h1>
-        <p>Update your account details and preferences</p>
+    <section class="profile-hero">
+      <div class="container profile-hero__inner">
+        <div class="profile-hero__identity">
+          <div class="profile-avatar" aria-hidden="true">AE</div>
+          <div class="profile-hero__copy">
+            <p class="profile-kicker">Customer Profile</p>
+            <h1>Your account, your preferences, your progress.</h1>
+            <p>Manage your member details, security settings, communication preferences, and recent activity from one place.</p>
+          </div>
+        </div>
+        <div class="profile-hero__actions">
+          <button type="button" class="btn btn-primary" id="profile-edit-trigger">Edit account</button>
+          <button type="button" class="btn btn-ghost profile-danger" id="profile-delete-trigger">Delete account</button>
+        </div>
       </div>
     </section>
 
-    <section class="features">
-      <div class="container">
-        <h2>Account settings</h2>
-        <p style="color: var(--text-muted); text-align: center;">Name, email, and preferences will appear here.</p>
+    <section class="profile-layout">
+      <div class="container profile-grid">
+        <div class="profile-group-title profile-group-title--overview">Account Overview</div>
+
+        <article class="profile-card profile-card--summary profile-card--account">
+          <h2>Account Basics</h2>
+          <dl class="profile-meta">
+            <div><dt>Full name</dt><dd id="profile-name">Alek Espinosa</dd></div>
+            <div><dt>Email</dt><dd id="profile-email">alekespi0412@gmail.com</dd></div>
+            <div><dt>Phone</dt><dd id="profile-phone">(713) 555-0133</dd></div>
+            <div><dt>Member since</dt><dd>March 2026</dd></div>
+          </dl>
+        </article>
+
+        <article class="profile-card profile-card--security">
+          <h2>Security</h2>
+          <ul class="profile-list">
+            <li><span>Password</span><strong>Last changed 18 days ago</strong></li>
+            <li><span>Last login</span><strong>Today at 10:36 AM</strong></li>
+            <li><span>Session status</span><strong class="status-dot status-dot--ok">Signed in</strong></li>
+          </ul>
+          <button type="button" class="btn btn-ghost profile-inline-btn">Change password</button>
+        </article>
+
+        <div class="profile-group-title profile-group-title--activity">Membership & Activity</div>
+
+        <article class="profile-card profile-card--membership">
+          <h2>Membership Status</h2>
+          <div class="profile-pill-wrap">
+            <span class="profile-pill">Active Member</span>
+            <span class="profile-pill profile-pill--muted">Auto-renew On</span>
+          </div>
+          <ul class="profile-list">
+            <li><span>Plan</span><strong>Monthly Open Play</strong></li>
+            <li><span>Next billing date</span><strong>May 9, 2026</strong></li>
+            <li><span>Member perks</span><strong>Early booking + discounts</strong></li>
+          </ul>
+        </article>
+
+        <article class="profile-card profile-card--activity-card">
+          <h2>Recent Activity</h2>
+          <ul class="profile-timeline">
+            <li>
+              <p>Upcoming reservation: Court 4</p>
+              <small>Friday, 7:00 PM - 8:30 PM</small>
+            </li>
+            <li>
+              <p>Last completed booking</p>
+              <small>Tuesday, 6:00 PM - 7:30 PM</small>
+            </li>
+            <li>
+              <p>Membership renewed successfully</p>
+              <small>April 9, 2026</small>
+            </li>
+          </ul>
+        </article>
+
+        <article class="profile-card profile-card--preferences">
+          <h2>Communication Preferences</h2>
+          <div class="profile-toggle-list">
+            <label><input type="checkbox" checked> Booking reminders (email)</label>
+            <label><input type="checkbox" checked> Class updates (SMS)</label>
+            <label><input type="checkbox"> Marketing promos</label>
+          </div>
+          <button type="button" class="btn btn-primary profile-inline-btn">Save preferences</button>
+        </article>
+
+        <div class="profile-group-title profile-group-title--actions">Actions</div>
+
+        <article class="profile-card profile-card--quick-actions">
+          <h2>Quick Actions</h2>
+          <div class="profile-quick-actions">
+            <a href="Client_Bookings.html" class="btn btn-ghost">View my bookings</a>
+            <a href="Client_Contact.html" class="btn btn-ghost">Contact support</a>
+            <a href="Client_Availability.html" class="btn btn-ghost">Check availability</a>
+          </div>
+        </article>
+
       </div>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      <p>© 2026 Houston Badminton Center. All rights reserved.</p>
+      <p class="hbc-copyright">© 2026 HOUSTON BADMINTON CENTER. ALL RIGHTS RESERVED.</p>
     </div>
   </footer>
+  <div class="profile-modal profile-modal--edit is-hidden" id="profile-edit-modal" aria-hidden="true">
+    <div class="profile-modal__panel" role="dialog" aria-modal="true" aria-labelledby="profile-edit-title">
+      <h3 id="profile-edit-title">Edit account</h3>
+      <p>Update your details below and click Save changes.</p>
+      <form id="profile-edit-form">
+        <label for="edit-name">Full name</label>
+        <input id="edit-name" type="text" value="Alek Espinosa">
+        <label for="edit-email">Email</label>
+        <input id="edit-email" type="email" value="alekespi0412@gmail.com">
+        <label for="edit-phone">Phone</label>
+        <input id="edit-phone" type="tel" value="(713) 555-0133">
+        <div class="profile-modal__actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="profile-modal profile-modal--delete is-hidden" id="profile-delete-modal" aria-hidden="true">
+    <div class="profile-modal__panel" role="dialog" aria-modal="true" aria-labelledby="profile-delete-title">
+      <h3 id="profile-delete-title">Delete account</h3>
+      <p>This action is permanent and cannot be undone. Type <strong>DELETE</strong> to confirm.</p>
+      <label for="delete-confirm-input">Confirmation</label>
+      <input id="delete-confirm-input" type="text" placeholder="Type DELETE">
+      <div class="profile-modal__actions">
+        <button type="button" class="btn btn-ghost" data-close-modal>Cancel</button>
+        <button type="button" class="btn btn-ghost profile-danger" id="confirm-delete-btn" disabled>Delete permanently</button>
+      </div>
+    </div>
+  </div>
+  <script src="../js/client-profile.js"></script>
   <script src="../js/client-nav.js"></script>
 </body>
 </html>
