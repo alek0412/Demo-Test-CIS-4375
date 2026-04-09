@@ -9,7 +9,7 @@ sql_connection=secure_connection
 def create_employee():
     request_json=request.get_json()
     try:
-        if not session['is_manager'] or not session['is_employee'] or session['is_customer']:
+        if not session.get("is_manager") or not session.get("is_employee") or session.get("is_customer"):
             return make_response("You don't have the authorization to create employee",403)
         last_name:str=request['last_name'].capitalize()
         first_name:str=request['first_name'].capitalize()
@@ -50,12 +50,12 @@ def login_employee():
     for attribute in employee_query[0]:
         if attribute not in ["employee_password","employee_salt"]:
             session['attribute']=employee_query[0][attribute]
-    session['is_employee']=True
-    session['is_customer']=False
+    session["is_employee"]=True
+    session["is_customer"]=False
     if session['employee_rank']==1:
-        session['is_manager']==True
+        session["is_manager"]==True
     else:
-        session['is_manager']==False
+        session.get("is_manager")==False
     return make_response("Login successful",200)
 @employee_blueprint.route("/api/logout",methods=['post'])
 def employee_signout():
@@ -69,7 +69,7 @@ def employee_fire():
         employee_id=request_json['employee_id']
         if type(employee_id)!=int:
             raise TypeError("Invalid employee")
-        if not session['is_manager']:
+        if not session.get("is_manager"):
             return make_response("Invalid authorization",403)
     except (KeyError,TypeError):
         return make_response("Invalid employee",400)
@@ -90,6 +90,8 @@ def employee_change():
     employee_id=request_json.get("employee_id")
     if not employee_id:
         return make_response("Invalid employee",400)
+    if not session.get("is_manager"):
+        return make_response("Invalid permissions",403)
     employee_retrieve=sql_functions.execute_read(sql_connection,"select * from employee where employee_id=%s",(employee_id,))
     if type(employee_retrieve) == int or len(employee_retrieve)==0:
         return make_response("Server is unable to fetch employee",503)
