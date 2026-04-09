@@ -36,7 +36,6 @@ def get_court():
         return make_response("Unable to retrieve court",503)
     return jsonify(court_fetch)
 
-
 @court_blueprint.route("/api/court",methods=["patch"])
 def update_court():
     request_json=request.get_json()
@@ -44,7 +43,7 @@ def update_court():
         court_id=request_json['court_id']
         available=request_json["court_availability"]
         if type(available)!= bool or type(court_id)!=int:
-            return make_response("Invalid court",400)
+            return make_response("Invalid court or attribute",400)
         if not session['is_employee']:
             return make_response("Invalid authorization",403)
     except KeyError:
@@ -54,7 +53,6 @@ def update_court():
     if type(court_query)==int:
         return make_response("Server is unable to update",503)
     return make_response("Court successfully updated",200)
-    
 
 @court_blueprint.route("/api/court",methods=["delete"])
 def delete_court():

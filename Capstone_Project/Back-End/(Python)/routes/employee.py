@@ -11,8 +11,8 @@ def create_employee():
     try:
         if not session['is_manager'] or not session['is_employee'] or session['is_customer']:
             return make_response("You don't have the authorization to create employee",403)
-        last_name:str=request['last_name']
-        first_name:str=request['first_name']
+        last_name:str=request['last_name'].capitalize()
+        first_name:str=request['first_name'].capitalize()
         phone=request['phone']
         password:str=request['password']
         salt=os.urandom(20)
@@ -61,3 +61,69 @@ def login_employee():
 def employee_signout():
     session.clear()
     return make_response("Successfully logged out!",200)
+
+@employee_blueprint.route("/api/delete",methods=['delete'])
+def employee_fire():
+    try:
+        request_json=request.json()
+        employee_id=request_json['employee_id']
+        if type(employee_id)!=int:
+            raise TypeError("Invalid employee")
+        if not session['is_manager']:
+            return make_response("Invalid authorization",403)
+    except (KeyError,TypeError):
+        return make_response("Invalid employee",400)
+    delete_reservations=sql_functions.execute_query(sql_connection,"delete from reservation where employee_id=%s",(employee_id,))
+    if type(delete_reservations)==int:
+        return make_response("Server is unable to delete from reservation",503)
+    delete_employee=sql_functions.execute_query(sql_connection,"delete from employee where employee_id=%s",(employee_id,))
+    if type(delete_employee)==int:
+        return make_response("Server is unable to delete employee",503)
+    return make_response("Employee successfully fired!",200)
+
+@employee_blueprint("/api/change-employee",methods=['patch'])
+def employee_change():
+    valid_attributes=["employee_last_name,employee_first_name,employee_phone,employee_password"]
+    request_json=request.json()
+    last_name=request_json.get("employee_last_name")
+    first_name=request_json.get("employee_first_name")
+    employee_id=request_json.get("employee_id")
+    if not employee_id:
+        return make_response("Invalid employee",400)
+    employee_retrieve=sql_functions.execute_read(sql_connection,"select * from employee where employee_id=%s",(employee_id,))
+    if type(employee_retrieve) == int or len(employee_retrieve)==0:
+        return make_response("Server is unable to fetch employee",503)
+    database_last=employee_retrieve[0]['employee_last_name']
+    database_first=employee_retrieve[0]['employee_first_name']
+    is_name_changed=False
+    new_email=f"{last_name.lower() if last_name and type(last_name)==str else database_last}.{first_name.lower() if first_name and type(first_name)==str else database_first}@hbcstaff.com"
+    for attribute in valid_attributes:
+        attribute_value=request_json.get(attribute)
+        database_attribute=employee_retrieve[0][attribute]
+        if attribute_value and attribute_value!=database_attribute:
+            if attribute in ["employee_last_name","employee_first_name"] and type(attribute_value)==str:
+                attribute_value=attribute_value.capitalize()
+                if attribute_value != database_attribute:
+                    is_name_changed=True
+                    update_name=sql_functions.execute_query(sql_connection,f"update employee set {attribute}="+"%s where employee_id=%s",(attribute_value,employee_id))
+                    if type(update_name)==int:
+                        return make_response("Server is unable to change name",503)
+                else:
+                    continue
+            elif attribute=="employee_password":
+                new_salt=os.urandom(20)
+                attribute_value=hashlib.pbkdf2_hmac("sha256",attribute_value.encode(encoding='utf-8'),new_salt,50000).hex()
+                new_salt=new_salt.hex()
+                update_password=sql_functions.execute_query(sql_connection,"update employee set employee_password=%s,employee_salt=%s where employee_id=%s",(attribute_value,new_salt,employee_id))
+                if type(update_password)==int:
+                    return make_response("Server is unable to change password",503)
+            else:
+                update_attribute=sql_functions.execute_query(sql_connection,f"update employee set {attribute}="+"%s where employee_id=%s",(attribute_value,employee_id))
+                if type(update_attribute)==int:
+                    return make_response("Server is unable to change attribute",503)
+    if is_name_changed:
+        update_email=sql_functions.execute_query(sql_connection,"update employee set employee_email=%s where employee_id=%s",(new_email,employee_id))
+        if type(update_email)==int:
+            return make_response("Server is unable to change email",503)
+    return make_response("Successfully updated employee",200)
+        

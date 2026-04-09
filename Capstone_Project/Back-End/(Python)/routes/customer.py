@@ -12,8 +12,8 @@ sql_connection=secure_connection
 def add_customer():
     request_json=request.get_json()
     try:
-        first_name=request_json['first_name']
-        last_name=request_json['last_name']
+        first_name=request_json['first_name'].capitalize()
+        last_name=request_json['last_name'].capitalize()
         phone=request_json['phone']
         email=request_json['email']
         street_address=request_json['street_address']
@@ -22,8 +22,8 @@ def add_customer():
         zip_code=request_json['zip_code']
         birthdate=request_json['birthdate']
         password=request_json['password']
-        emergency_first=request_json['emergency_first']
-        emergency_last=request_json['emergency_last']
+        emergency_first=request_json['emergency_first'].capitalize()
+        emergency_last=request_json['emergency_last'].capitalize()
         relationship=request_json['relationship']
         emergency_phone=request_json['emergency_phone']
         emergency_email=request_json['emergency_email']
@@ -122,18 +122,19 @@ def update_details():
     request_json=request.get_json()
     for field in fields:
         try:
-            if field =="password":
-                new_salt=urandom(20)
-                new_password = hashlib.pbkdf2_hmac("sha256",request_json['password'],new_salt,50000).hex()
-                new_salt=new_salt.hex()
-                new_password_query=sql_functions.execute_query(sql_connection,"update customer set password = %s,salt=%s where email = %s",(new_password,new_salt,session['email']))
-                if type(new_password_query)==int:
-                    return make_response("Unable to update password",503)
-            else:
-                new_entry_query=sql_functions.execute_query(sql_connection,f"update customer set {field}"+"%s where email =%s",(request_json[field],session['email']))
-                if type(new_entry_query)==int:
-                    return make_response(f"Unable to update {field}",503)
-            session[field] = request_json[field]
+            if session[field]!=request_json[field]:
+                if field =="password":
+                    new_salt=urandom(20)
+                    new_password = hashlib.pbkdf2_hmac("sha256",request_json['password'],new_salt,50000).hex()
+                    new_salt=new_salt.hex()
+                    new_password_query=sql_functions.execute_query(sql_connection,"update customer set password = %s,salt=%s where email = %s",(new_password,new_salt,session['email']))
+                    if type(new_password_query)==int:
+                        return make_response("Unable to update password",503)
+                else:
+                    new_entry_query=sql_functions.execute_query(sql_connection,f"update customer set {field}"+"%s where email =%s",(request_json[field],session['email']))
+                    if type(new_entry_query)==int:
+                        return make_response(f"Unable to update {field}",503)
+                session[field] = request_json[field]
         except KeyError:
             pass 
         session.modified=True
