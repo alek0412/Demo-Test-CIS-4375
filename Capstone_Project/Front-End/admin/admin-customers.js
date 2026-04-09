@@ -104,7 +104,22 @@
             return colLabels[colName] || colLabels[key] || colName.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
           }
           html += '<table id="customer-table"><thead><tr>';
-          cols.forEach(function (c) { html += '<th>' + columnHeaderLabel(c) + '</th>'; });
+          cols.forEach(function (c) {
+            var label = columnHeaderLabel(c);
+            html +=
+              '<th scope="col" data-col="' +
+              String(c).replace(/"/g, '&quot;') +
+              '" aria-sort="none">' +
+              '<button type="button" class="db-sort-btn" data-col="' +
+              String(c).replace(/"/g, '&quot;') +
+              '" aria-label="Sort by ' +
+              String(label).replace(/"/g, '&quot;') +
+              '">' +
+              label +
+              '<span class="db-sort-indicator" aria-hidden="true"></span>' +
+              '</button>' +
+              '</th>';
+          });
           html += '</tr></thead><tbody>';
           html += '<tr id="customer-no-results" class="db-no-results db-no-results-row is-hidden" aria-live="polite"><td colspan="' + cols.length + '">No customer found with that search.</td></tr>';
           rows.forEach(function (row) {
@@ -118,7 +133,27 @@
               if (c === statusColName && (display === 1 || display === 2 || display === '1' || display === '2')) {
                 display = display === 1 || display === '1' ? 'Active' : 'Inactive';
               }
-              html += '<td>' + (display != null && display !== '' ? String(display) : '') + '</td>';
+              var safe = display != null && display !== '' ? String(display) : '';
+              var lower = String(c || '').toLowerCase();
+              var cellClass = '';
+              if (lower === 'email') cellClass = ' class="db-cell-mono"';
+              if (c === statusColName) {
+                var statusText = safe;
+                var tone =
+                  String(statusText).toLowerCase() === 'active'
+                    ? 'ok'
+                    : String(statusText).toLowerCase() === 'inactive'
+                      ? 'muted'
+                      : 'neutral';
+                html +=
+                  '<td>' +
+                  (safe
+                    ? '<span class="db-pill db-pill--' + tone + '">' + statusText + '</span>'
+                    : '') +
+                  '</td>';
+              } else {
+                html += '<td' + cellClass + '>' + safe + '</td>';
+              }
             });
             html += '</tr>';
           });
@@ -259,6 +294,8 @@
       var selectedCustomerId = null;
       var allRowsData = rows && rows.length && !rows[0]._error ? rows : [];
 
+      var sortState = { col: null, dir: 'asc' };
+
       function getRowDataByCustomerId(idStr) {
         var n = parseInt(idStr, 10);
         if (!Number.isFinite(n) || !customerIdCol) return null;
@@ -330,8 +367,86 @@
         syncRowSelection();
       }
 
+      function isProbablyNumber(s) {
+        if (s == null) return false;
+        var t = String(s).trim();
+        if (!t) return false;
+        // allow digits, commas, decimals, leading minus
+        return /^-?\d[\d,]*([.]\d+)?$/.test(t);
+      }
+
+      function compareCellText(a, b) {
+        if (a == null) a = '';
+        if (b == null) b = '';
+        var A = String(a).trim();
+        var B = String(b).trim();
+        if (A === B) return 0;
+        var numA = isProbablyNumber(A);
+        var numB = isProbablyNumber(B);
+        if (numA && numB) {
+          var na = Number(A.replace(/,/g, ''));
+          var nb = Number(B.replace(/,/g, ''));
+          if (Number.isFinite(na) && Number.isFinite(nb)) return na - nb;
+        }
+        return A.localeCompare(B, undefined, { numeric: true, sensitivity: 'base' });
+      }
+
+      function setSortUi(col, dir) {
+        if (!table) return;
+        var ths = table.querySelectorAll('thead th');
+        ths.forEach(function (th) {
+          var isActive = th.getAttribute('data-col') === col;
+          th.setAttribute('aria-sort', isActive ? (dir === 'desc' ? 'descending' : 'ascending') : 'none');
+          th.classList.toggle('is-sorted', isActive);
+          th.classList.toggle('is-sorted-desc', isActive && dir === 'desc');
+        });
+      }
+
+      function sortTableByColumn(colKey, dir) {
+        if (!table || !cols.length) return;
+        var idx = cols.indexOf(colKey);
+        if (idx === -1) return;
+        var tbody = table.querySelector('tbody');
+        if (!tbody) return;
+        var trs = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+        var noRes = trs.find(function (tr) { return tr.id === 'customer-no-results'; });
+        var dataRows = trs.filter(function (tr) { return tr.id !== 'customer-no-results'; });
+
+        dataRows.sort(function (ra, rb) {
+          var a = (ra.cells[idx] && ra.cells[idx].textContent) ? ra.cells[idx].textContent : '';
+          var b = (rb.cells[idx] && rb.cells[idx].textContent) ? rb.cells[idx].textContent : '';
+          var cmp = compareCellText(a, b);
+          return dir === 'desc' ? -cmp : cmp;
+        });
+
+        // Re-append in new order (keeps event delegation on tbody)
+        dataRows.forEach(function (tr) { tbody.appendChild(tr); });
+        if (noRes) tbody.insertBefore(noRes, tbody.firstChild);
+        setSortUi(colKey, dir);
+        applyFilters();
+      }
+
       if (searchInput && table) {
         searchInput.addEventListener('input', applyFilters);
+      }
+
+      if (table) {
+        var thead = table.querySelector('thead');
+        if (thead) {
+          thead.addEventListener('click', function (e) {
+            var btn = e.target && e.target.closest && e.target.closest('.db-sort-btn');
+            if (!btn) return;
+            var col = btn.getAttribute('data-col');
+            if (!col) return;
+            if (sortState.col === col) {
+              sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+            } else {
+              sortState.col = col;
+              sortState.dir = 'asc';
+            }
+            sortTableByColumn(sortState.col, sortState.dir);
+          });
+        }
       }
 
       if (filterBtn && filterDropdown) {
