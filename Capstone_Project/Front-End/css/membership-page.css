@@ -333,14 +333,17 @@ nav.mem-toc,
 }
 
 /* Hero title/lead/stats: same as .about-hero__title / __lead / __stats (about.css) */
-.mem-hero__title {
+.mem-hero .mem-hero__title {
   font-family: "Playfair Display", Georgia, serif;
   font-size: clamp(2.35rem, 6vw, 3.65rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.08;
+  text-align: center;
   color: var(--mem-ink);
   margin: 0 0 1.1rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mem-hero__lead {
