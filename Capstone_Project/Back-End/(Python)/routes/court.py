@@ -11,7 +11,7 @@ def add_court():
         court_type=request_json['court_type']
         if type(court_type)!=int:
             return make_response("Invalid court type",400)
-        if not session['is_employee'] and not session['is_manager']:
+        if not session.get("is_employee") and not session.get("is_manager"):
             return make_response("Invalid authorization",403)
     except KeyError:
         return make_response("Unable to make court",400)
@@ -44,7 +44,7 @@ def update_court():
         available=request_json["court_availability"]
         if type(available)!= bool or type(court_id)!=int:
             return make_response("Invalid court or attribute",400)
-        if not session['is_employee']:
+        if not session.get("is_employee"):
             return make_response("Invalid authorization",403)
     except KeyError:
         return make_response("Invalid court",400)
@@ -61,7 +61,7 @@ def delete_court():
         court_id=request_json['court_id']
         if type(court_id)!=int:
             return make_response("Invalid court",400)
-        if not session['is_employee'] and not session['is_manager']:
+        if not session.get("is_employee") and not session.get("is_manager"):
             return make_response("Invalid authorization",403)
     except KeyError:
         return make_response("Invalid court",400)
