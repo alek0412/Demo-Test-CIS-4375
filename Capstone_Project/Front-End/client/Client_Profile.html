@@ -36,7 +36,7 @@
     <section class="profile-hero">
       <div class="container profile-hero__inner">
         <div class="profile-hero__identity">
-          <div class="profile-avatar" aria-hidden="true">AE</div>
+          <div class="profile-avatar" aria-hidden="true">—</div>
           <div class="profile-hero__copy">
             <p class="profile-kicker">Customer Profile</p>
             <h1>Your account, your preferences, your progress.</h1>
@@ -57,10 +57,10 @@
         <article class="profile-card profile-card--summary profile-card--account">
           <h2>Account Basics</h2>
           <dl class="profile-meta">
-            <div><dt>Full name</dt><dd id="profile-name">Alek Espinosa</dd></div>
-            <div><dt>Email</dt><dd id="profile-email">alekespi0412@gmail.com</dd></div>
-            <div><dt>Phone</dt><dd id="profile-phone">(713) 555-0133</dd></div>
-            <div><dt>Member since</dt><dd>March 2026</dd></div>
+            <div><dt>Full name</dt><dd id="profile-name">—</dd></div>
+            <div><dt>Email</dt><dd id="profile-email">—</dd></div>
+            <div><dt>Phone</dt><dd id="profile-phone">—</dd></div>
+            <div><dt>Member since</dt><dd id="profile-member-since">—</dd></div>
           </dl>
         </article>
 
@@ -83,7 +83,7 @@
             <span class="profile-pill profile-pill--muted">Auto-renew On</span>
           </div>
           <ul class="profile-list">
-            <li><span>Plan</span><strong>Monthly Open Play</strong></li>
+            <li><span>Plan</span><strong id="profile-plan">—</strong></li>
             <li><span>Next billing date</span><strong>May 9, 2026</strong></li>
             <li><span>Member perks</span><strong>Early booking + discounts</strong></li>
           </ul>
@@ -143,11 +143,11 @@
       <p>Update your details below and click Save changes.</p>
       <form id="profile-edit-form">
         <label for="edit-name">Full name</label>
-        <input id="edit-name" type="text" value="Alek Espinosa">
+        <input id="edit-name" type="text" value="" autocomplete="name">
         <label for="edit-email">Email</label>
-        <input id="edit-email" type="email" value="alekespi0412@gmail.com">
+        <input id="edit-email" type="email" value="" autocomplete="email">
         <label for="edit-phone">Phone</label>
-        <input id="edit-phone" type="tel" value="(713) 555-0133">
+        <input id="edit-phone" type="tel" value="" autocomplete="tel">
         <div class="profile-modal__actions">
           <button type="button" class="btn btn-ghost" data-close-modal>Cancel</button>
           <button type="submit" class="btn btn-primary">Save changes</button>

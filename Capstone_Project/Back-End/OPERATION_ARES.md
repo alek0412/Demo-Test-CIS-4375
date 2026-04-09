@@ -2,6 +2,8 @@
 
 **Code source:** CLU (public repo) — `https://github.com/alek0412/Demo-Test-CIS-4375`
 
+**Related operations (all kept in this repo):** **Operation CLU** — routine `git pull` + PM2 restart when the app is already deployed (`OPERATION_CLU.md`). **Operation TRON** — remove app from EC2 (`OPERATION_TRON.md`). **Operation ARES** (this file) — full setup or redeploy after TRON.
+
 ---
 
 ## ARES quick checklist (use this on every fresh deploy / after TRON)
@@ -99,7 +101,7 @@ pm2 list
 - **Do not** run **`node server.js`** in the shell while PM2 is already running the same app — that tries to open port 3000 twice and triggers **EADDRINUSE**.
 - **Port 3001** is for **Flask only**. If **`EADDRINUSE`** on 3001, check **`pm2 list`** for a duplicate **`waiver-api`** or a stray **`python … flask_server.py`**.
 
-**Routine code updates** (repo already cloned, PM2 already managing the app): `git pull` → **`npm install`** (if Node deps changed) → **`pip3 install …`** (if you added Python packages) → **`pm2 restart waiver-api`** (if Python changed) → **`pm2 restart reservation-app`**. You should **not** need to kill processes or fight port 3000 unless something was started twice.
+**Routine code updates** (repo already cloned, PM2 already managing the app): same flow as **Operation CLU** — see **`OPERATION_CLU.md`**. In short: `git pull` → **`npm install`** (if Node deps changed) → **`pip3 install …`** (if you added Python packages) → **`pm2 restart waiver-api`** (if Python changed) → **`pm2 restart reservation-app`**. You should **not** need to kill processes or fight port 3000 unless something was started twice.
 
 ---
 

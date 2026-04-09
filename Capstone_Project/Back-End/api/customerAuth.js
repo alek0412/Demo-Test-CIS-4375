@@ -24,6 +24,15 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
   const base = flaskBase(config);
   const cookieHeader = req.headers.cookie || '';
 
+  function customerEmailCookieHeader(email) {
+    const safe = encodeURIComponent(String(email || '').trim().toLowerCase());
+    return 'hbc_customer_email=' + safe + '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
+  }
+
+  function clearCustomerEmailCookieHeader() {
+    return 'hbc_customer_email=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax';
+  }
+
   async function lookupCustomerFirstName(email) {
     const normalized = String(email || '').trim().toLowerCase();
     if (!normalized || !db || typeof db.query !== 'function') return '';
@@ -37,6 +46,44 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
     } catch (err) {
       console.error('[customer-login] first-name lookup:', err.message);
       return '';
+    }
+  }
+
+  async function lookupCustomerProfile(email) {
+    const normalized = String(email || '').trim().toLowerCase();
+    if (!normalized || !db || typeof db.query !== 'function') return null;
+    try {
+      const { rows } = await db.query(
+        `SELECT customer_id, customer_first_name, customer_last_name, email, phone,
+                street_address, city, state, zip_code, membership_status, birthdate
+         FROM customer WHERE LOWER(TRIM(email)) = ? LIMIT 1`,
+        [normalized]
+      );
+      const r = rows && rows[0];
+      if (!r) return null;
+      let birth = '';
+      if (r.birthdate != null) {
+        birth =
+          typeof r.birthdate.toISOString === 'function'
+            ? r.birthdate.toISOString().slice(0, 10)
+            : String(r.birthdate);
+      }
+      return {
+        customerId: r.customer_id,
+        firstName: String(r.customer_first_name || '').trim(),
+        lastName: String(r.customer_last_name || '').trim(),
+        email: String(r.email || '').trim(),
+        phone: String(r.phone || '').trim(),
+        streetAddress: String(r.street_address || '').trim(),
+        city: String(r.city || '').trim(),
+        state: String(r.state || '').trim(),
+        zipCode: String(r.zip_code || '').trim(),
+        membershipStatus: r.membership_status,
+        birthdate: birth,
+      };
+    } catch (err) {
+      console.error('[customer-me] profile lookup:', err.message);
+      return null;
     }
   }
 
@@ -62,7 +109,8 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
             'customer_session=' +
             encodeURIComponent(CUSTOMER_SESSION_VALUE) +
             '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
-          const cookies = [...upstream.setCookies, nodeCustomerCookie];
+          const emailCookie = customerEmailCookieHeader(data.email);
+          const cookies = [...upstream.setCookies, nodeCustomerCookie, emailCookie];
           res.writeHead(200, { 'Content-Type': 'application/json', 'Set-Cookie': cookies });
           res.end(
             JSON.stringify({
@@ -105,8 +153,12 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
       const firstName = await lookupCustomerFirstName(email);
       res.writeHead(200, {
         'Content-Type': 'application/json',
-        'Set-Cookie':
-          'customer_session=' + encodeURIComponent(CUSTOMER_SESSION_VALUE) + '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
+        'Set-Cookie': [
+          'customer_session=' +
+            encodeURIComponent(CUSTOMER_SESSION_VALUE) +
+            '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
+          customerEmailCookieHeader(email),
+        ],
       });
       res.end(JSON.stringify({ success: true, firstName }));
       return true;
@@ -124,7 +176,7 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
           cookie: cookieHeader,
         });
         const clearNode = 'customer_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax';
-        const cookies = [...upstream.setCookies, clearNode];
+        const cookies = [...upstream.setCookies, clearNode, clearCustomerEmailCookieHeader()];
         res.writeHead(200, { 'Content-Type': 'application/json', 'Set-Cookie': cookies });
         res.end(JSON.stringify({ success: true }));
         return true;
@@ -137,7 +189,10 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
     }
     res.writeHead(200, {
       'Content-Type': 'application/json',
-      'Set-Cookie': 'customer_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
+      'Set-Cookie': [
+        'customer_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
+        clearCustomerEmailCookieHeader(),
+      ],
     });
     res.end(JSON.stringify({ success: true }));
     return true;
@@ -190,11 +245,13 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
       }
       const msg = (upstream.body || '').trim();
       if (upstream.statusCode === 201) {
+        const regEmail = (data.email || '').trim().toLowerCase();
         const cookies = [
           ...upstream.setCookies,
           'customer_session=' +
             encodeURIComponent(CUSTOMER_SESSION_VALUE) +
             '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
+          customerEmailCookieHeader(regEmail),
         ];
         res.writeHead(201, { 'Content-Type': 'application/json', 'Set-Cookie': cookies });
         res.end(JSON.stringify({ success: true, message: msg || 'Customer created successfully!' }));
@@ -282,9 +339,36 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
       const match = cookie.match(/customer_session=([^;]*)/);
       sessionValue = match ? decodeURIComponent(match[1].trim()) : '';
     } catch (_) {}
-    const loggedIn = sessionValue === CUSTOMER_SESSION_VALUE;
+    const nodeLoggedIn = sessionValue === CUSTOMER_SESSION_VALUE;
+
+    if (base) {
+      try {
+        const upstream = await proxyToFlask(base, 'GET', '/api/customer-me', { cookie });
+        if (upstream.statusCode === 200 && upstream.body) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(upstream.body);
+          return true;
+        }
+      } catch (err) {
+        console.error('[customer-me] Flask:', err.message);
+      }
+    }
+
+    if (!nodeLoggedIn) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ loggedIn: false }));
+      return true;
+    }
+
+    let emailHint = '';
+    try {
+      const em = cookie.match(/hbc_customer_email=([^;]*)/);
+      emailHint = em ? decodeURIComponent(em[1].trim()) : '';
+    } catch (_) {}
+
+    const profile = emailHint ? await lookupCustomerProfile(emailHint) : null;
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ loggedIn }));
+    res.end(JSON.stringify({ loggedIn: true, profile }));
     return true;
   }
 

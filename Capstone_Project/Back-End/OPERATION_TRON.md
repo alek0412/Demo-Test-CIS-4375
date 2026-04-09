@@ -1,5 +1,7 @@
 # Operation TRON — Remove the application from EC2
 
+**If you only want newer code and the repo is still on the server, use Operation CLU** (`OPERATION_CLU.md`) — `git pull` + PM2 restarts — **not** TRON.
+
 **Before you SSH in:** read **Operation ARES — §0 (PEM key and SSH)**. In short, on **your laptop only**:
 
 1. `chmod 400 "/path/to/HBC-Server-Key.pem"` (use your real path; **quote** paths with spaces).
@@ -80,3 +82,5 @@ Only run **`pm2 unstartup systemd`** if you intentionally want PM2 to **not** st
 ---
 
 **Result:** The app is stopped and the code is removed from the instance. The EC2 instance and RDS can stay running. To **clone from GitHub and run the app again**, use **Operation ARES** → **Redeploy after Operation TRON** (including **§0** PEM/SSH on your laptop, then **`npm install`** in **Back-End** before **`pm2 start server.js`**).
+
+**Ongoing updates without removing the repo:** **Operation CLU** (`OPERATION_CLU.md`).

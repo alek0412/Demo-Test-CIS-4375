@@ -1165,6 +1165,10 @@ footer a:hover {
   .logo {
     grid-column: 1;
     margin-left: 0;
+    justify-self: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
   .container {
     padding-left: 1rem;

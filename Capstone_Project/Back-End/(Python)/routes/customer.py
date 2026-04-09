@@ -1,7 +1,7 @@
 import hashlib
 import sql_functions
 import datetime
-from flask import request,make_response,Blueprint,session
+from flask import request,make_response,Blueprint,session,jsonify
 from os import urandom
 from ssh_connection import secure_connection
 from dateutil.relativedelta import relativedelta
@@ -102,6 +102,37 @@ def customer_logout():
     session.clear()
     return make_response("Successfully logged out!",200)
 
+@customer_blueprint.route("/api/customer-me", methods=["GET"])
+def customer_me_get():
+    if not session.get("is_customer") or "customer_id" not in session:
+        return jsonify({"loggedIn": False}), 200
+
+    def as_str(val):
+        if val is None:
+            return ""
+        if hasattr(val, "isoformat"):
+            return val.isoformat()
+        return str(val)
+
+    return jsonify(
+        {
+            "loggedIn": True,
+            "profile": {
+                "customerId": session.get("customer_id"),
+                "firstName": as_str(session.get("customer_first_name")),
+                "lastName": as_str(session.get("customer_last_name")),
+                "email": as_str(session.get("email")),
+                "phone": as_str(session.get("phone")),
+                "streetAddress": as_str(session.get("street_address")),
+                "city": as_str(session.get("city")),
+                "state": as_str(session.get("state")),
+                "zipCode": as_str(session.get("zip_code")),
+                "membershipStatus": session.get("membership_status"),
+                "birthdate": as_str(session.get("birthdate")),
+            },
+        }
+    ), 200
+
 @customer_blueprint.route("/api/customer",methods=['delete'])
 def customer_remove():
     delete_reservations=sql_functions.execute_query(sql_connection,"delete from reservation where customer_id =%s",(session['customer_id'],))
@@ -118,26 +149,54 @@ def customer_remove():
 
 @customer_blueprint.route("/api/customer",methods=['patch'])
 def update_details():
-    fields = ["last_name", "first_name", "email", "street_address","city", "state", "zip_code", "password"]
-    request_json=request.get_json()
-    for field in fields:
-        try:
-            if session[field]!=request_json[field]:
-                if field =="password":
-                    new_salt=urandom(20)
-                    new_password = hashlib.pbkdf2_hmac("sha256",request_json['password'],new_salt,50000).hex()
-                    new_salt=new_salt.hex()
-                    new_password_query=sql_functions.execute_query(sql_connection,"update customer set password = %s,salt=%s where email = %s",(new_password,new_salt,session['email']))
-                    if type(new_password_query)==int:
-                        return make_response("Unable to update password",503)
-                else:
-                    new_entry_query=sql_functions.execute_query(sql_connection,f"update customer set {field}"+"%s where email =%s",(request_json[field],session['email']))
-                    if type(new_entry_query)==int:
-                        return make_response(f"Unable to update {field}",503)
-                session[field] = request_json[field]
-        except KeyError:
-            pass 
-        session.modified=True
-        return make_response("Successfully updated customer!",200)      
-           
-              
+    if not session.get("is_customer") or "email" not in session:
+        return make_response("Unauthorized", 401)
+    request_json = request.get_json()
+    if not request_json:
+        return make_response("Invalid request", 400)
+
+    email_where = session["email"]
+    text_map = [
+        ("first_name", "customer_first_name", "customer_first_name"),
+        ("last_name", "customer_last_name", "customer_last_name"),
+        ("email", "email", "email"),
+        ("phone", "phone", "phone"),
+        ("street_address", "street_address", "street_address"),
+        ("city", "city", "city"),
+        ("state", "state", "state"),
+        ("zip_code", "zip_code", "zip_code"),
+    ]
+    for json_key, col, sess_key in text_map:
+        if json_key not in request_json:
+            continue
+        new_val = request_json[json_key]
+        old_val = session.get(sess_key)
+        if new_val == old_val:
+            continue
+        q = sql_functions.execute_query(
+            sql_connection,
+            f"UPDATE customer SET {col}=%s WHERE email=%s",
+            (new_val, email_where),
+        )
+        if type(q) == int:
+            return make_response(f"Unable to update {json_key}", 503)
+        session[sess_key] = new_val
+        if json_key == "email":
+            email_where = new_val
+
+    if "password" in request_json and request_json["password"]:
+        new_salt = urandom(20)
+        new_password = hashlib.pbkdf2_hmac(
+            "sha256", str(request_json["password"]).encode("utf-8"), new_salt, 50000
+        ).hex()
+        new_salt_hex = new_salt.hex()
+        pq = sql_functions.execute_query(
+            sql_connection,
+            "UPDATE customer SET password=%s, salt=%s WHERE email=%s",
+            (new_password, new_salt_hex, email_where),
+        )
+        if type(pq) == int:
+            return make_response("Unable to update password", 503)
+
+    session.modified = True
+    return make_response("Successfully updated customer!", 200)

@@ -1015,7 +1015,7 @@
   box-sizing: border-box;
 }
 
-/* Skip link, sticky header, hero extras, motion, back-to-top */
+/* Skip link, site header, hero extras, motion, back-to-top */
 .gh-skip-link {
   position: absolute;
   top: -100px;
@@ -1037,9 +1037,6 @@
   outline-offset: 2px;
 }
 .gh-home .gh-site-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
   background: rgba(255, 255, 255, 0.78);
   backdrop-filter: saturate(1.2) blur(14px);
   -webkit-backdrop-filter: saturate(1.2) blur(14px);
@@ -1130,7 +1127,8 @@
   }
 }
 @media (max-width: 640px) {
-  body.gh-home {
+  /* Horizontal clip on main only (avoids body overflow quirks on small screens). */
+  .gh-home > main {
     overflow-x: hidden;
   }
   .gh-home .container {
