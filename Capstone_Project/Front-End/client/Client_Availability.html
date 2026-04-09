@@ -6,51 +6,14 @@
   <title>Available Times — Houston Badminton Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css">
-  <style>
-    .hero { padding-top: 1.5rem; padding-bottom: 0.35rem; }
-    section.features.features--availability {
-      padding-top: 1.25rem;
-      padding-bottom: 3rem;
-    }
-    .features--availability h2 {
-      margin-bottom: 0.5rem;
-    }
-    .features--availability .availability-intro {
-      margin: 0 auto 0;
-      max-width: 42rem;
-    }
-    .availability-pdf {
-      margin-top: 0;
-      padding: 0 0 1.5rem;
-      border-top: none;
-    }
-    .availability-pdf .pdf-canvas-wrap {
-      max-width: 960px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 0;
-      background: transparent;
-      border: 2px solid rgb(226, 222, 235);
-      border-radius: var(--radius-sm);
-      box-sizing: border-box;
-      overflow: hidden;
-      line-height: 0;
-    }
-    .availability-pdf .pdf-canvas-inner {
-      line-height: 0;
-    }
-    .availability-pdf .pdf-canvas-inner canvas {
-      display: block;
-      width: 100%;
-      height: auto;
-      margin: 0;
-    }
-  </style>
+  <link rel="stylesheet" href="../css/membership-page.css">
+  <link rel="stylesheet" href="../css/availability.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
-<body>
+<body class="availability-page mem-page">
+  <a href="#main-content" class="av-skip-link">Skip to main content</a>
   <header>
     <div class="container">
       <nav>
@@ -72,23 +35,52 @@
     </div>
   </header>
 
-  <main>
-    <section class="hero">
+  <main id="main-content" tabindex="-1">
+    <section id="section-hero" class="mem-hero hero" aria-labelledby="av-page-title">
+      <div class="mem-hero__bg" aria-hidden="true"></div>
       <div class="container">
-        <h1>Available Times</h1>
-        <p>See when courts are free and pick a slot that works for you</p>
+        <div class="mem-hero__inner">
+          <h1 id="av-page-title" class="mem-hero__title">Find your perfect time on court</h1>
+          <p class="mem-hero__lead">
+            Explore when the gym tends to be busiest or calmest so you can match your session to how you like to play—whether that’s peak energy or a quieter rhythm.
+          </p>
+          <ul class="mem-hero__stats">
+            <li><span>Insight</span> Popular times at HBC</li>
+            <li><span>Window</span> Slots that fit you</li>
+            <li><span>Ready</span> Book courts &amp; ask the desk</li>
+          </ul>
+        </div>
       </div>
     </section>
 
     <section class="features features--availability">
-      <div class="container">
-        <h2>Availability</h2>
-        <p class="availability-intro" style="color: var(--text-muted); text-align: center;">See our most popular times and decide what works best for you.</p>
-        <div id="availability-popular-times-root">
-          <div class="availability-pdf">
-            <div class="pdf-canvas-wrap">
-              <div class="pdf-canvas-inner" id="popular-times-pdf"></div>
+      <div class="container av-showcase">
+        <div class="av-showcase__head">
+          <h2>Popular times</h2>
+          <p class="availability-intro">
+            The chart below is maintained by our team so you can see typical busy and quiet periods at a glance. Times can vary—call ahead if you need something specific.
+          </p>
+        </div>
+
+        <div class="av-card">
+          <div class="av-card__label"><span>Schedule</span> · Houston Badminton Center</div>
+          <div id="availability-popular-times-root">
+            <div class="availability-pdf">
+              <div class="pdf-canvas-wrap">
+                <div class="pdf-canvas-inner" id="popular-times-pdf"></div>
+              </div>
             </div>
+          </div>
+        </div>
+
+        <div class="av-cta">
+          <div class="av-cta__copy">
+            <strong>Found a time that works?</strong>
+            <span>Reserve a court or reach out— we’ll help you get on the floor.</span>
+          </div>
+          <div class="av-cta__actions">
+            <a href="Client_Reserve.html" class="btn btn-primary">Reserve a court</a>
+            <a href="Client_Contact.html" class="btn btn-ghost">Contact us</a>
           </div>
         </div>
       </div>
