@@ -1,44 +1,238 @@
-/* General_Availability.html & Client_Availability.html */
-.hero {
-  padding-top: 1.5rem;
-  padding-bottom: 0.35rem;
+/* Availability — General_Availability.html & Client_Availability.html
+   Hero uses Membership page styling (.mem-hero, membership-page.css).
+   Below: Popular times card, CTA. */
+
+.availability-page {
+  --av-card-bg: rgba(255, 255, 255, 0.82);
+  --av-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 24px 48px -12px rgba(15, 23, 42, 0.12);
+  --av-shadow-hover: 0 8px 16px -4px rgba(15, 23, 42, 0.08), 0 32px 64px -16px rgba(15, 23, 42, 0.14);
 }
-section.features.features--availability {
-  padding-top: 1.25rem;
-  padding-bottom: 3rem;
+
+.availability-page main {
+  overflow-x: hidden;
 }
-.features--availability h2 {
-  margin-bottom: 0.5rem;
+
+/* —— Skip link —— */
+.availability-page .av-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
-.features--availability .availability-intro {
-  margin: 0 auto 0;
-  max-width: 42rem;
-  color: var(--text-muted);
-  text-align: center;
+.availability-page .av-skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  z-index: 100;
+  text-decoration: none;
+  font-weight: 600;
 }
-.availability-pdf {
-  margin-top: 0;
-  padding: 0 0 1.5rem;
+
+/* Hero pills: same as Membership (mem-hero__stats); keep row on small screens */
+.availability-page .mem-hero__stats {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .availability-page .mem-hero__stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  .availability-page .mem-hero__stats li {
+    justify-content: center;
+  }
+}
+
+/* —— Showcase (PDF / image) —— */
+.availability-page section.features.features--availability {
+  padding-top: clamp(2.25rem, 5vw, 3.75rem);
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
   border-top: none;
 }
-.availability-pdf .pdf-canvas-wrap {
+
+.availability-page .av-showcase {
+  position: relative;
+  margin-top: 0;
+}
+
+.availability-page .av-showcase__head {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.availability-page .av-showcase__head h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.availability-page .availability-intro {
+  margin: 0 auto;
+  max-width: 40rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.availability-page .av-card {
+  position: relative;
+  border-radius: 20px;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  background: var(--av-card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: var(--av-shadow);
+  transition: box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.availability-page .av-card:hover {
+  box-shadow: var(--av-shadow-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .availability-page .av-card {
+    transition: none;
+  }
+}
+
+.availability-page .av-card__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  padding-left: 0.125rem;
+}
+
+.availability-page .av-card__label span {
+  color: var(--accent);
+}
+
+.availability-pdf {
+  margin-top: 0;
+  padding: 0;
+  border-top: none;
+}
+
+.availability-page .availability-pdf .pdf-canvas-wrap {
   max-width: 960px;
   margin-left: auto;
   margin-right: auto;
   padding: 0;
-  background: transparent;
-  border: 2px solid rgb(226, 222, 235);
-  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 14px;
   box-sizing: border-box;
   overflow: hidden;
   line-height: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 3px rgba(15, 23, 42, 0.06);
 }
-.availability-pdf .pdf-canvas-inner {
+
+.availability-page .availability-pdf .pdf-canvas-inner {
   line-height: 0;
 }
-.availability-pdf .pdf-canvas-inner canvas {
+
+.availability-page .availability-pdf .pdf-canvas-inner canvas {
   display: block;
   width: 100%;
   height: auto;
   margin: 0;
+}
+
+.availability-page .popular-times-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+/* —— CTA band —— */
+.availability-page .av-cta {
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(185, 28, 28, 0.06) 0%, rgba(17, 24, 39, 0.03) 100%);
+  border: 1px solid rgba(185, 28, 28, 0.12);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.availability-page .av-cta__copy {
+  flex: 1;
+  min-width: min(100%, 280px);
+}
+
+.availability-page .av-cta__copy strong {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.availability-page .av-cta__copy span {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.availability-page .av-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.availability-page .av-cta__actions .btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.65rem 1.25rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.availability-page .av-cta__actions .btn-primary:hover {
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .availability-page .av-cta__actions .btn-primary:hover {
+    transform: none;
+  }
+}
+
+.availability-page .av-cta__actions .btn-ghost {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
 }
