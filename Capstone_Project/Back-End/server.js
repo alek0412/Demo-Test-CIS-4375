@@ -53,6 +53,12 @@ function hasAdminSessionCookie(req) {
   return /(?:^|;\s*)admin_session=loggedin(?:\s|;|$)/.test(c);
 }
 
+/** Manager-only areas (e.g. Employees) — separate cookie from general admin. */
+function hasManagerSessionCookie(req) {
+  const c = req.headers.cookie || '';
+  return /(?:^|;\s*)admin_manager_session=loggedin(?:\s|;|$)/.test(c);
+}
+
 const MIME = {
   '.html': 'text/html',
   '.css': 'text/css',
@@ -94,6 +100,7 @@ const server = http.createServer(async (req, res) => {
     parseBody,
     readBodyWithLimit,
     hasAdminSessionCookie,
+    hasManagerSessionCookie,
     ADMIN_EMAIL,
     ADMIN_PASSWORD,
     CUSTOMER_EMAIL,
@@ -122,6 +129,20 @@ const server = http.createServer(async (req, res) => {
 
   let urlPath = pathname;
 
+  // About page scroll-reveal (lives under Front-End/js, not Back-End/static)
+  if (urlPath === '/about-page.js') {
+    const aboutJs = path.join(FRONT_END, 'js', 'about-page.js');
+    fs.stat(aboutJs, (err, stat) => {
+      if (err || !stat.isFile()) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not found');
+        return;
+      }
+      serveFile(aboutJs, res);
+    });
+    return;
+  }
+
   // Serve JS from Back-End/static (admin and client scripts live with backend)
   if (
     urlPath === '/admin-theme.js' ||
@@ -139,7 +160,11 @@ const server = http.createServer(async (req, res) => {
     urlPath === '/membership-pricing-lightbox.js' ||
     urlPath === '/membership-page.js'
   ) {
-    const staticPath = path.join(__dirname, 'static', path.basename(urlPath));
+    const baseName = path.basename(urlPath);
+    const staticPath =
+      baseName === 'client-nav.js' || baseName === 'upcoming-events-home.js'
+        ? path.join(FRONT_END, 'js', baseName)
+        : path.join(__dirname, 'static', baseName);
     fs.stat(staticPath, (err, stat) => {
       if (err || !stat.isFile()) {
         res.writeHead(404, { 'Content-Type': 'text/plain' });

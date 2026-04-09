@@ -12,6 +12,22 @@
   <script src="../admin-theme.js" defer></script>
 </head>
 <body>
+  <div id="manager-gate-overlay" class="manager-gate-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="manager-gate-title">
+    <div class="manager-gate-card">
+      <div class="manager-gate-header">
+        <h2 id="manager-gate-title">Sign in</h2>
+        <p class="manager-gate-lead">Use the same admin email and password you use for the admin panel to view Employees.</p>
+      </div>
+      <form id="manager-gate-form" class="manager-gate-form" autocomplete="on">
+        <label for="manager-gate-email">Email</label>
+        <input type="email" id="manager-gate-email" name="email" required autocomplete="username" placeholder="Email">
+        <label for="manager-gate-password">Password</label>
+        <input type="password" id="manager-gate-password" name="password" required autocomplete="current-password" placeholder="Password">
+        <p id="manager-gate-error" class="manager-gate-error" hidden></p>
+        <button type="submit" id="manager-gate-submit" class="btn btn-block">Sign in</button>
+      </form>
+    </div>
+  </div>
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <div class="admin-sidebar-header">
@@ -98,6 +114,9 @@
       <div class="admin-content">
         <div class="admin-title-wrap admin-title-wrap--left">
           <h1 class="admin-page-title">Employees</h1>
+          <p class="admin-manager-session-note is-hidden" id="manager-session-note">
+            <button type="button" id="manager-logout-btn" class="btn btn-ghost btn-sm">End manager session</button>
+          </p>
         </div>
         <div id="employee-search-wrap" class="db-search-wrap is-hidden">
           <div class="db-search-filter-row">
@@ -105,6 +124,11 @@
             <div class="db-filter-wrap">
               <button type="button" id="employee-filter-btn" class="db-filter-btn" aria-haspopup="true" aria-expanded="false">Filter by email domain ▾</button>
               <div id="employee-filter-dropdown" class="db-filter-dropdown is-hidden" role="menu"></div>
+            </div>
+            <div class="admin-customer-toolbar" role="group" aria-label="Employee actions">
+              <button type="button" id="employee-create-btn" class="btn admin-customer-btn-edit">Create employee</button>
+              <button type="button" id="employee-edit-btn" class="btn admin-customer-btn-edit">Edit employee</button>
+              <button type="button" id="employee-delete-btn" class="btn admin-customer-btn-delete">Delete employee</button>
             </div>
           </div>
           <p class="db-search-hint">Search by name, email, or phone. Use the filter to narrow by email domain (e.g. hbcstaff.com).</p>
