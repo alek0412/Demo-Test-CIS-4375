@@ -11,10 +11,10 @@ def create_employee():
     try:
         if not session.get("is_manager") or not session.get("is_employee") or session.get("is_customer"):
             return make_response("You don't have the authorization to create employee",403)
-        last_name:str=request['last_name'].capitalize()
-        first_name:str=request['first_name'].capitalize()
-        phone=request['phone']
-        password:str=request['password']
+        last_name:str=request_json['last_name'].capitalize()
+        first_name:str=request_json['first_name'].capitalize()
+        phone=request_json['phone']
+        password:str=request_json['password']
         salt=os.urandom(20)
         hashed_password=hashlib.pbkdf2_hmac("sha256",password.encode(encoding='utf-8'),salt,50000).hex()
         hex_salt=salt.hex()
