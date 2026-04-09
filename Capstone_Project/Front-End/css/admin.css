@@ -2190,14 +2190,230 @@ body[data-theme="dark"] .manager-gate-form input {
 }
 
 .reservations-click-hint {
-  margin: 0;
-  font-size: 0.875rem;
+  margin: 0.35rem 0 0.5rem;
+  font-size: 0.8125rem;
   color: #666;
+  line-height: 1.45;
+  max-width: 52rem;
+}
+
+.res-schedule-context {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  color: #4b5563;
+  line-height: 1.4;
+  max-width: 52rem;
+}
+
+.res-date-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+  padding: 0.55rem 0.65rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 0.35rem;
+}
+
+.res-date-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.res-date-arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.res-date-arrow:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.res-date-arrow:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.res-date-label-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.08rem;
+  min-width: 12rem;
+  padding: 0 0.25rem;
+}
+
+.res-date-weekday {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.res-date-full {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.res-date-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.res-date-today-btn {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+  cursor: pointer;
+}
+
+.res-date-today-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.res-calendar-dropdown {
+  position: relative;
+}
+
+.res-calendar-toggle {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #b91c1c;
+  background: #dc2626;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.res-calendar-toggle:hover {
+  background: #b91c1c;
+}
+
+.res-mini-calendar-root {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 40;
+  width: 280px;
+  padding: 0.65rem 0.75rem 0.75rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.res-mini-calendar-root.is-hidden {
+  display: none;
+}
+
+.res-mini-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.res-mini-cal-month-year {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.res-mini-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.res-mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.res-mini-cal-cell.is-empty {
+  min-height: 32px;
+}
+
+.res-mini-cal-day {
+  min-height: 32px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.res-mini-cal-day:hover {
+  background: #e5e7eb;
+}
+
+.res-mini-cal-day.is-today {
+  border-color: #2563eb;
+}
+
+.res-mini-cal-day.is-selected {
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+
+.res-mini-cal-day.is-selected:hover {
+  background: #b91c1c;
+}
+
+.reservations-schedule-outer {
+  width: 100%;
+  max-height: min(72vh, calc(100vh - 220px));
+  overflow: auto;
+  border-radius: 8px;
+  border: 1px solid #c4c4c4;
+  background: #e8e8e8;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .reservations-schedule-wrap {
   --slot-height: 28px;
   --slot-count: 28;
+  min-width: 1230px;
   display: grid;
   grid-template-columns: 86px 1fr;
   grid-template-rows: auto 1fr;
@@ -2230,11 +2446,51 @@ body[data-theme="dark"] .manager-gate-form input {
   color: #f9fafb;
   border: 1px solid #3d3d3d;
   border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.2rem;
+  padding: 0.12rem 0.28rem 0.1rem;
+  min-height: 1.85rem;
+}
+
+.cal-col-head-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
   text-align: center;
+  line-height: 1.15;
+}
+
+.cal-col-add-btn {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(0, 0, 0, 0.2);
+  color: #f9fafb;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 1.65rem;
+  padding: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.cal-col-add-btn:hover {
+  background: #dc2626;
+  border-color: #fecaca;
+  transform: scale(1.05);
+}
+
+.cal-col-add-btn:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
 }
 
 body[data-theme="light"] .res-schedule-corner {
@@ -2546,7 +2802,71 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   color: #111827;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
   cursor: pointer;
-  transition: filter 0.15s ease, transform 0.15s ease;
+  transition: filter 0.15s ease, transform 0.15s ease, opacity 0.16s ease;
+}
+
+.cal-block.is-removing {
+  opacity: 0;
+  transform: scale(0.97);
+  pointer-events: none;
+}
+
+.cal-block-actions {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  gap: 2px;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.cal-block:hover .cal-block-actions,
+.cal-block:focus-within .cal-block-actions {
+  opacity: 1;
+}
+
+.cal-block-action-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.cal-block-action-btn:hover {
+  background: #ffffff;
+  color: #111827;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.cal-block-action-delete:hover {
+  color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.35);
+}
+
+.cal-block.is-orange .cal-block-action-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fffaf4;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.cal-block.is-orange .cal-block-action-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+}
+
+.cal-block:has(.cal-block-actions) .cal-block-title {
+  padding-right: 2.35rem;
 }
 
 .cal-block-title {
@@ -2589,6 +2909,12 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
 .cal-block:hover {
   filter: brightness(1.03);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+@media (hover: none) {
+  .cal-block .cal-block-actions {
+    opacity: 1;
+  }
 }
 
 .res-hover-card {
@@ -2685,6 +3011,64 @@ body[data-theme="dark"] .reservations-subtitle {
 
 body[data-theme="dark"] .reservations-click-hint {
   color: rgba(255, 255, 255, 0.7);
+}
+
+body[data-theme="dark"] .res-schedule-context {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+body[data-theme="dark"] .res-date-toolbar {
+  background: #111827;
+  border-color: #374151;
+}
+
+body[data-theme="dark"] .res-date-arrow {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #f9fafb;
+}
+
+body[data-theme="dark"] .res-date-arrow:hover {
+  background: #374151;
+  border-color: #60a5fa;
+}
+
+body[data-theme="dark"] .res-date-weekday {
+  color: #9ca3af;
+}
+
+body[data-theme="dark"] .res-date-full {
+  color: #f9fafb;
+}
+
+body[data-theme="dark"] .res-date-today-btn {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .res-mini-calendar-root {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+body[data-theme="dark"] .res-mini-cal-month-year {
+  color: #f9fafb;
+}
+
+body[data-theme="dark"] .res-mini-cal-day {
+  background: #374151;
+  color: #f3f4f6;
+}
+
+body[data-theme="dark"] .res-mini-cal-day:hover {
+  background: #4b5563;
+}
+
+body[data-theme="dark"] .reservations-schedule-outer {
+  border-color: #4b5563;
+  background: #0f172a;
 }
 
 body[data-theme="dark"] .res-book-panel {
