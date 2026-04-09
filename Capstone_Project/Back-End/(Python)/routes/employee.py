@@ -38,7 +38,7 @@ def login_employee():
         password:str=request_json['password']
     except KeyError:
         return make_response("Invalid attributes",400)
-    employee_query=sql_functions.execute_read(sql_connection,"select * from employee where email = %s",(email,))
+    employee_query=sql_functions.execute_read(sql_connection,"select * from employee where employee_email = %s",(email,))
     if type(employee_query)==int:
         return make_response("Unable to fetch employee details",503)
     hashed_password=hashlib.pbkdf2_hmac("sha256",password.encode(encoding='utf-8'),bytes.fromhex(employee_query[0]['employee_salt']),50000).hex()
