@@ -204,3 +204,54 @@
     initBackToTop();
   }
 })();
+
+(function () {
+  "use strict";
+
+  function initAltPageServicesMenu() {
+    var root = document.querySelector("[data-alt-services]");
+    if (!root) return;
+
+    var btn = root.querySelector(".alt-inpage-services__trigger");
+    var menu = root.querySelector(".alt-inpage-services__dropdown");
+    if (!btn || !menu) return;
+
+    function setOpen(open) {
+      root.classList.toggle("is-open", open);
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      menu.setAttribute("aria-hidden", open ? "false" : "true");
+    }
+
+    setOpen(false);
+
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      setOpen(!root.classList.contains("is-open"));
+    });
+
+    menu.querySelectorAll('a[href^="#"]').forEach(function (link) {
+      link.addEventListener("click", function () {
+        setOpen(false);
+      });
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!root.classList.contains("is-open")) return;
+      if (root.contains(e.target)) return;
+      setOpen(false);
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      if (!root.classList.contains("is-open")) return;
+      setOpen(false);
+      btn.focus();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAltPageServicesMenu);
+  } else {
+    initAltPageServicesMenu();
+  }
+})();
