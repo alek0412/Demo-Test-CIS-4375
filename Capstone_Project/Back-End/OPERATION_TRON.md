@@ -1,8 +1,14 @@
 # Operation TRON — Remove the application from EC2
 
-Run these commands **on the EC2 instance** (SSH in first: `ssh -i path/to/HBC-Server-Key.pem ec2-user@<Elastic-IP>`).
+**Before you SSH in:** read **Operation ARES — §0 (PEM key and SSH)**. In short, on **your laptop only**:
 
-When you want the app **back** on this instance after a fresh clone, follow **Operation ARES** → **“Redeploy after Operation TRON.”**
+1. `chmod 400 "/path/to/HBC-Server-Key.pem"` (use your real path; **quote** paths with spaces).
+2. `ssh -i "/path/to/HBC-Server-Key.pem" ec2-user@<Elastic-IP>` — **no `:3000`** on the SSH line (`:3000` is only for the browser: `http://<IP>:3000/`).
+3. Do **not** run `chmod` for `/Users/...` while logged into EC2 — that path exists only on your Mac.
+
+The steps below run **on the EC2 instance** after you connect.
+
+When you want the app **back** on this instance after a fresh clone, follow **Operation ARES** → **“Redeploy after Operation TRON”** and **§2c** (copy the **`.pem`** from your laptop to EC2 with **`scp`**, set **`SSH_PKEY`**, **`chmod 400`**). Before **`rm -rf`** the repo, copy **`Back-End/.env`** and **`Back-End/(Python)/backend_access.env`** somewhere safe (they are not in Git). Optionally keep a copy of **`~/hbc-config/*.pem`** if you do not want to **`scp`** again.
 
 ---
 
@@ -19,6 +25,13 @@ pm2 save
 ```
 
 If **`waiver-api`** is not in your list (older deploy), skip those two lines. If PM2 app names differ, use **`pm2 list`** then **`pm2 delete <app-name>`**.
+
+**If you accidentally started duplicate processes** (e.g. two `waiver-api` rows) or want a clean PM2 slate:
+
+```bash
+pm2 delete all
+pm2 save
+```
 
 **If you did not use PM2** (only foreground `node server.js` / `python3 flask_server.py`):
 
@@ -66,4 +79,4 @@ Only run **`pm2 unstartup systemd`** if you intentionally want PM2 to **not** st
 
 ---
 
-**Result:** The app is stopped and the code is removed from the instance. The EC2 instance and RDS can stay running. To **clone from GitHub and run the app again**, use **Operation ARES** → **Redeploy after Operation TRON**.
+**Result:** The app is stopped and the code is removed from the instance. The EC2 instance and RDS can stay running. To **clone from GitHub and run the app again**, use **Operation ARES** → **Redeploy after Operation TRON** (including **§0** PEM/SSH on your laptop, then **`npm install`** in **Back-End** before **`pm2 start server.js`**).

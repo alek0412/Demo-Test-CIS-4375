@@ -53,6 +53,12 @@ function hasAdminSessionCookie(req) {
   return /(?:^|;\s*)admin_session=loggedin(?:\s|;|$)/.test(c);
 }
 
+/** Manager-only areas (e.g. Employees) — separate cookie from general admin. */
+function hasManagerSessionCookie(req) {
+  const c = req.headers.cookie || '';
+  return /(?:^|;\s*)admin_manager_session=loggedin(?:\s|;|$)/.test(c);
+}
+
 const MIME = {
   '.html': 'text/html',
   '.css': 'text/css',
@@ -94,6 +100,7 @@ const server = http.createServer(async (req, res) => {
     parseBody,
     readBodyWithLimit,
     hasAdminSessionCookie,
+    hasManagerSessionCookie,
     ADMIN_EMAIL,
     ADMIN_PASSWORD,
     CUSTOMER_EMAIL,

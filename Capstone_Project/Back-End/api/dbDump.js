@@ -2,7 +2,7 @@
  * GET /api/db — admin-only table dump for “View data”.
  */
 module.exports = async function handleDbDump(req, res, ctx) {
-  const { pathname, hasAdminSessionCookie, db, config } = ctx;
+  const { pathname, hasAdminSessionCookie, hasManagerSessionCookie, db, config } = ctx;
 
   if (req.method !== 'GET' || pathname !== '/api/db') {
     return false;
@@ -24,8 +24,19 @@ module.exports = async function handleDbDump(req, res, ctx) {
       [dbName]
     );
     const tables = {};
+    const mgr = typeof hasManagerSessionCookie === 'function' ? hasManagerSessionCookie : () => false;
     for (const row of tableRows) {
       const tableName = row.TABLE_NAME;
+      const isEmployeeTable = String(tableName).toLowerCase() === 'employee';
+      if (isEmployeeTable && !mgr(req)) {
+        tables[tableName] = [
+          {
+            _error:
+              'Manager sign-in required. Use Admin → Employees and complete manager access.',
+          },
+        ];
+        continue;
+      }
       try {
         const { rows: dataRows } = await db.query('SELECT * FROM `' + tableName.replace(/`/g, '``') + '` LIMIT 500', []);
         tables[tableName] = dataRows;
