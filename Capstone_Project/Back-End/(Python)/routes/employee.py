@@ -81,7 +81,7 @@ def employee_fire():
         return make_response("Server is unable to delete employee",503)
     return make_response("Employee successfully fired!",200)
 
-@employee_blueprint("/api/change-employee",methods=['patch'])
+@employee_blueprint.route("/api/change-employee",methods=['patch'])
 def employee_change():
     valid_attributes=["employee_last_name,employee_first_name,employee_phone,employee_password"]
     request_json=request.json()
