@@ -1127,9 +1127,15 @@
   }
 }
 @media (max-width: 640px) {
-  /* Horizontal clip on main only (avoids body overflow quirks on small screens). */
-  .gh-home > main {
-    overflow-x: hidden;
+  /* `fixed` backgrounds hurt inertial scroll on mobile; other general pages use normal document scroll. */
+  .gh-home {
+    background-attachment: scroll;
+  }
+  /* Match scroll/paint behavior of other general pages (no content-visibility deferral on small screens). */
+  .gh-home .features--upcoming-events,
+  .gh-home .features--faq {
+    content-visibility: visible;
+    contain-intrinsic-size: unset;
   }
   .gh-home .container {
     padding-left: max(1rem, env(safe-area-inset-left, 0px));

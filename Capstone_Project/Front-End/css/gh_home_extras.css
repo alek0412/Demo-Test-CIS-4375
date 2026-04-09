@@ -191,8 +191,13 @@
   }
 }
 @media (max-width: 640px) {
-  .gh-home > main {
-    overflow-x: hidden;
+  .gh-home {
+    background-attachment: scroll;
+  }
+  .gh-home .features--upcoming-events,
+  .gh-home .features--faq {
+    content-visibility: visible;
+    contain-intrinsic-size: unset;
   }
   .gh-home .container {
     padding-left: max(1rem, env(safe-area-inset-left, 0px));
