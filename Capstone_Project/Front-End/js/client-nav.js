@@ -7,16 +7,81 @@
  * - sessionStorage hbc_customer_logged_in: set on customer sign-in; cleared on logout or API says logged out
  */
 (function () {
+  var FOOTER_COPY = '\u00a9 2026 HOUSTON BADMINTON CENTER. ALL RIGHTS RESERVED.';
+  var FOOTER_COPY_CLASS = 'hbc-copyright';
+  var SHARED_GENERAL_PAGES = {
+    '/client/client_contact.html': '/client/General_Contact.html',
+    '/client/client_alternateservices.html': '/client/General_AlternateServices.html',
+    '/client/client_availability.html': '/client/General_Availability.html',
+    'client_contact.html': '/client/General_Contact.html',
+    'client_alternateservices.html': '/client/General_AlternateServices.html',
+    'client_availability.html': '/client/General_Availability.html'
+  };
+
+  function redirectClientPagesToGeneral() {
+    var rawPath = (window.location && window.location.pathname ? window.location.pathname : '').toLowerCase();
+    var normalized = rawPath.replace(/\/+$/, '');
+    var leaf = normalized.split('/').pop() || '';
+    var target = SHARED_GENERAL_PAGES[normalized] || SHARED_GENERAL_PAGES[leaf];
+    if (!target) return;
+    if (window.location.pathname.toLowerCase() === target.toLowerCase()) return;
+    window.location.replace(target);
+  }
+
+  function applyUnifiedFooterCopy() {
+    var footer = document.querySelector('footer');
+    if (!footer) return;
+
+    var container = footer.querySelector('.container') || footer;
+    var line = container.querySelector('p');
+    if (!line) {
+      line = document.createElement('p');
+      container.appendChild(line);
+    }
+
+    line.textContent = FOOTER_COPY;
+    line.classList.add(FOOTER_COPY_CLASS);
+  }
+
+  applyUnifiedFooterCopy();
+  redirectClientPagesToGeneral();
+
   var link = document.querySelector('.nav-auth-link');
   if (!link) return;
 
   var path = (window.location && window.location.pathname ? window.location.pathname : '').toLowerCase();
   var onClientPage = /\/client\/client_.*\.html$/.test(path) || /client_.*\.html$/.test(path);
   if (onClientPage) {
-    var membershipTab = document.querySelector('a.nav-tab[href="Client_Membership.html"]');
-    if (membershipTab && membershipTab.parentElement) {
-      membershipTab.parentElement.removeChild(membershipTab);
-    }
+    var membershipTabs = document.querySelectorAll(
+      '.nav-tabs a.nav-tab[href="Client_Membership.html"], .nav-tabs a.nav-tab[href="/client/Client_Membership.html"]'
+    );
+    membershipTabs.forEach(function (membershipTab) {
+      if (membershipTab && membershipTab.parentElement) {
+        membershipTab.parentElement.removeChild(membershipTab);
+      }
+    });
+
+    var aboutTabs = document.querySelectorAll(
+      '.nav-tabs a.nav-tab[href="Client_About.html"], .nav-tabs a.nav-tab[href="/client/Client_About.html"]'
+    );
+    aboutTabs.forEach(function (aboutTab) {
+      if (aboutTab && aboutTab.parentElement) {
+        aboutTab.parentElement.removeChild(aboutTab);
+      }
+    });
+
+    var sharedNavMappings = [
+      { clientHref: 'Client_Contact.html', generalHref: 'General_Contact.html' },
+      { clientHref: '/client/Client_Contact.html', generalHref: '/client/General_Contact.html' },
+      { clientHref: 'Client_AlternateServices.html', generalHref: 'General_AlternateServices.html' },
+      { clientHref: '/client/Client_AlternateServices.html', generalHref: '/client/General_AlternateServices.html' },
+      { clientHref: 'Client_Availability.html', generalHref: 'General_Availability.html' },
+      { clientHref: '/client/Client_Availability.html', generalHref: '/client/General_Availability.html' }
+    ];
+    sharedNavMappings.forEach(function (mapping) {
+      var tab = document.querySelector('.nav-tabs a.nav-tab[href="' + mapping.clientHref + '"]');
+      if (tab) tab.setAttribute('href', mapping.generalHref);
+    });
   }
 
   var GENERAL = '/client/General_Dashboard.html';

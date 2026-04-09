@@ -8,48 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css">
-  <style>
-    .login-choice-page { min-height: 100vh; display: flex; flex-direction: column; }
-    .login-choice-page main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem; }
-    .login-choice-wrap {
-      max-width: 420px;
-      width: 100%;
-      background: #e8f4fc;
-      border: 2px solid #2196f3;
-      border-radius: 24px;
-      padding: 1.5rem;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-    .login-choice-wrap h1 { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; color: #000000; }
-    .login-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 0; border-radius: 18px 18px 0 0; overflow: hidden; }
-    .login-tab {
-      flex: 1;
-      padding: 1rem 1.25rem;
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.9375rem;
-      color: var(--text-muted);
-      background: var(--bg-card);
-      border: none;
-      border-bottom: 3px solid transparent;
-      cursor: pointer;
-      font-family: inherit;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
-    }
-    .login-tab:hover { color: var(--text-primary); background: rgba(0,0,0,0.03); }
-    .login-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg-dark); }
-    .login-panel { display: none; padding: 1.5rem; background: var(--bg-dark); border: 1px solid var(--border); border-top: none; border-radius: 0 0 18px 18px; overflow: hidden; }
-    .login-panel.active { display: block; }
-    .login-panel label { display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.375rem; }
-    .login-panel input { width: 100%; padding: 0.75rem 1rem; font-size: 1rem; border: 2px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 1rem; box-sizing: border-box; background: #ffffff; color: var(--text-primary); }
-    .login-panel input:focus { outline: none; border-color: var(--accent); }
-    .login-panel .login-error { color: var(--accent); font-size: 0.875rem; margin-bottom: 0.75rem; }
-    .login-panel .login-error[hidden] { display: none; }
-    .login-panel .btn { width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; border-radius: var(--radius-sm); background: var(--accent); color: #fff; }
-    .login-panel .btn:hover { background: var(--accent-hover); }
-    .login-panel .btn:disabled { opacity: 0.7; cursor: not-allowed; }
-  </style>
+  <link rel="stylesheet" href="../css/client-login.css">
 </head>
 <body class="login-choice-page">
   <header>
@@ -65,157 +24,54 @@
   </header>
 
   <main>
-    <div class="login-choice-wrap">
-      <h1>Log In</h1>
+    <section class="login-hero" aria-label="Sign in">
+      <div class="login-hero__card">
+        <div class="login-hero__copy">
+          <p class="login-hero__kicker">Welcome Back</p>
+          <h1>Sign in to Houston Badminton Center</h1>
+          <p class="login-hero__lead">Access bookings, memberships, and your account in seconds. Staff can also use this page to enter the admin dashboard.</p>
+          <ul class="login-hero__highlights">
+            <li>Secure account sign in</li>
+            <li>Fast access to reservations</li>
+            <li>One place for customer and admin login</li>
+          </ul>
+        </div>
 
-      <div class="login-tabs" role="tablist">
-        <button type="button" class="login-tab active" role="tab" id="tab-customer" aria-selected="true" aria-controls="panel-customer">Log in as Customer</button>
-        <button type="button" class="login-tab" role="tab" id="tab-admin" aria-selected="false" aria-controls="panel-admin">Log in as Admin</button>
-      </div>
+        <div class="login-choice-wrap">
+          <div class="login-tabs" role="tablist">
+            <button type="button" class="login-tab active" role="tab" id="tab-customer" aria-selected="true" aria-controls="panel-customer">Customer</button>
+            <button type="button" class="login-tab" role="tab" id="tab-admin" aria-selected="false" aria-controls="panel-admin">Admin</button>
+          </div>
 
-      <div id="panel-customer" class="login-panel active" role="tabpanel" aria-labelledby="tab-customer">
-        <form id="customer-login-form">
-          <label for="customer-email">Email</label>
-          <input type="email" id="customer-email" name="email" placeholder="your@email.com" required autocomplete="email">
-          <label for="customer-password">Password</label>
-          <input type="password" id="customer-password" name="password" placeholder="••••••••" required autocomplete="current-password">
-          <p id="customer-login-error" class="login-error" role="alert" hidden></p>
-          <button type="submit" class="btn" id="customer-login-btn">Sign in</button>
-        </form>
-      </div>
+          <div id="panel-customer" class="login-panel active" role="tabpanel" aria-labelledby="tab-customer">
+            <h2>Customer login</h2>
+            <form id="customer-login-form">
+              <label for="customer-email">Email</label>
+              <input type="email" id="customer-email" name="email" placeholder="you@example.com" required autocomplete="email">
+              <label for="customer-password">Password</label>
+              <input type="password" id="customer-password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+              <p id="customer-login-error" class="login-error" role="alert" hidden></p>
+              <button type="submit" class="btn" id="customer-login-btn">Sign in</button>
+            </form>
+          </div>
 
-      <div id="panel-admin" class="login-panel" role="tabpanel" aria-labelledby="tab-admin">
-        <form id="admin-login-form">
-          <label for="admin-email">Email</label>
-          <input type="email" id="admin-email" name="email" placeholder="admin@example.com" required autocomplete="email">
-          <label for="admin-password">Password</label>
-          <input type="password" id="admin-password" name="password" placeholder="••••••••" required autocomplete="current-password">
-          <p id="admin-login-error" class="login-error" role="alert" hidden></p>
-          <button type="submit" class="btn" id="admin-login-btn">Sign in</button>
-        </form>
+          <div id="panel-admin" class="login-panel" role="tabpanel" aria-labelledby="tab-admin">
+            <h2>Admin login</h2>
+            <form id="admin-login-form">
+              <label for="admin-email">Email</label>
+              <input type="email" id="admin-email" name="email" placeholder="staff@hbcstaff.com" required autocomplete="email">
+              <label for="admin-password">Password</label>
+              <input type="password" id="admin-password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+              <p id="admin-login-error" class="login-error" role="alert" hidden></p>
+              <button type="submit" class="btn" id="admin-login-btn">Sign in</button>
+            </form>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   </main>
 
-  <script>
-    (function () {
-      var tabCustomer = document.getElementById('tab-customer');
-      var tabAdmin = document.getElementById('tab-admin');
-      var panelCustomer = document.getElementById('panel-customer');
-      var panelAdmin = document.getElementById('panel-admin');
-
-      function showCustomer() {
-        tabCustomer.classList.add('active');
-        tabCustomer.setAttribute('aria-selected', 'true');
-        tabAdmin.classList.remove('active');
-        tabAdmin.setAttribute('aria-selected', 'false');
-        panelCustomer.classList.add('active');
-        panelAdmin.classList.remove('active');
-      }
-      function showAdmin() {
-        tabAdmin.classList.add('active');
-        tabAdmin.setAttribute('aria-selected', 'true');
-        tabCustomer.classList.remove('active');
-        tabCustomer.setAttribute('aria-selected', 'false');
-        panelAdmin.classList.add('active');
-        panelCustomer.classList.remove('active');
-      }
-
-      tabCustomer.addEventListener('click', showCustomer);
-      tabAdmin.addEventListener('click', showAdmin);
-
-      var tabParam = typeof URLSearchParams !== 'undefined'
-        ? new URLSearchParams(window.location.search).get('tab')
-        : null;
-      if (tabParam === 'admin') {
-        showAdmin();
-      } else {
-        try {
-          if (sessionStorage.getItem('hbc_login_tab') === 'admin') {
-            sessionStorage.removeItem('hbc_login_tab');
-            showAdmin();
-          }
-        } catch (e) {}
-      }
-
-      // Customer form
-      var customerForm = document.getElementById('customer-login-form');
-      var customerError = document.getElementById('customer-login-error');
-      var customerBtn = document.getElementById('customer-login-btn');
-      customerForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        customerError.hidden = true;
-        customerError.textContent = '';
-        customerBtn.disabled = true;
-        customerBtn.textContent = 'Signing in…';
-        var email = document.getElementById('customer-email').value.trim();
-        var password = document.getElementById('customer-password').value;
-        fetch('/api/customer-login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email, password: password }),
-          credentials: 'same-origin'
-        })
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            if (data.success) {
-              try {
-                sessionStorage.setItem('hbc_customer_logged_in', '1');
-              } catch (e) {}
-              window.location.href = '/client/Client_Dashboard.html?logged_in=1';
-            } else {
-              customerError.textContent = data.message || 'Invalid email or password';
-              customerError.hidden = false;
-              customerBtn.disabled = false;
-              customerBtn.textContent = 'Sign in';
-            }
-          })
-          .catch(function () {
-            customerError.textContent = 'Unable to reach server. Open the site from the backend (e.g. http://localhost:3000).';
-            customerError.hidden = false;
-            customerBtn.disabled = false;
-            customerBtn.textContent = 'Sign in';
-          });
-      });
-
-      // Admin form
-      var adminForm = document.getElementById('admin-login-form');
-      var adminError = document.getElementById('admin-login-error');
-      var adminBtn = document.getElementById('admin-login-btn');
-      adminForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        adminError.hidden = true;
-        adminError.textContent = '';
-        adminBtn.disabled = true;
-        adminBtn.textContent = 'Signing in…';
-        var email = document.getElementById('admin-email').value.trim();
-        var password = document.getElementById('admin-password').value;
-        fetch('/api/admin/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email, password: password }),
-          credentials: 'same-origin'
-        })
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            if (data.success) {
-              window.location.href = '/admin/Admin_Dashboard.html';
-            } else {
-              adminError.textContent = data.message || 'Invalid email or password';
-              adminError.hidden = false;
-              adminBtn.disabled = false;
-              adminBtn.textContent = 'Sign in';
-            }
-          })
-          .catch(function () {
-            adminError.textContent = 'Unable to reach server. Open the site from the backend (e.g. http://localhost:3000).';
-            adminError.hidden = false;
-            adminBtn.disabled = false;
-            adminBtn.textContent = 'Sign in';
-          });
-      });
-    })();
-  </script>
+  <script src="../js/client-login.js"></script>
   <script src="../js/client-nav.js"></script>
 </body>
 </html>
