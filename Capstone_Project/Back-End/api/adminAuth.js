@@ -1,12 +1,27 @@
 /**
  * Admin session: login, logout, /api/me
  */
+const crypto = require('crypto');
+const db = require('../db/connection');
+
+function verifyPythonPbkdf2Password(plain, pwdHex, saltHex) {
+  if (!plain || !pwdHex || !saltHex || String(pwdHex).length !== 64) return false;
+  try {
+    const salt = Buffer.from(String(saltHex).trim(), 'hex');
+    if (!salt.length) return false;
+    const hashHex = crypto.pbkdf2Sync(String(plain), salt, 50000, 32, 'sha256').toString('hex');
+    const a = Buffer.from(hashHex, 'hex');
+    const b = Buffer.from(String(pwdHex).trim(), 'hex');
+    return a.length === b.length && crypto.timingSafeEqual(a, b);
+  } catch (_) {
+    return false;
+  }
+}
+
 module.exports = async function handleAdminAuth(req, res, ctx) {
   const {
     pathname,
     parseBody,
-    ADMIN_EMAIL,
-    ADMIN_PASSWORD,
     hasAdminSessionCookie,
     hasManagerSessionCookie,
   } = ctx;
@@ -22,17 +37,35 @@ module.exports = async function handleAdminAuth(req, res, ctx) {
     }
     const email = (data.email || '').trim().toLowerCase();
     const password = data.password || '';
-    const employeesGate =
-      data.employeesGate === true ||
-      data.employeesGate === 'true' ||
-      data.managerGate === true ||
-      data.managerGate === 'true';
-    const valid = email === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD;
+    if (!email || !password) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Invalid email or password' }));
+      return true;
+    }
+
+    let employee = null;
+    try {
+      const { rows } = await db.query(
+        'SELECT employee_id, employee_email, employee_password, employee_salt, employee_rank FROM employee WHERE LOWER(TRIM(employee_email)) = ? LIMIT 1',
+        [email]
+      );
+      employee = rows[0] || null;
+    } catch (e) {
+      console.error('[adminAuth] employee lookup:', e.message);
+      res.writeHead(503, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Unable to validate login right now' }));
+      return true;
+    }
+
+    const valid =
+      !!employee &&
+      verifyPythonPbkdf2Password(password, employee.employee_password, employee.employee_salt);
     if (valid) {
       const adminCookie = 'admin_session=loggedin; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
       const managerCookie =
         'admin_manager_session=loggedin; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
-      const cookies = employeesGate ? [adminCookie, managerCookie] : adminCookie;
+      const isManager = Number(employee.employee_rank) === 1;
+      const cookies = isManager ? [adminCookie, managerCookie] : adminCookie;
       res.writeHead(200, {
         'Content-Type': 'application/json',
         'Set-Cookie': cookies,
