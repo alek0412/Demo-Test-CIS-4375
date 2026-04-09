@@ -998,6 +998,7 @@
   align-items: center;
 }
 
+/* Static divider between Upcoming events and FAQ */
 .gh-home .features--upcoming-events .gh-events-shell-line {
   height: 3px;
   width: 100vw;
@@ -1009,10 +1010,9 @@
   padding: 0;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(90deg, #06b6d4 0%, #22d3ee 25%, #38bdf8 50%, #60a5fa 75%, #3b82f6 100%);
-  background-size: 200% 100%;
-  animation: ftv-title-flow 8s linear infinite;
+  background: #b91c1c;
   pointer-events: none;
+  box-sizing: border-box;
 }
 
 /* Skip link, sticky header, hero extras, motion, back-to-top */
