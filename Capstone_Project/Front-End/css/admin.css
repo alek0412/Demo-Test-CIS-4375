@@ -316,6 +316,12 @@ body[data-theme="dark"] .admin-welcome {
   height: 100vh;
   overflow: hidden;
   z-index: 100;
+  transition: transform 0.22s ease;
+}
+
+body.admin-sidebar-collapsed .admin-sidebar {
+  transform: translateX(-100%);
+  pointer-events: none;
 }
 
 .admin-nav {
@@ -422,6 +428,18 @@ body[data-theme="dark"] .admin-welcome {
   position: relative;
   overflow: hidden;
   height: 100vh;
+  transition: margin-left 0.22s ease;
+}
+
+body.admin-sidebar-collapsed .admin-main {
+  margin-left: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-sidebar,
+  .admin-main {
+    transition: none;
+  }
 }
 
 .admin-main:has(.admin-title-wrap--layout-page) {
@@ -463,6 +481,47 @@ body[data-theme="dark"] .admin-welcome {
   gap: 0.75rem;
   margin-left: auto;
   padding-right: 0.25rem;
+}
+
+/* Collapse / expand left navigation (paired with admin-theme.js) */
+.admin-sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  background: #1f2937;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.admin-sidebar-toggle:hover {
+  background: #374151;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.admin-sidebar-toggle:focus-visible {
+  outline: 2px solid rgba(185, 28, 28, 0.85);
+  outline-offset: 2px;
+}
+
+body[data-theme="light"] .admin-sidebar-toggle {
+  color: #111827;
+  background: #f3f4f6;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+body[data-theme="light"] .admin-sidebar-toggle:hover {
+  background: #e5e7eb;
+  border-color: rgba(0, 0, 0, 0.18);
 }
 
 .admin-logout-btn {

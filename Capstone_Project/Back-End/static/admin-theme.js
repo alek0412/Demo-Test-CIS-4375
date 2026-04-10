@@ -1,6 +1,63 @@
 (function () {
   var STORAGE_KEY = 'admin-theme';
+  var SIDEBAR_KEY = 'admin-sidebar-collapsed';
   var DEFAULT_THEME = 'dark';
+
+  function getSidebarCollapsedFromStorage() {
+    try {
+      return localStorage.getItem(SIDEBAR_KEY) === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function applySidebarOnLoad() {
+    if (getSidebarCollapsedFromStorage()) {
+      document.body.classList.add('admin-sidebar-collapsed');
+    }
+  }
+
+  function isSidebarCollapsed() {
+    return document.body.classList.contains('admin-sidebar-collapsed');
+  }
+
+  function syncSidebarAria() {
+    var aside = document.querySelector('.admin-sidebar');
+    if (!aside) return;
+    if (isSidebarCollapsed()) {
+      aside.setAttribute('aria-hidden', 'true');
+    } else {
+      aside.removeAttribute('aria-hidden');
+    }
+  }
+
+  function setSidebarCollapsed(collapsed) {
+    document.body.classList.toggle('admin-sidebar-collapsed', collapsed);
+    try {
+      localStorage.setItem(SIDEBAR_KEY, collapsed ? '1' : '0');
+    } catch (e) {}
+    syncSidebarAria();
+    syncSidebarToggle();
+    if (collapsed && sidebarToggleEl && document.activeElement) {
+      var aside = document.querySelector('.admin-sidebar');
+      if (aside && aside.contains(document.activeElement) && sidebarToggleEl.focus) {
+        sidebarToggleEl.focus();
+      }
+    }
+  }
+
+  var sidebarToggleEl = null;
+
+  function syncSidebarToggle() {
+    if (!sidebarToggleEl) return;
+    var collapsed = isSidebarCollapsed();
+    sidebarToggleEl.setAttribute('aria-pressed', collapsed ? 'true' : 'false');
+    sidebarToggleEl.setAttribute(
+      'aria-label',
+      collapsed ? 'Show navigation menu' : 'Hide navigation menu'
+    );
+    sidebarToggleEl.textContent = collapsed ? 'Show menu' : 'Hide menu';
+  }
 
   function getTheme() {
     try {
@@ -75,6 +132,8 @@
 
   function init() {
     applyThemeOnLoad();
+    applySidebarOnLoad();
+    syncSidebarAria();
     var container = document.getElementById('admin-theme-container');
     if (container) {
       var topbarRight = document.createElement('div');
@@ -88,6 +147,16 @@
           .then(function () { window.location.href = '/client/General_Dashboard.html'; })
           .catch(function () { window.location.href = '/client/General_Dashboard.html'; });
       });
+      if (document.querySelector('.admin-layout')) {
+        sidebarToggleEl = document.createElement('button');
+        sidebarToggleEl.type = 'button';
+        sidebarToggleEl.className = 'admin-sidebar-toggle';
+        sidebarToggleEl.addEventListener('click', function () {
+          setSidebarCollapsed(!isSidebarCollapsed());
+        });
+        topbarRight.appendChild(sidebarToggleEl);
+        syncSidebarToggle();
+      }
       container.parentNode.insertBefore(topbarRight, container);
       topbarRight.appendChild(container);
       topbarRight.appendChild(logoutBtn);
