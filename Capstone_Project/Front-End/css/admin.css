@@ -2463,6 +2463,33 @@ body[data-theme="dark"] .manager-gate-form input {
   line-height: 1.15;
 }
 
+.res-schedule-headers .cal-col-head--stack {
+  min-height: 2.4rem;
+  align-items: center;
+}
+
+.cal-col-head-label--stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.06rem;
+}
+
+.cal-col-head-line {
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.cal-col-head-sub {
+  font-size: 0.58rem;
+  font-weight: 600;
+  line-height: 1.1;
+  opacity: 0.88;
+  max-width: 100%;
+}
+
 .cal-col-add-btn {
   flex-shrink: 0;
   width: 22px;
@@ -2558,6 +2585,22 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
+}
+
+.res-modal-court-hint {
+  margin: 0 0.25rem 0.65rem;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1e40af;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  line-height: 1.35;
+}
+
+.res-modal-court-hint.is-hidden {
+  display: none;
 }
 
 .res-modal-close {
@@ -2677,6 +2720,20 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
 
 .res-field input[readonly] {
   background: #efefef;
+}
+
+.res-field-event-name-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.res-field-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #6b7280;
 }
 
 .res-time-row {
@@ -3191,6 +3248,10 @@ body[data-theme="dark"] .res-field input[readonly] {
   background: #374151;
 }
 
+body[data-theme="dark"] .res-field-hint {
+  color: #9ca3af;
+}
+
 body[data-theme="dark"] .reservations-calendar {
   background: #1f2937;
   border-color: #4b5563;
@@ -3249,6 +3310,12 @@ body[data-theme="dark"] .res-hover-body {
 body[data-theme="dark"] .res-hover-body::before {
   border-right-color: #e5e7eb;
   filter: drop-shadow(-2px 0 0 #9ca3af);
+}
+
+body[data-theme="dark"] .res-modal-court-hint {
+  color: #93c5fd;
+  background: #1e3a5f;
+  border-color: #3b82f6;
 }
 
 body[data-theme="dark"] .res-modal-close {

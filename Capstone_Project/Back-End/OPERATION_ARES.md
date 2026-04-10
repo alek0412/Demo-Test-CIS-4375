@@ -1,6 +1,6 @@
 # Operation ARES — Set up the application on EC2 (grab code from GitHub)
 
-**Code source:** CLU (public repo) — `https://github.com/alek0412/Demo-Test-CIS-4375`
+**Code source (EC2 / production):** **`https://github.com/IPochynyukCoding/CIS-4375-Project`** — clone and **`git pull`** from this org repo unless you deliberately use a fork. *(Optional mirror:* `https://github.com/alek0412/Demo-Test-CIS-4375` *)*
 
 **Related operations (all kept in this repo):** **Operation CLU** — routine `git pull` + PM2 restart when the app is already deployed (`OPERATION_CLU.md`). **Operation TRON** — remove app from EC2 (`OPERATION_TRON.md`). **Operation ARES** (this file) — full setup or redeploy after TRON.
 
@@ -113,8 +113,8 @@ Use this when you **removed the app** with **Operation TRON** (`rm -rf` the repo
 
    ```bash
    cd ~
-   git clone https://github.com/alek0412/Demo-Test-CIS-4375.git
-   cd Demo-Test-CIS-4375/Capstone_Project/Back-End
+   git clone https://github.com/IPochynyukCoding/CIS-4375-Project.git
+   cd CIS-4375-Project/Capstone_Project/Back-End
    ```
 
 2. **`.env`** (required — not in git; you must recreate after every fresh clone)
@@ -133,16 +133,16 @@ Use this when you **removed the app** with **Operation TRON** (`rm -rf` the repo
    pip3 install waitress flask python-dotenv mysql-connector-python sshtunnel python-dateutil
    ```
 
-   If **`git clone` fails** with “destination path already exists”, either use the existing folder or remove it (`rm -rf ~/Demo-Test-CIS-4375`) and clone again — **save copies of `.env` and `backend_access.env` first** (they are not in Git).
+   If **`git clone` fails** with “destination path already exists”, either use the existing folder or remove it (`rm -rf ~/CIS-4375-Project`) and clone again — **save copies of `.env` and `backend_access.env` first** (they are not in Git).
 
    **Always run `npm install` in `Back-End` before `pm2 start server.js`** — otherwise Node may crash with **`Cannot find module 'dotenv'`**.
 
    Start **Flask** first (port **3001**), then **Node** (port **3000**). Only **one** of each process (if you see **two** `waiver-api` rows in `pm2 list`, delete extras: **`pm2 delete <id>`**).
 
    ```bash
-   cd "$HOME/Demo-Test-CIS-4375/Capstone_Project/Back-End/(Python)"
+   cd "$HOME/CIS-4375-Project/Capstone_Project/Back-End/(Python)"
    pm2 start flask_server.py --name waiver-api --interpreter python3
-   cd "$HOME/Demo-Test-CIS-4375/Capstone_Project/Back-End"
+   cd "$HOME/CIS-4375-Project/Capstone_Project/Back-End"
    pm2 start server.js --name reservation-app
    pm2 save
    ```
@@ -164,8 +164,8 @@ Use this when you **removed the app** with **Operation TRON** (`rm -rf` the repo
 
 ```bash
 cd ~
-git clone https://github.com/alek0412/Demo-Test-CIS-4375.git
-cd Demo-Test-CIS-4375
+git clone https://github.com/IPochynyukCoding/CIS-4375-Project.git
+cd CIS-4375-Project
 ```
 
 ---
@@ -175,7 +175,7 @@ cd Demo-Test-CIS-4375
 The repo includes **`.env.example`** — copy it to **`.env`** and add your **real RDS password** (and any other secrets). **`.env` is gitignored** and must exist on the server after clone.
 
 ```bash
-cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End
+cd ~/CIS-4375-Project/Capstone_Project/Back-End
 cp .env.example .env
 nano .env
 ```
@@ -197,7 +197,7 @@ Optionally set **`ADMIN_EMAIL`**, **`ADMIN_PASSWORD`**, **`CUSTOMER_*`**, and **
 The **General Waiver** form posts to Node; Node proxies to **Flask** (`routes/customer.py` → **`POST /api/waiver-register`**). Flask loads **`backend_access.env`** from the **`(Python)`** working directory (not the same file as **Back-End `.env`**).
 
 ```bash
-cd "$HOME/Demo-Test-CIS-4375/Capstone_Project/Back-End/(Python)"
+cd "$HOME/CIS-4375-Project/Capstone_Project/Back-End/(Python)"
 nano backend_access.env
 ```
 
@@ -270,14 +270,14 @@ Confirm **`waiver-api`** stays **online** (restart count ↺ not climbing) and t
 ## 3. Install dependencies
 
 ```bash
-cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End
+cd ~/CIS-4375-Project/Capstone_Project/Back-End
 npm install
 ```
 
 **Python (waiver API):**
 
 ```bash
-cd "$HOME/Demo-Test-CIS-4375/Capstone_Project/Back-End/(Python)"
+cd "$HOME/CIS-4375-Project/Capstone_Project/Back-End/(Python)"
 pip3 install waitress flask python-dotenv mysql-connector-python sshtunnel python-dateutil
 ```
 
@@ -305,7 +305,7 @@ kill <PID>
 Flask must be running **before** users submit the waiver (or Node will return 503 when proxying). PM2’s working directory must be **`(Python)`** so **`backend_access.env`** loads.
 
 ```bash
-cd "$HOME/Demo-Test-CIS-4375/Capstone_Project/Back-End/(Python)"
+cd "$HOME/CIS-4375-Project/Capstone_Project/Back-End/(Python)"
 pm2 start flask_server.py --name waiver-api --interpreter python3
 ```
 
@@ -320,7 +320,7 @@ You should see the tunnel/DB connection messages from your Python stack when the
 **4d. Start Node under PM2 — port 3000**
 
 ```bash
-cd ~/Demo-Test-CIS-4375/Capstone_Project/Back-End
+cd ~/CIS-4375-Project/Capstone_Project/Back-End
 pm2 start server.js --name reservation-app
 pm2 save
 ```
@@ -378,12 +378,12 @@ Log in as admin and use the Customers tab.
 Only for a short sanity check. **Do not** rely on this for production — closing SSH will often stop the process. For waiver tests, run **Flask in one SSH session** and **Node in another** (Flask **3001** first).
 
 ```bash
-cd "$HOME/Demo-Test-CIS-4375/Capstone_Project/Back-End/(Python)"
+cd "$HOME/CIS-4375-Project/Capstone_Project/Back-End/(Python)"
 python3 flask_server.py
 ```
 
 ```bash
-cd "$HOME/Demo-Test-CIS-4375/Capstone_Project/Back-End"
+cd "$HOME/CIS-4375-Project/Capstone_Project/Back-End"
 node server.js
 ```
 

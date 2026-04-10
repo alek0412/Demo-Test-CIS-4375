@@ -168,7 +168,7 @@
                 <div class="cal-col-head"><span class="cal-col-head-label">Court 8</span><button type="button" class="cal-col-add-btn" data-court="Court 8" title="Add reservation" aria-label="Add reservation on Court 8"><span aria-hidden="true">+</span></button></div>
                 <div class="cal-col-head"><span class="cal-col-head-label">Court 9</span><button type="button" class="cal-col-add-btn" data-court="Court 9" title="Add reservation" aria-label="Add reservation on Court 9"><span aria-hidden="true">+</span></button></div>
                 <div class="cal-col-head"><span class="cal-col-head-label">Court 10</span><button type="button" class="cal-col-add-btn" data-court="Court 10" title="Add reservation" aria-label="Add reservation on Court 10"><span aria-hidden="true">+</span></button></div>
-                <div class="cal-col-head"><span class="cal-col-head-label">Court 11</span><button type="button" class="cal-col-add-btn" data-court="Court 11" title="Add reservation" aria-label="Add reservation on Court 11"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head cal-col-head--stack"><span class="cal-col-head-label cal-col-head-label--stack"><span class="cal-col-head-line">Court 11</span><span class="cal-col-head-sub">Table tennis practice</span></span><button type="button" class="cal-col-add-btn" data-court="Court 11" title="Add reservation (table tennis practice)" aria-label="Add reservation on Court 11, table tennis practice"><span aria-hidden="true">+</span></button></div>
                 <div class="cal-col-head"><span class="cal-col-head-label">Court 12</span><button type="button" class="cal-col-add-btn" data-court="Court 12" title="Add reservation" aria-label="Add reservation on Court 12"><span aria-hidden="true">+</span></button></div>
               </div>
               <aside class="reservations-time-scale" id="reservations-time-scale" aria-label="Time scale"></aside>
@@ -238,9 +238,9 @@
                     <div class="cal-block is-blue" data-slot-start="14" data-slot-span="2">1.00 hr</div>
                   </div>
                 </div>
-                <div class="cal-col" data-court="Court 11">
+                <div class="cal-col" data-court="Court 11" data-court-use="table-tennis-practice">
                   <div class="cal-col-body">
-                    <div class="cal-block is-white" data-slot-start="6" data-slot-span="10">Training<br>1:00 PM-6:00 PM</div>
+                    <div class="cal-block is-white" data-slot-start="6" data-slot-span="10">Table tennis practice<br>1:00 PM-6:00 PM</div>
                     <div class="cal-block is-orange" data-slot-start="16" data-slot-span="2">Coaching</div>
                   </div>
                 </div>
@@ -261,6 +261,7 @@
                 <h2 id="res-modal-title">Create Appointment</h2>
                 <button class="res-modal-close" type="button" id="res-modal-close" aria-label="Close appointment form">x</button>
               </div>
+              <p class="res-modal-court-hint is-hidden" id="res-modal-court-hint" aria-live="polite"></p>
               <article class="res-card res-card-client">
                 <div class="res-card-grid">
                   <div class="res-label">Client</div>
@@ -330,6 +331,14 @@
                     <option>Court 11</option>
                     <option>Court 12</option>
                   </select>
+                </div>
+
+                <div class="res-field res-field-event-name is-hidden" id="res-event-name-wrap">
+                  <label for="res-event-name">Event name</label>
+                  <div class="res-field-event-name-stack">
+                    <input type="text" id="res-event-name" class="res-input-event-name" placeholder="e.g. Pickleball, Training, Open play" maxlength="120" autocomplete="off" aria-describedby="res-event-name-hint">
+                    <p class="res-field-hint" id="res-event-name-hint">Shown on the schedule block (badminton, programs, rentals, etc.).</p>
+                  </div>
                 </div>
  
                 <div class="res-field">
@@ -685,20 +694,70 @@
         }
       }
  
+      var TABLE_TENNIS_RESERVE_LINE = 'Table Tennis Practice — reserve';
+      var CUSTOM_EVENT_NAME_COURTS = [1, 3, 5, 7, 9, 12];
+
+      function parseCourtNumberFromName(name) {
+        if (!name) return null;
+        var m = String(name).match(/Court\s*(\d+)/i);
+        return m ? parseInt(m[1], 10) : null;
+      }
+
+      function courtNeedsCustomEventName(courtNum) {
+        return courtNum !== null && CUSTOM_EVENT_NAME_COURTS.indexOf(courtNum) !== -1;
+      }
+
+      function syncModalCourtFields() {
+        var v = resourceSelect ? resourceSelect.value : '';
+        var n = parseCourtNumberFromName(v);
+        var courtHint = document.getElementById('res-modal-court-hint');
+        var wrap = document.getElementById('res-event-name-wrap');
+        var input = document.getElementById('res-event-name');
+        if (courtHint) {
+          if (n === 11) {
+            courtHint.textContent = TABLE_TENNIS_RESERVE_LINE;
+            courtHint.classList.remove('is-hidden');
+          } else {
+            courtHint.textContent = '';
+            courtHint.classList.add('is-hidden');
+          }
+        }
+        if (wrap && input) {
+          if (courtNeedsCustomEventName(n)) {
+            wrap.classList.remove('is-hidden');
+            input.setAttribute('aria-required', 'true');
+          } else {
+            wrap.classList.add('is-hidden');
+            input.removeAttribute('aria-required');
+            input.value = '';
+          }
+        }
+      }
+
       function openModal(courtName) {
         if (!overlay) return;
         if (resourceSelect && courtName) {
           resourceSelect.value = courtName;
         }
         setStatus('');
+        syncModalCourtFields();
         applyClientToModal(selectedClient);
         updateEndTimeFromForm();
         overlay.classList.remove('is-hidden');
         overlay.setAttribute('aria-hidden', 'false');
       }
+
+      if (resourceSelect) {
+        resourceSelect.addEventListener('change', function () {
+          if (!overlay || overlay.classList.contains('is-hidden')) return;
+          syncModalCourtFields();
+        });
+      }
  
       function closeModal() {
         if (!overlay) return;
+        var input = document.getElementById('res-event-name');
+        if (input) input.value = '';
         overlay.classList.add('is-hidden');
         overlay.setAttribute('aria-hidden', 'true');
       }
@@ -916,6 +975,16 @@
         timeScale.dataset.built = '1';
       }
  
+      var PICKLEBALL_COURT_NUMBERS = [2, 4, 6, 8, 10];
+
+      function getCourtNumberFromBlock(block) {
+        var col = block && block.closest('.cal-col');
+        if (!col) return null;
+        var attr = col.getAttribute('data-court') || '';
+        var m = attr.match(/Court\s*(\d+)/i);
+        return m ? parseInt(m[1], 10) : null;
+      }
+
       function showHoverCard(block) {
         if (!hoverCard || !hoverTime || !hoverService) return;
         const titleEl = block.querySelector('.cal-block-title');
@@ -928,7 +997,14 @@
         if (hoverPhone) hoverPhone.textContent = person.phone;
  
         hoverTime.textContent = meta || '4:30 PM - 6:30 PM';
-        hoverService.textContent = 'Court Rental | ' + title;
+        var courtN = getCourtNumberFromBlock(block);
+        if (courtN === 11) {
+          hoverService.textContent = TABLE_TENNIS_RESERVE_LINE;
+        } else {
+          var isPickleballCourt =
+            courtN !== null && PICKLEBALL_COURT_NUMBERS.indexOf(courtN) !== -1;
+          hoverService.textContent = isPickleballCourt ? title : 'Court Rental | ' + title;
+        }
         hoverCard.classList.remove('is-hidden');
         hoverCard.setAttribute('aria-hidden', 'false');
  
@@ -959,7 +1035,12 @@
 
       if (calendar) {
         calendar.addEventListener('click', function (event) {
-          if (event.target.closest('.cal-block')) return;
+          if (event.target.closest('.cal-block-actions')) return;
+          var block = event.target.closest('.cal-block');
+          if (block && calendar.contains(block)) {
+            showHoverCard(block);
+            return;
+          }
           const col = event.target.closest('.cal-col');
           if (!col) return;
           const court = col.getAttribute('data-court') || '';
@@ -1014,6 +1095,17 @@
             setStatus('Select a court before adding a reservation.', true);
             return;
           }
+
+          var courtNum = parseCourtNumberFromName(resource);
+          var eventNameEl = document.getElementById('res-event-name');
+          var customEventName = eventNameEl ? eventNameEl.value.trim() : '';
+          if (courtNeedsCustomEventName(courtNum)) {
+            if (!customEventName) {
+              setStatus('Enter an event name for this court (e.g. Pickleball, Training).', true);
+              if (eventNameEl) eventNameEl.focus();
+              return;
+            }
+          }
  
           const targetCol = Array.from(calendar.querySelectorAll('.cal-col')).find(function (col) {
             return col.getAttribute('data-court') === resource;
@@ -1036,7 +1128,13 @@
  
           const newBlock = document.createElement('div');
           newBlock.className = 'cal-block is-blue';
-          if (start && end) {
+          if (courtNeedsCustomEventName(courtNum) && customEventName) {
+            if (start && end) {
+              newBlock.innerHTML = customEventName + '<br>' + start + ' – ' + end + ' · ' + service;
+            } else {
+              newBlock.innerHTML = customEventName + '<br>' + service;
+            }
+          } else if (start && end) {
             newBlock.innerHTML = start + ' - ' + end + '<br>' + service;
           } else {
             newBlock.innerHTML = service;
