@@ -3075,16 +3075,6 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   color: #6b7280;
 }
 
-.res-time-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.55rem;
-}
-
-.res-time-row .res-field {
-  grid-template-columns: 112px 1fr;
-}
-
 .res-add-link {
   margin-top: 0.1rem;
   align-self: flex-start;

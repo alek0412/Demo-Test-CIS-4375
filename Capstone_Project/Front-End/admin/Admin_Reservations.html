@@ -303,8 +303,8 @@
  
               <article class="res-card res-card-form">
                 <div class="res-field">
-                  <label for="res-service">Service</label>
-                  <select id="res-service">
+                  <label for="res-service">Service length</label>
+                  <select id="res-service" aria-label="Service length">
                     <option>0.5 hr</option>
                     <option selected>1.00 hr</option>
                     <option>1.50 hr</option>
@@ -317,15 +317,9 @@
                   </select>
                 </div>
  
-                <div class="res-time-row">
-                  <div class="res-field">
-                    <label for="res-start">Start time</label>
-                    <select id="res-start" class="res-select-time" aria-label="Start time"></select>
-                  </div>
-                  <div class="res-field">
-                    <label for="res-length">Length</label>
-                    <select id="res-length" class="res-select-length" aria-label="Appointment length"></select>
-                  </div>
+                <div class="res-field">
+                  <label for="res-start">Start time</label>
+                  <select id="res-start" class="res-select-time" aria-label="Start time"></select>
                 </div>
  
                 <div class="res-field">
@@ -382,7 +376,6 @@
       const statusEl = document.getElementById('res-status');
       const serviceSelect = document.getElementById('res-service');
       const startSelect = document.getElementById('res-start');
-      const lengthSelect = document.getElementById('res-length');
       const endInput = document.getElementById('res-end');
       const timeScale = document.getElementById('reservations-time-scale');
       const hoverCard = document.getElementById('res-hover-card');
@@ -1031,9 +1024,13 @@
         return h12 + ':' + String(min).padStart(2, '0') + ' ' + suffix;
       }
  
-      function parseLengthToMinutes(str) {
-        const m = String(str || '').match(/^(\d+)\s*min/i);
-        return m ? parseInt(m[1], 10) : 60;
+      /** Minutes from service length select (e.g. "1.00 hr"); snapped to 15 min, 15–480. */
+      function serviceLabelToMinutes(serviceLabel) {
+        const match = String(serviceLabel || '').match(/([\d.]+)\s*hr/i);
+        if (!match) return 60;
+        const mins = Math.round(parseFloat(match[1]) * 60);
+        const snapped = Math.round(mins / 15) * 15;
+        return Math.min(480, Math.max(15, snapped));
       }
  
       function parseTimeToSlot(timeStr) {
@@ -1053,15 +1050,15 @@
       }
  
       function updateEndTimeFromForm() {
-        if (!startSelect || !lengthSelect || !endInput) return;
+        if (!startSelect || !serviceSelect || !endInput) return;
         const sm = parseTimeLabelToMinutes(startSelect.value);
-        const len = parseLengthToMinutes(lengthSelect.value);
+        const len = serviceLabelToMinutes(serviceSelect.value);
         if (sm === null) return;
         endInput.value = formatMinutesAsTime12(sm + len);
       }
  
       function initFormTimeControls() {
-        if (!startSelect || !lengthSelect) return;
+        if (!startSelect || !serviceSelect) return;
  
         startSelect.innerHTML = '';
         for (let m = 10 * 60; m <= 23 * 60 + 45; m += 15) {
@@ -1072,29 +1069,8 @@
           startSelect.appendChild(opt);
         }
  
-        lengthSelect.innerHTML = '';
-        for (let min = 15; min <= 480; min += 15) {
-          const opt = document.createElement('option');
-          opt.value = min + ' min';
-          opt.textContent = min + ' min';
-          if (min === 60) opt.selected = true;
-          lengthSelect.appendChild(opt);
-        }
- 
         startSelect.addEventListener('change', updateEndTimeFromForm);
-        lengthSelect.addEventListener('change', updateEndTimeFromForm);
- 
-        if (serviceSelect) {
-          serviceSelect.addEventListener('change', function () {
-            const match = String(serviceSelect.value || '').match(/([\d.]+)\s*hr/i);
-            if (!match) return;
-            const mins = Math.round(parseFloat(match[1]) * 60);
-            const snapped = Math.round(mins / 15) * 15;
-            const target = Math.min(480, Math.max(15, snapped));
-            lengthSelect.value = target + ' min';
-            updateEndTimeFromForm();
-          });
-        }
+        serviceSelect.addEventListener('change', updateEndTimeFromForm);
  
         updateEndTimeFromForm();
       }
