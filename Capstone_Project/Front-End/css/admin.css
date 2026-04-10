@@ -584,20 +584,24 @@ body[data-theme="dark"] .admin-welcome {
   overflow-x: visible;
 }
 
-/* Layout page: lock vertical scroll to the workbench (cards/sections) so every box stays reachable; leave overflow-x alone so the hero full-bleed still works */
+/* Layout page: scroll the main column here; hero stays pinned via sticky */
 .admin-content.layout-studio.layout-wb {
-  overflow-y: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-content.layout-studio.layout-wb .layout-studio-hero {
+  position: sticky;
+  top: 0;
+  z-index: 12;
   flex-shrink: 0;
 }
 
 .admin-content.layout-studio.layout-wb .layout-wb-body {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-y: visible;
+  overflow-x: visible;
 }
 
 .admin-content > .admin-title-wrap,
