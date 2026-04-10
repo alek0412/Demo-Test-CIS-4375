@@ -1489,6 +1489,52 @@ body[data-theme="light"] .layout-wb-hero-shine {
   justify-content: center;
 }
 
+/* Center slot grids + module column (overrides .layout-wb stretch / grid margin reset) */
+.admin-content.layout-studio.layout-wb .admin-layout-tools.layout-wb-module {
+  align-items: center !important;
+}
+
+.admin-content.layout-studio.layout-wb .admin-layout-tools .admin-marketing-grid {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  justify-items: center;
+  width: 100%;
+}
+
+.admin-content.layout-studio.layout-wb .admin-layout-tools .admin-marketing-slot {
+  width: 100%;
+  max-width: min(560px, 100%);
+  box-sizing: border-box;
+}
+
+.admin-content.layout-studio.layout-wb #marketing-slots-root.admin-marketing-grid {
+  justify-items: center;
+}
+
+.admin-content.layout-studio.layout-wb #membership-specials-items-admin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 0;
+}
+
+.admin-content.layout-studio.layout-wb #membership-specials-items-admin .admin-membership-special-card {
+  width: 100%;
+  max-width: min(560px, 100%);
+}
+
+.admin-content.layout-studio.layout-wb .admin-membership-specials-toolbar {
+  width: 100%;
+  max-width: min(560px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-content.layout-studio.layout-wb .admin-membership-special-remove {
+  align-self: center;
+}
+
 /* Layout page: upcoming-events controls aligned with the same column as "Layout" + intro */
 .admin-layout-tools {
   width: 100%;
