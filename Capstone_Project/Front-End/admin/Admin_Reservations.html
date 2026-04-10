@@ -564,7 +564,7 @@
 
         if (resScheduleContext) {
           const whenLabel = isToday
-            ? 'Selected day: today (times 10:00 AM–11:30 PM). Sample grid below repeats for preview until the API is connected.'
+            ? 'Selected day: today (times 10:00 AM–11:30 PM). With live data, each calendar day has its own schedule—bookings stay on the day they were created. The grid below is static demo until the API loads by date.'
             : 'Selected day: ' +
               days[scheduleDate.getDay()] +
               ', ' +
@@ -573,7 +573,7 @@
               scheduleDate.getDate() +
               ', ' +
               scheduleDate.getFullYear() +
-              ' — not today. Sample bookings below are placeholder only.';
+              ' — not today. With live data, this day would load only its own bookings. Demo blocks below are placeholders, not copied from other dates.';
           resScheduleContext.textContent = RES_COURT_RULES_CONTEXT + ' ' + whenLabel;
         }
       }
