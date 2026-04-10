@@ -584,24 +584,20 @@ body[data-theme="dark"] .admin-welcome {
   overflow-x: visible;
 }
 
-/* Layout page: scroll the main column here; hero stays pinned via sticky */
+/* Layout page: hero stays fixed above the fold; only the workbench below scrolls */
 .admin-content.layout-studio.layout-wb {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-y: hidden;
 }
 
 .admin-content.layout-studio.layout-wb .layout-studio-hero {
-  position: sticky;
-  top: 0;
-  z-index: 12;
   flex-shrink: 0;
 }
 
 .admin-content.layout-studio.layout-wb .layout-wb-body {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-y: visible;
-  overflow-x: visible;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-content > .admin-title-wrap,
