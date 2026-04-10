@@ -643,9 +643,10 @@ body[data-theme="light"] .admin-sidebar-toggle:hover {
   overflow-x: visible;
 }
 
-/* Layout page: hero stays fixed above the fold; only the workbench below scrolls */
+/* Layout page: one scroll for hero + workbench so the intro scrolls off-screen */
 .admin-content.layout-studio.layout-wb {
-  overflow-y: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-content.layout-studio.layout-wb .layout-studio-hero {
@@ -653,10 +654,9 @@ body[data-theme="light"] .admin-sidebar-toggle:hover {
 }
 
 .admin-content.layout-studio.layout-wb .layout-wb-body {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: visible;
 }
 
 .admin-content > .admin-title-wrap,
