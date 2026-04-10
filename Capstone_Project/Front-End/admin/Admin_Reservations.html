@@ -145,7 +145,6 @@
                 <button type="button" class="res-date-arrow" id="res-date-next" aria-label="Next day">›</button>
               </div>
               <div class="res-date-toolbar-actions">
-                <button type="button" class="res-date-today-btn" id="res-date-today">Today</button>
                 <div class="res-calendar-dropdown">
                   <button type="button" class="res-calendar-toggle" id="res-calendar-toggle" aria-expanded="false" aria-haspopup="dialog" aria-controls="res-mini-calendar-root">Calendar</button>
                   <div class="res-mini-calendar-root is-hidden" id="res-mini-calendar-root" role="dialog" aria-label="Pick a date" aria-modal="true" hidden>
@@ -395,7 +394,6 @@
       const resClientEmail = document.getElementById('res-client-email');
       const resDatePrev = document.getElementById('res-date-prev');
       const resDateNext = document.getElementById('res-date-next');
-      const resDateToday = document.getElementById('res-date-today');
       const resDateWeekday = document.getElementById('res-date-weekday');
       const resDateFull = document.getElementById('res-date-full');
       const resDateToolbar = document.getElementById('res-date-toolbar');
@@ -627,15 +625,6 @@
         updateScheduleDateDisplay();
         if (resDatePrev) resDatePrev.addEventListener('click', function () { shiftScheduleDay(-1); });
         if (resDateNext) resDateNext.addEventListener('click', function () { shiftScheduleDay(1); });
-        if (resDateToday) {
-          resDateToday.addEventListener('click', function () {
-            scheduleDate = new Date();
-            scheduleDate.setHours(12, 0, 0, 0);
-            calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
-            updateScheduleDateDisplay();
-            if (miniCalendarOpen) buildMiniCalendarGrid();
-          });
-        }
         if (resCalPrevMonth) {
           resCalPrevMonth.addEventListener('click', function (e) {
             e.stopPropagation();

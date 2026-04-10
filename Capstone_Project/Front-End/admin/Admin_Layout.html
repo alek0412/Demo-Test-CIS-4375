@@ -95,19 +95,30 @@
     </aside>
     <div class="admin-main">
       <header class="admin-topbar"><div id="admin-theme-container"></div></header>
-      <div class="admin-content">
-        <div class="admin-title-wrap admin-title-wrap--left admin-title-wrap--layout-page">
-          <div class="admin-layout-intro">
-            <h1 class="admin-page-title">Layout</h1>
-            <p class="admin-subtitle">Control how <strong>general (public)</strong> and <strong>customer</strong> pages look and feel—spacing, imagery, and presentation so the experience stays clear and appealing. Below: <strong>Upcoming events</strong> on the shared home dashboards (JPEG, PNG, GIF, or WebP, up to about 8 MB each), the <strong>Popular Times</strong> sheet (PDF or image) on both Availability pages, and <strong>membership pricing</strong> (PDF or image) on General and Client Membership.</p>
-            <div class="admin-layout-jump">
-              <label for="layout-section-jump" class="admin-layout-jump-label">Jump to section</label>
-              <select id="layout-section-jump" class="admin-marketing-select">
-                <option value="">Choose a section…</option>
-                <option value="layout-section-home">Home</option>
-                <option value="layout-section-availability">Availability</option>
-                <option value="layout-section-membership">Membership</option>
-              </select>
+      <div class="admin-content layout-studio">
+        <div class="layout-studio-hero" aria-hidden="false">
+          <div class="layout-studio-hero-grid" aria-hidden="true"></div>
+          <div class="admin-title-wrap admin-title-wrap--left admin-title-wrap--layout-page">
+            <div class="admin-layout-intro layout-studio-intro-shell">
+              <p class="layout-studio-eyebrow">Experience design · Houston Badminton Center</p>
+              <h1 class="admin-page-title layout-studio-display-title">Layout</h1>
+              <p class="admin-subtitle layout-studio-lede">Control how <strong>general (public)</strong> and <strong>customer</strong> pages look and feel—spacing, imagery, and presentation so the experience stays clear and appealing. Below: <strong>Upcoming events</strong> on the shared home dashboards (JPEG, PNG, GIF, or WebP, up to about 8 MB each), the <strong>Popular Times</strong> sheet (PDF or image) on both Availability pages, and <strong>membership pricing</strong> (PDF or image) on General and Client Membership.</p>
+              <nav class="layout-studio-nav" aria-label="Jump to section">
+                <div class="layout-studio-pills" role="group">
+                  <button type="button" class="layout-studio-pill" data-layout-target="layout-section-home">Home</button>
+                  <button type="button" class="layout-studio-pill" data-layout-target="layout-section-availability">Availability</button>
+                  <button type="button" class="layout-studio-pill" data-layout-target="layout-section-membership">Membership</button>
+                </div>
+                <div class="admin-layout-jump layout-studio-jump-select">
+                  <label for="layout-section-jump" class="admin-layout-jump-label">Or choose from list</label>
+                  <select id="layout-section-jump" class="admin-marketing-select">
+                    <option value="">Choose a section…</option>
+                    <option value="layout-section-home">Home</option>
+                    <option value="layout-section-availability">Availability</option>
+                    <option value="layout-section-membership">Membership</option>
+                  </select>
+                </div>
+              </nav>
             </div>
           </div>
         </div>
@@ -189,16 +200,24 @@
   <script src="/admin-membership-specials.js"></script>
   <script>
     (function () {
-      var sel = document.getElementById('layout-section-jump');
-      if (!sel) return;
-      sel.addEventListener('change', function () {
-        var id = sel.value;
+      function scrollLayoutSection(id) {
         if (!id) return;
         var target = document.getElementById(id);
         if (target) {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-        sel.selectedIndex = 0;
+      }
+      var sel = document.getElementById('layout-section-jump');
+      if (sel) {
+        sel.addEventListener('change', function () {
+          scrollLayoutSection(sel.value);
+          sel.selectedIndex = 0;
+        });
+      }
+      document.querySelectorAll('.layout-studio-pill[data-layout-target]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          scrollLayoutSection(btn.getAttribute('data-layout-target'));
+        });
       });
     })();
   </script>

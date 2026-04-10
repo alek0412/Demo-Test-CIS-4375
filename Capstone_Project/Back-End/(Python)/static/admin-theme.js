@@ -94,7 +94,9 @@
       renderDropdown(container);
       bindDropdown(container);
     }
-    initBackToTop();
+    if (!document.querySelector('.reservations-page')) {
+      initBackToTop();
+    }
   }
 
   function easeInOutQuad(t) {
