@@ -2722,6 +2722,13 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   background: #efefef;
 }
 
+.res-field input:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
 .res-field-event-name-stack {
   display: flex;
   flex-direction: column;
@@ -3246,6 +3253,12 @@ body[data-theme="dark"] .res-field textarea {
 
 body[data-theme="dark"] .res-field input[readonly] {
   background: #374151;
+}
+
+body[data-theme="dark"] .res-field input:disabled {
+  background: #374151;
+  color: #9ca3af;
+  opacity: 0.85;
 }
 
 body[data-theme="dark"] .res-field-hint {
