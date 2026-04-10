@@ -1213,132 +1213,13 @@ body[data-theme="dark"] .layout-wb .layout-wb-body {
 
 @media (min-width: 1100px) {
   .layout-wb .layout-wb-body {
-    grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr);
+    grid-template-columns: 1fr;
     gap: 0;
     padding: 0;
     align-items: stretch;
     border-radius: 16px;
     /* Rounded shell: clip X only so vertical scroll on Layout page (see .admin-content.layout-studio.layout-wb) still works */
     overflow-x: hidden;
-  }
-}
-
-.layout-wb-rail {
-  position: sticky;
-  top: 0.75rem;
-  z-index: 2;
-  padding: 1rem 0.9rem 1.1rem;
-  border-radius: 0;
-  border: none;
-  border-right: 1px solid rgba(15, 23, 42, 0.08);
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(10px);
-  box-shadow: none;
-}
-
-body[data-theme="light"] .layout-wb-rail {
-  background: rgba(255, 255, 255, 0.75);
-  border-color: rgba(15, 23, 42, 0.07);
-}
-
-body[data-theme="dark"] .layout-wb-rail {
-  background: rgba(2, 6, 23, 0.45);
-  border-right-color: rgba(255, 255, 255, 0.07);
-}
-
-.layout-wb-rail-heading {
-  margin: 0 0 0.65rem;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ls-muted, rgba(148, 163, 184, 0.9));
-}
-
-.layout-wb-rail-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.layout-wb-rail-link {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  padding: 0.45rem 0.5rem;
-  border-radius: 10px;
-  text-decoration: none;
-  color: rgba(241, 245, 249, 0.92);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  line-height: 1.35;
-  border: 1px solid transparent;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease;
-}
-
-body[data-theme="light"] .layout-wb-rail-link {
-  color: #1e293b;
-}
-
-.layout-wb-rail-link:hover {
-  background: rgba(185, 28, 28, 0.12);
-  border-color: rgba(185, 28, 28, 0.25);
-}
-
-.layout-wb-rail-idx {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.65rem;
-  height: 1.65rem;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  border-radius: 8px;
-  background: rgba(185, 28, 28, 0.2);
-  color: #fecaca;
-}
-
-body[data-theme="light"] .layout-wb-rail-idx {
-  background: rgba(185, 28, 28, 0.12);
-  color: #991b1b;
-}
-
-.layout-wb-rail-label {
-  padding-top: 0.12rem;
-}
-
-@media (max-width: 1099px) {
-  .layout-wb-rail {
-    position: relative;
-    top: auto;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem 1rem;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .layout-wb-rail-heading {
-    width: 100%;
-    margin-bottom: 0.25rem;
-  }
-
-  .layout-wb-rail-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-
-  .layout-wb-rail-link {
-    flex: 1 1 auto;
-    min-width: 8.5rem;
   }
 }
 
@@ -1362,15 +1243,11 @@ body[data-theme="dark"] .layout-wb-stream {
   width: 100%;
 }
 
-/* Large screens: Contents rail is enough — hide duplicate “Go to” card in hero */
 @media (min-width: 1100px) {
-  .layout-wb .layout-wb-hero-panel {
-    display: none;
-  }
-
   .layout-wb-hero .layout-wb-hero-top {
-    grid-template-columns: 1fr;
-    max-width: min(56rem, 100%);
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+    align-items: stretch;
+    max-width: min(72rem, 100%);
   }
 }
 
