@@ -262,6 +262,10 @@
                 <button class="res-modal-close" type="button" id="res-modal-close" aria-label="Close appointment form">x</button>
               </div>
               <p class="res-modal-court-hint is-hidden" id="res-modal-court-hint" aria-live="polite"></p>
+              <p class="res-modal-booking-court is-hidden" id="res-modal-booking-court" aria-live="polite">
+                <span class="res-modal-booking-court-label">Booking for</span>
+                <strong class="res-modal-booking-court-name" id="res-modal-court-display"></strong>
+              </p>
               <article class="res-card res-card-client">
                 <div class="res-card-grid">
                   <div class="res-label">Client</div>
@@ -313,27 +317,8 @@
                   <label for="res-end">End time</label>
                   <input id="res-end" type="text" value="" readonly aria-live="polite">
                 </div>
- 
-                <div class="res-field">
-                  <label for="res-resource">Resource</label>
-                  <select id="res-resource">
-                    <option selected>Select a room</option>
-                    <option>Court 1</option>
-                    <option>Court 2</option>
-                    <option>Court 3</option>
-                    <option>Court 4</option>
-                    <option>Court 5</option>
-                    <option>Court 6</option>
-                    <option>Court 7</option>
-                    <option>Court 8</option>
-                    <option>Court 9</option>
-                    <option>Court 10</option>
-                    <option>Court 11</option>
-                    <option>Court 12</option>
-                  </select>
-                </div>
 
-                <div class="res-field res-field-event-name is-hidden" id="res-event-name-wrap">
+                <div class="res-field res-field-event-name is-hidden" id="res-event-name-wrap" hidden>
                   <label for="res-event-name">Event name</label>
                   <div class="res-field-event-name-stack">
                     <input type="text" id="res-event-name" class="res-input-event-name" placeholder="e.g. Pickleball, Training, Open play" maxlength="120" autocomplete="off" aria-describedby="res-event-name-hint" disabled>
@@ -378,7 +363,6 @@
   <script>
     (function () {
       const calendar = document.querySelector('.reservations-calendar');
-      const resourceSelect = document.getElementById('res-resource');
       const addBtn = document.getElementById('res-add-btn');
       const statusEl = document.getElementById('res-status');
       const serviceSelect = document.getElementById('res-service');
@@ -698,6 +682,7 @@
       var PICKLEBALL_COURT_NUMBERS = [2, 4, 6, 8, 10];
       var TABLE_TENNIS_COURT_NUMBER = 11;
       var CUSTOM_EVENT_NAME_COURTS = [1, 3, 5, 7, 9, 12];
+      var modalCourtName = '';
 
       function parseCourtNumberFromName(name) {
         if (!name) return null;
@@ -710,7 +695,7 @@
       }
 
       function syncModalCourtFields() {
-        var v = resourceSelect ? resourceSelect.value : '';
+        var v = modalCourtName;
         var n = parseCourtNumberFromName(v);
         var courtHint = document.getElementById('res-modal-court-hint');
         var wrap = document.getElementById('res-event-name-wrap');
@@ -727,11 +712,13 @@
         if (wrap && input) {
           if (courtNeedsCustomEventName(n)) {
             wrap.classList.remove('is-hidden');
+            wrap.removeAttribute('hidden');
             input.disabled = false;
             input.removeAttribute('readonly');
             input.setAttribute('aria-required', 'true');
           } else {
             wrap.classList.add('is-hidden');
+            wrap.setAttribute('hidden', '');
             input.disabled = true;
             input.removeAttribute('aria-required');
             input.value = '';
@@ -741,8 +728,14 @@
 
       function openModal(courtName) {
         if (!overlay) return;
-        if (resourceSelect && courtName) {
-          resourceSelect.value = courtName;
+        modalCourtName = String(courtName || '').trim();
+        var courtDisplay = document.getElementById('res-modal-court-display');
+        var bookingStrip = document.getElementById('res-modal-booking-court');
+        if (courtDisplay) {
+          courtDisplay.textContent = modalCourtName || '';
+        }
+        if (bookingStrip) {
+          bookingStrip.classList.toggle('is-hidden', !modalCourtName);
         }
         setStatus('');
         syncModalCourtFields();
@@ -751,16 +744,14 @@
         overlay.classList.remove('is-hidden');
         overlay.setAttribute('aria-hidden', 'false');
       }
-
-      if (resourceSelect) {
-        resourceSelect.addEventListener('change', function () {
-          if (!overlay || overlay.classList.contains('is-hidden')) return;
-          syncModalCourtFields();
-        });
-      }
  
       function closeModal() {
         if (!overlay) return;
+        modalCourtName = '';
+        var courtDisplay = document.getElementById('res-modal-court-display');
+        var bookingStrip = document.getElementById('res-modal-booking-court');
+        if (courtDisplay) courtDisplay.textContent = '';
+        if (bookingStrip) bookingStrip.classList.add('is-hidden');
         var input = document.getElementById('res-event-name');
         if (input) {
           input.value = '';
@@ -1096,9 +1087,9 @@
  
       if (addBtn && calendar) {
         addBtn.addEventListener('click', function () {
-          const resource = resourceSelect ? resourceSelect.value : '';
-          if (!resource || resource === 'Select a room') {
-            setStatus('Select a court before adding a reservation.', true);
+          var resource = modalCourtName;
+          if (!resource) {
+            setStatus('Open this form from a court column (or the + button on a court).', true);
             return;
           }
 
@@ -1113,7 +1104,7 @@
             }
           }
  
-          const targetCol = Array.from(calendar.querySelectorAll('.cal-col')).find(function (col) {
+          var targetCol = Array.from(calendar.querySelectorAll('.cal-col')).find(function (col) {
             return col.getAttribute('data-court') === resource;
           });
  

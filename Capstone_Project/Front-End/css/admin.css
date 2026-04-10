@@ -2603,6 +2603,34 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   display: none;
 }
 
+.res-modal-booking-court {
+  margin: 0 0.25rem 0.75rem;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.92rem;
+  color: #111827;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  line-height: 1.45;
+}
+
+.res-modal-booking-court.is-hidden {
+  display: none;
+}
+
+.res-modal-booking-court-label {
+  display: inline-block;
+  margin-right: 0.35rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.res-modal-booking-court-name {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #111827;
+}
+
 .res-modal-close {
   border: 1px solid #a8a8a8;
   background: #ffffff;
@@ -2727,6 +2755,11 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   cursor: not-allowed;
   background: #f3f4f6;
   color: #6b7280;
+}
+
+#res-event-name-wrap.is-hidden,
+#res-event-name-wrap[hidden] {
+  display: none !important;
 }
 
 .res-field-event-name-stack {
@@ -3329,6 +3362,20 @@ body[data-theme="dark"] .res-modal-court-hint {
   color: #93c5fd;
   background: #1e3a5f;
   border-color: #3b82f6;
+}
+
+body[data-theme="dark"] .res-modal-booking-court {
+  background: #1f2937;
+  border-color: #374151;
+  color: #f3f4f6;
+}
+
+body[data-theme="dark"] .res-modal-booking-court-label {
+  color: #9ca3af;
+}
+
+body[data-theme="dark"] .res-modal-booking-court-name {
+  color: #f9fafb;
 }
 
 body[data-theme="dark"] .res-modal-close {
