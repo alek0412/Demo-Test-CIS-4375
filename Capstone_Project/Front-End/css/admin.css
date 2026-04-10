@@ -2427,22 +2427,6 @@ body[data-theme="dark"] .manager-gate-form input {
   gap: 0.85rem;
 }
 
-.reservations-click-hint {
-  margin: 0.15rem 0 0.3rem;
-  font-size: 0.8125rem;
-  color: #666;
-  line-height: 1.45;
-  max-width: 52rem;
-}
-
-.res-schedule-context {
-  margin: 0 0 0.2rem;
-  font-size: 0.8rem;
-  color: #4b5563;
-  line-height: 1.35;
-  max-width: 52rem;
-}
-
 .res-date-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -3505,14 +3489,6 @@ body[data-theme="dark"] .res-client-search-info {
   background: #334155;
   border-color: #64748b;
   color: #f1f5f9;
-}
-
-body[data-theme="dark"] .reservations-click-hint {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-body[data-theme="dark"] .res-schedule-context {
-  color: rgba(255, 255, 255, 0.72);
 }
 
 body[data-theme="dark"] .res-date-toolbar {

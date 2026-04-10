@@ -166,8 +166,6 @@
                 </div>
               </div>
             </div>
-            <p class="res-schedule-context" id="res-schedule-context" aria-live="polite"></p>
-            <p class="reservations-click-hint">Click a court column or <strong>+</strong> to create an appointment. Use <strong>Edit</strong> or <strong>Delete</strong> on a booking to manage it (preview only).</p>
             <div class="reservations-schedule-outer" id="res-schedule-outer">
             <div class="reservations-schedule-wrap">
               <div class="res-schedule-corner" aria-hidden="true"></div>
@@ -404,7 +402,6 @@
       const resDateToday = document.getElementById('res-date-today');
       const resDateWeekday = document.getElementById('res-date-weekday');
       const resDateFull = document.getElementById('res-date-full');
-      const resScheduleContext = document.getElementById('res-schedule-context');
       const resDateToolbar = document.getElementById('res-date-toolbar');
       const resScheduleOuter = document.getElementById('res-schedule-outer');
       const resCalendarToggle = document.getElementById('res-calendar-toggle');
@@ -414,9 +411,6 @@
       const resCalPrevMonth = document.getElementById('res-cal-prev-month');
       const resCalNextMonth = document.getElementById('res-cal-next-month');
       const scheduleHeadersEl = document.getElementById('res-schedule-headers');
-
-      var RES_COURT_RULES_CONTEXT =
-        'Courts 1, 3, 5, 7, 9, 12 — badminton. Courts 2, 4, 6, 8, 10 — badminton or pickleball. Court 11 — badminton or table tennis (lessons often 10:00 AM–5:00 PM).';
 
       let recentClients = [];
       let selectedClient = null;
@@ -560,21 +554,6 @@
         if (resScheduleOuter) {
           resScheduleOuter.setAttribute('data-selected-date', formatScheduleDateIso(scheduleDate));
           resScheduleOuter.classList.toggle('res-schedule-outer--other-day', !isToday);
-        }
-
-        if (resScheduleContext) {
-          const whenLabel = isToday
-            ? 'Selected day: today (times 10:00 AM–11:30 PM). With live data, each calendar day has its own schedule—bookings stay on the day they were created. The grid below is static demo until the API loads by date.'
-            : 'Selected day: ' +
-              days[scheduleDate.getDay()] +
-              ', ' +
-              months[scheduleDate.getMonth()] +
-              ' ' +
-              scheduleDate.getDate() +
-              ', ' +
-              scheduleDate.getFullYear() +
-              ' — not today. With live data, this day would load only its own bookings. Demo blocks below are placeholders, not copied from other dates.';
-          resScheduleContext.textContent = RES_COURT_RULES_CONTEXT + ' ' + whenLabel;
         }
       }
 
