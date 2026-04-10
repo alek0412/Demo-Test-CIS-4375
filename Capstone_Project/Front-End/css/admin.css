@@ -2982,11 +2982,17 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   border-radius: 8px;
 }
 
-.res-confirm input {
+.res-confirm input[type="checkbox"] {
   width: 18px;
   height: 18px;
   accent-color: #7c3aed;
-  cursor: pointer;
+  cursor: default;
+  flex-shrink: 0;
+}
+
+.res-confirm input[type="checkbox"]:disabled {
+  opacity: 1;
+  cursor: default;
 }
 
 .res-card-form {
@@ -3073,26 +3079,6 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   font-size: 0.78rem;
   line-height: 1.35;
   color: #6b7280;
-}
-
-.res-add-link {
-  margin-top: 0.1rem;
-  align-self: flex-start;
-  background: transparent;
-  border: none;
-  padding: 0.35rem 0;
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #2563eb;
-  cursor: pointer;
-  transition: color 0.15s ease;
-}
-
-.res-add-link:hover {
-  color: #1d4ed8;
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
 .res-actions {
@@ -3256,15 +3242,28 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   border-color: rgba(185, 28, 28, 0.35);
 }
 
-.cal-block.is-orange .cal-block-action-btn {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fffaf4;
-  border-color: rgba(255, 255, 255, 0.35);
+.cal-block.is-event .cal-block-action-btn {
+  background: rgba(255, 255, 255, 0.72);
+  color: #14532d;
+  border-color: rgba(22, 163, 74, 0.4);
 }
 
-.cal-block.is-orange .cal-block-action-btn:hover {
-  background: rgba(255, 255, 255, 0.35);
-  color: #ffffff;
+.cal-block.is-event .cal-block-action-btn:hover {
+  background: #ffffff;
+  color: #052e16;
+  border-color: #16a34a;
+}
+
+.cal-block.is-table-tennis .cal-block-action-btn {
+  background: rgba(255, 255, 255, 0.9);
+  color: #9a3412;
+  border-color: rgba(234, 88, 12, 0.4);
+}
+
+.cal-block.is-table-tennis .cal-block-action-btn:hover {
+  background: #ffffff;
+  color: #7c2d12;
+  border-color: #ea580c;
 }
 
 .cal-block:has(.cal-block-actions) .cal-block-title {
@@ -3284,28 +3283,80 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
   opacity: 0.95;
 }
 
-.cal-block.is-white {
-  background: linear-gradient(180deg, #ffffff 0%, #efefef 100%);
-  border-color: #6d6d6d;
+/* Pickleball courts — crisp lime / ball yellow-green */
+.cal-block.is-event {
+  background: linear-gradient(165deg, #ecfccb 0%, #bbf7d0 42%, #4ade80 100%);
+  border-color: #16a34a;
+  color: #14532d;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 1px 2px rgba(22, 101, 52, 0.12);
 }
 
+.cal-block.is-event .cal-block-meta {
+  color: #166534;
+}
+
+/* Court 11 — table tennis (vivid “ball” orange) */
+.cal-block.is-table-tennis {
+  background: linear-gradient(165deg, #fffbeb 0%, #fed7aa 28%, #fb923c 72%, #f97316 100%);
+  border-color: #ea580c;
+  color: #7c2d12;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 1px 2px rgba(154, 52, 18, 0.15);
+}
+
+.cal-block.is-table-tennis .cal-block-meta {
+  color: #9a3412;
+}
+
+/* Court rental / generic duration */
 .cal-block.is-blue {
-  background: linear-gradient(180deg, #9cc5f6 0%, #79a8e5 100%);
-  border-color: #4e6f96;
+  background: linear-gradient(165deg, #eff6ff 0%, #bfdbfe 45%, #60a5fa 100%);
+  border-color: #2563eb;
+  color: #1e3a8a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
+.cal-block.is-blue .cal-block-meta {
+  color: #1e40af;
+}
+
+/* Training / coaching — rose-coral (distinct from table-tennis orange) */
 .cal-block.is-orange {
-  background: linear-gradient(180deg, #d99d64 0%, #be7f44 100%);
-  color: #fffaf4;
-  border-color: #9c6634;
+  background: linear-gradient(165deg, #fff1f2 0%, #fecdd3 40%, #fb7185 100%);
+  color: #881337;
+  border-color: #e11d48;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .cal-block.is-orange .cal-block-meta {
-  color: #fff3e5;
+  color: #9f1239;
+}
+
+.cal-block.is-orange .cal-block-action-btn {
+  background: rgba(255, 255, 255, 0.45);
+  color: #881337;
+  border-color: rgba(190, 18, 60, 0.35);
+}
+
+.cal-block.is-orange .cal-block-action-btn:hover {
+  background: rgba(255, 255, 255, 0.75);
+  color: #4c0519;
+  border-color: #be123c;
+}
+
+/* Badminton / all-day blocks — cool neutral slate */
+.cal-block.is-white {
+  background: linear-gradient(165deg, #f8fafc 0%, #e2e8f0 55%, #cbd5e1 100%);
+  border-color: #64748b;
+  color: #0f172a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .cal-block.is-white .cal-block-meta {
-  color: #2f2f2f;
+  color: #334155;
 }
 
 .cal-block:hover {
@@ -3407,6 +3458,32 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
 .dot-red { background: #ef4d3d; }
 .dot-green { background: #40bc53; }
 
+/* Reservations page — dark theme readability (full layout) */
+body[data-theme="dark"] .reservations-title,
+body[data-theme="dark"] .reservations-page .admin-page-title {
+  color: #f8fafc;
+}
+
+body[data-theme="dark"] .res-calendar-toggle:focus-visible {
+  outline: 2px solid #fca5a5;
+  outline-offset: 2px;
+}
+
+body[data-theme="dark"] .res-mini-cal-weekdays {
+  color: #94a3b8;
+}
+
+body[data-theme="dark"] .res-mini-cal-day.is-today {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.45);
+}
+
+body[data-theme="dark"] .res-client-search-info {
+  background: #334155;
+  border-color: #64748b;
+  color: #f1f5f9;
+}
+
 body[data-theme="dark"] .reservations-subtitle {
   color: rgba(255, 255, 255, 0.65);
 }
@@ -3420,8 +3497,9 @@ body[data-theme="dark"] .res-schedule-context {
 }
 
 body[data-theme="dark"] .res-date-toolbar {
-  background: #111827;
-  border-color: #374151;
+  background: #0f172a;
+  border-color: #475569;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 body[data-theme="dark"] .res-date-arrow {
@@ -3469,13 +3547,19 @@ body[data-theme="dark"] .res-mini-cal-day:hover {
 }
 
 body[data-theme="dark"] .reservations-schedule-outer {
-  border-color: #4b5563;
-  background: #0f172a;
+  border-color: #64748b;
+  background: #020617;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 body[data-theme="dark"] .res-book-panel {
-  background: #1f2937;
-  border-color: #374151;
+  background: linear-gradient(180deg, #1e293b 0%, #172033 100%);
+  border-color: #64748b;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
 body[data-theme="dark"] .res-book-browse-hint,
@@ -3602,20 +3686,26 @@ body[data-theme="dark"] .res-recent-empty {
 }
 
 body[data-theme="dark"] .reservations-time-scale {
-  background: #111827;
-  border-color: #4b5563;
+  background: #0f172a;
+  border-color: #64748b;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 body[data-theme="dark"] .time-slot {
-  border-top-color: rgba(255, 255, 255, 0.2);
-  color: #f3f4f6;
+  border-top-color: rgba(148, 163, 184, 0.35);
+  color: #e2e8f0;
+}
+
+body[data-theme="dark"] .res-modal-overlay {
+  background: rgba(2, 6, 23, 0.75);
 }
 
 body[data-theme="dark"] .res-modal-overlay .reservations-left {
-  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  background: linear-gradient(165deg, #1e293b 0%, #0f172a 50%, #020617 100%);
   box-shadow:
-    0 0 0 1px rgba(148, 163, 184, 0.12),
-    0 24px 48px -12px rgba(0, 0, 0, 0.55);
+    0 0 0 1px rgba(148, 163, 184, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 28px 56px -16px rgba(0, 0, 0, 0.65);
 }
 
 body[data-theme="dark"] .res-modal-toolbar {
@@ -3627,11 +3717,12 @@ body[data-theme="dark"] .res-modal-toolbar h2 {
 }
 
 body[data-theme="dark"] .res-card {
-  background: #1e293b;
-  border-color: #334155;
+  background: linear-gradient(180deg, #1e293b 0%, #172033 100%);
+  border-color: rgba(100, 116, 139, 0.45);
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.2),
-    0 6px 16px -4px rgba(0, 0, 0, 0.35);
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 10px 24px -8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 body[data-theme="dark"] .res-card-history h2 {
@@ -3663,16 +3754,39 @@ body[data-theme="dark"] .res-linkish:hover {
 
 body[data-theme="dark"] .res-confirm {
   color: #e2e8f0;
-  background: #0f172a;
-  border-color: #334155;
+  background: linear-gradient(90deg, rgba(76, 29, 149, 0.22) 0%, rgba(15, 23, 42, 0.95) 38%);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-left: 3px solid #8b5cf6;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+body[data-theme="dark"] .res-confirm input[type="checkbox"]:disabled {
+  opacity: 1;
+  accent-color: #a78bfa;
 }
 
 body[data-theme="dark"] .res-field input,
 body[data-theme="dark"] .res-field select,
 body[data-theme="dark"] .res-field textarea {
-  background: #1f2937;
-  border-color: #4b5563;
+  background: #0f172a;
+  border-color: #475569;
   color: #f3f4f6;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+body[data-theme="dark"] .res-field input:hover,
+body[data-theme="dark"] .res-field select:hover,
+body[data-theme="dark"] .res-field textarea:hover {
+  border-color: #64748b;
+}
+
+body[data-theme="dark"] .res-field input:focus,
+body[data-theme="dark"] .res-field select:focus,
+body[data-theme="dark"] .res-field textarea:focus {
+  border-color: #60a5fa;
+  box-shadow:
+    0 0 0 3px rgba(96, 165, 250, 0.22),
+    inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 body[data-theme="dark"] .res-field input[readonly] {
@@ -3690,34 +3804,40 @@ body[data-theme="dark"] .res-field-hint {
 }
 
 body[data-theme="dark"] .reservations-calendar {
-  background: #1f2937;
-  border-color: #4b5563;
+  background: #0f172a;
+  border-color: #475569;
 }
 
 body[data-theme="dark"] .res-schedule-corner {
-  background: #374151;
-  border-color: #1f2937;
+  background: #1e293b;
+  border-color: #64748b;
 }
 
 body[data-theme="dark"] .res-schedule-headers .cal-col-head {
-  background: #1f2937;
-  color: #f3f4f6;
-  border-color: #111827;
+  background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+  color: #f8fafc;
+  border-color: #475569;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+body[data-theme="dark"] .cal-col-head-sub {
+  color: #cbd5e1;
+  opacity: 1;
 }
 
 body[data-theme="dark"] .cal-col {
-  background: #2f2f2f;
-  border-color: #606060;
+  background: #1e293b;
+  border-color: #475569;
 }
 
 body[data-theme="dark"] .cal-col-body {
-  background-color: #2f2f2f;
+  background-color: #1e293b;
   background-image: repeating-linear-gradient(
     to bottom,
     transparent 0,
     transparent calc(var(--slot-height) - 1px),
-    rgba(255, 255, 255, 0.12) calc(var(--slot-height) - 1px),
-    rgba(255, 255, 255, 0.12) var(--slot-height)
+    rgba(148, 163, 184, 0.22) calc(var(--slot-height) - 1px),
+    rgba(148, 163, 184, 0.22) var(--slot-height)
   );
 }
 
@@ -3726,27 +3846,153 @@ body[data-theme="dark"] .cal-col-head {
 }
 
 body[data-theme="dark"] .cal-block {
-  border-color: #4c4c4c;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-color: rgba(148, 163, 184, 0.45);
+  color: #f8fafc;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+body[data-theme="dark"] .cal-block.is-blue {
+  background: linear-gradient(165deg, #1d4ed8 0%, #2563eb 50%, #38bdf8 100%);
+  border-color: #93c5fd;
+  color: #f8fafc;
+  text-shadow: 0 1px 1px rgba(15, 23, 42, 0.35);
+}
+
+body[data-theme="dark"] .cal-block.is-blue .cal-block-meta {
+  color: #e0f2fe;
+}
+
+body[data-theme="dark"] .cal-block.is-event {
+  background: linear-gradient(165deg, #d9f99d 0%, #86efac 45%, #22c55e 100%);
+  border-color: #4ade80;
+  color: #052e16;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 2px 8px rgba(22, 163, 74, 0.35);
+}
+
+body[data-theme="dark"] .cal-block.is-event .cal-block-meta {
+  color: #14532d;
+}
+
+body[data-theme="dark"] .cal-block.is-orange {
+  background: linear-gradient(165deg, #fda4af 0%, #fb7185 45%, #e11d48 100%);
+  border-color: #fda4af;
+  color: #fff1f2;
+  text-shadow: 0 1px 1px rgba(136, 19, 55, 0.35);
+}
+
+body[data-theme="dark"] .cal-block.is-orange .cal-block-meta {
+  color: #ffe4e6;
 }
 
 body[data-theme="dark"] .cal-block.is-white {
-  background: linear-gradient(180deg, #f2f2f2 0%, #d9d9d9 100%);
-  color: #111827;
+  background: linear-gradient(165deg, #475569 0%, #64748b 50%, #94a3b8 100%);
+  border-color: #cbd5e1;
+  color: #f8fafc;
+  text-shadow: 0 1px 1px rgba(15, 23, 42, 0.4);
+}
+
+body[data-theme="dark"] .cal-block.is-white .cal-block-meta {
+  color: #e2e8f0;
+}
+
+body[data-theme="dark"] .cal-block-action-btn {
+  background: rgba(15, 23, 42, 0.88);
+  color: #f1f5f9;
+  border-color: rgba(148, 163, 184, 0.55);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+body[data-theme="dark"] .cal-block-action-btn:hover {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #94a3b8;
+}
+
+body[data-theme="dark"] .cal-block.is-orange .cal-block-action-btn {
+  background: rgba(15, 23, 42, 0.5);
+  color: #fff1f2;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+body[data-theme="dark"] .cal-block.is-orange .cal-block-action-btn:hover {
+  background: rgba(15, 23, 42, 0.8);
+  color: #ffffff;
+}
+
+body[data-theme="dark"] .cal-block.is-event .cal-block-action-btn {
+  background: rgba(20, 83, 45, 0.92);
+  color: #ecfccb;
+  border-color: rgba(132, 204, 22, 0.65);
+}
+
+body[data-theme="dark"] .cal-block.is-event .cal-block-action-btn:hover {
+  background: #14532d;
+  color: #ffffff;
+  border-color: #a3e635;
+}
+
+body[data-theme="dark"] .cal-block.is-table-tennis {
+  background: linear-gradient(165deg, #fed7aa 0%, #fb923c 40%, #ea580c 85%, #c2410c 100%);
+  border-color: #fdba74;
+  color: #431407;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 2px 10px rgba(234, 88, 12, 0.4);
+}
+
+body[data-theme="dark"] .cal-block.is-table-tennis .cal-block-meta {
+  color: #571c0d;
+}
+
+body[data-theme="dark"] .cal-block.is-table-tennis .cal-block-action-btn {
+  background: rgba(67, 20, 7, 0.88);
+  color: #ffedd5;
+  border-color: rgba(253, 186, 116, 0.55);
+}
+
+body[data-theme="dark"] .cal-block.is-table-tennis .cal-block-action-btn:hover {
+  background: #431407;
+  color: #ffffff;
+  border-color: #fdba74;
 }
 
 body[data-theme="dark"] .res-hover-card {
-  background: #e5e7eb;
-  border-color: #9ca3af;
+  background: #1e293b;
+  border-color: #475569;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+body[data-theme="dark"] .res-hover-head {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
 }
 
 body[data-theme="dark"] .res-hover-body {
-  background: #e5e7eb;
+  background: #1e293b;
 }
 
 body[data-theme="dark"] .res-hover-body::before {
-  border-right-color: #e5e7eb;
-  filter: drop-shadow(-2px 0 0 #9ca3af);
+  border-right-color: #1e293b;
+  filter: drop-shadow(-2px 0 0 #475569);
+}
+
+body[data-theme="dark"] .res-hover-body p {
+  color: #94a3b8;
+}
+
+body[data-theme="dark"] #res-hover-time {
+  color: #f1f5f9;
+}
+
+body[data-theme="dark"] #res-hover-service {
+  color: #cbd5e1;
+}
+
+body[data-theme="dark"] .res-hover-dots .dot {
+  border-color: rgba(148, 163, 184, 0.5);
 }
 
 body[data-theme="dark"] .res-modal-court-hint {
@@ -3789,15 +4035,28 @@ body[data-theme="dark"] .res-status.is-error {
 }
 
 body[data-theme="dark"] .res-actions {
-  border-top-color: #334155;
+  border-top-color: rgba(71, 85, 105, 0.65);
 }
 
-body[data-theme="dark"] .res-add-link {
-  color: #93c5fd;
+body[data-theme="dark"] .res-btn-primary {
+  background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+  border-color: #166534;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-body[data-theme="dark"] .res-add-link:hover {
-  color: #bfdbfe;
+body[data-theme="dark"] .res-btn-primary:hover {
+  background: linear-gradient(180deg, #4ade80 0%, #166534 100%);
+  border-color: #14532d;
+  box-shadow:
+    0 2px 8px rgba(21, 128, 61, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+body[data-theme="dark"] .res-btn-primary:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
 }
 
 @media (max-width: 1100px) {
