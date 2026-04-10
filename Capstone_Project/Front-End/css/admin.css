@@ -584,6 +584,22 @@ body[data-theme="dark"] .admin-welcome {
   overflow-x: visible;
 }
 
+/* Layout page: lock vertical scroll to the workbench (cards/sections) so every box stays reachable; leave overflow-x alone so the hero full-bleed still works */
+.admin-content.layout-studio.layout-wb {
+  overflow-y: hidden;
+}
+
+.admin-content.layout-studio.layout-wb .layout-studio-hero {
+  flex-shrink: 0;
+}
+
+.admin-content.layout-studio.layout-wb .layout-wb-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .admin-content > .admin-title-wrap,
 .admin-content > .db-search-wrap,
 .admin-content > #customer-search-wrap {
@@ -1202,7 +1218,8 @@ body[data-theme="dark"] .layout-wb .layout-wb-body {
     padding: 0;
     align-items: stretch;
     border-radius: 16px;
-    overflow: hidden;
+    /* Rounded shell: clip X only so vertical scroll on Layout page (see .admin-content.layout-studio.layout-wb) still works */
+    overflow-x: hidden;
   }
 }
 
