@@ -98,7 +98,6 @@
       <div class="admin-content"><section class="reservations-page">
           <header class="reservations-header">
             <h1 class="admin-page-title reservations-title">Reservations</h1>
-            <p class="reservations-subtitle">Booking layout preview inspired by Mindbody style screens.</p>
           </header>
  
           <div class="reservations-main-layout res-book-layout--collapsed" id="reservations-main-layout">
@@ -140,7 +139,7 @@
               </div>
             </aside>
             <div class="reservations-shell">
-            <div class="res-date-toolbar" role="region" aria-label="Schedule date">
+            <div class="res-date-toolbar" id="res-date-toolbar" role="region" aria-label="Schedule date">
               <div class="res-date-nav">
                 <button type="button" class="res-date-arrow" id="res-date-prev" aria-label="Previous day">‹</button>
                 <div class="res-date-label-block">
@@ -169,7 +168,7 @@
             </div>
             <p class="res-schedule-context" id="res-schedule-context" aria-live="polite"></p>
             <p class="reservations-click-hint">Click a court column or <strong>+</strong> to create an appointment. Use <strong>Edit</strong> or <strong>Delete</strong> on a booking to manage it (preview only).</p>
-            <div class="reservations-schedule-outer">
+            <div class="reservations-schedule-outer" id="res-schedule-outer">
             <div class="reservations-schedule-wrap">
               <div class="res-schedule-corner" aria-hidden="true"></div>
               <div class="res-schedule-headers" id="res-schedule-headers">
@@ -406,6 +405,8 @@
       const resDateWeekday = document.getElementById('res-date-weekday');
       const resDateFull = document.getElementById('res-date-full');
       const resScheduleContext = document.getElementById('res-schedule-context');
+      const resDateToolbar = document.getElementById('res-date-toolbar');
+      const resScheduleOuter = document.getElementById('res-schedule-outer');
       const resCalendarToggle = document.getElementById('res-calendar-toggle');
       const resMiniCalendarRoot = document.getElementById('res-mini-calendar-root');
       const resMiniCalGrid = document.getElementById('res-mini-cal-grid');
@@ -413,7 +414,10 @@
       const resCalPrevMonth = document.getElementById('res-cal-prev-month');
       const resCalNextMonth = document.getElementById('res-cal-next-month');
       const scheduleHeadersEl = document.getElementById('res-schedule-headers');
- 
+
+      var RES_COURT_RULES_CONTEXT =
+        'Courts 1, 3, 5, 7, 9, 12 — badminton. Courts 2, 4, 6, 8, 10 — badminton or pickleball. Court 11 — badminton or table tennis (lessons often 10:00 AM–5:00 PM).';
+
       let recentClients = [];
       let selectedClient = null;
       let scheduleDate = new Date();
@@ -548,10 +552,20 @@
         resDateFull.textContent =
           months[scheduleDate.getMonth()] + ' ' + scheduleDate.getDate() + ', ' + scheduleDate.getFullYear();
         resDateFull.setAttribute('datetime', formatScheduleDateIso(scheduleDate));
+
+        if (resDateToolbar) {
+          resDateToolbar.classList.toggle('res-date-toolbar--other-day', !isToday);
+          resDateToolbar.classList.toggle('res-date-toolbar--today', isToday);
+        }
+        if (resScheduleOuter) {
+          resScheduleOuter.setAttribute('data-selected-date', formatScheduleDateIso(scheduleDate));
+          resScheduleOuter.classList.toggle('res-schedule-outer--other-day', !isToday);
+        }
+
         if (resScheduleContext) {
-          resScheduleContext.textContent = isToday
-            ? 'Showing today’s schedule (10:00 AM–11:30 PM). Use the arrows or calendar to browse other days — data is preview-only until the API is connected.'
-            : 'Showing ' +
+          const whenLabel = isToday
+            ? 'Selected day: today (times 10:00 AM–11:30 PM). Sample grid below repeats for preview until the API is connected.'
+            : 'Selected day: ' +
               days[scheduleDate.getDay()] +
               ', ' +
               months[scheduleDate.getMonth()] +
@@ -559,17 +573,15 @@
               scheduleDate.getDate() +
               ', ' +
               scheduleDate.getFullYear() +
-              ' (preview). Reservations below are sample layout only.';
+              ' — not today. Sample bookings below are placeholder only.';
+          resScheduleContext.textContent = RES_COURT_RULES_CONTEXT + ' ' + whenLabel;
         }
       }
 
       function shiftScheduleDay(delta) {
-        const d = new Date(
-          scheduleDate.getFullYear(),
-          scheduleDate.getMonth(),
-          scheduleDate.getDate() + delta
-        );
+        const d = new Date(scheduleDate.getTime());
         d.setHours(12, 0, 0, 0);
+        d.setDate(d.getDate() + delta);
         scheduleDate = d;
         calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
         updateScheduleDateDisplay();
@@ -675,10 +687,6 @@
           if (e.target.closest && e.target.closest('.res-calendar-dropdown')) return;
           closeMiniCalendar();
         });
-        if (resScheduleContext) {
-          resScheduleContext.textContent =
-            'Courts 1, 3, 5, 7, 9, 12 — badminton. Courts 2, 4, 6, 8, 10 — badminton or pickleball. Court 11 — badminton or table tennis (lessons often 10:00 AM–5:00 PM).';
-        }
       }
 
       var ALL_APPOINTMENTS_PREVIEW = [
