@@ -1932,16 +1932,6 @@ body[data-theme="dark"] .manager-gate-form input {
   gap: 0.4rem;
 }
 
-.reservations-header {
-  padding: 0 0.25rem;
-}
-
-.reservations-title {
-  font-size: 1.15rem;
-  margin: 0;
-  line-height: 1.2;
-}
-
 .reservations-main-layout {
   display: grid;
   grid-template-columns: minmax(200px, 228px) minmax(0, 1fr);
@@ -3466,11 +3456,6 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
 .dot-green { background: #40bc53; }
 
 /* Reservations page — dark theme readability (full layout) */
-body[data-theme="dark"] .reservations-title,
-body[data-theme="dark"] .reservations-page .admin-page-title {
-  color: #f8fafc;
-}
-
 body[data-theme="dark"] .res-calendar-toggle:focus-visible {
   outline: 2px solid #fca5a5;
   outline-offset: 2px;
