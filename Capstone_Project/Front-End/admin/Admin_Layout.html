@@ -95,35 +95,53 @@
     </aside>
     <div class="admin-main">
       <header class="admin-topbar"><div id="admin-theme-container"></div></header>
-      <div class="admin-content layout-studio">
-        <div class="layout-studio-hero" aria-hidden="false">
-          <div class="layout-studio-hero-grid" aria-hidden="true"></div>
+      <div class="admin-content layout-studio layout-wb">
+        <header class="layout-studio-hero layout-wb-hero" aria-hidden="false">
+          <div class="layout-studio-hero-grid layout-wb-hero-noise" aria-hidden="true"></div>
+          <div class="layout-wb-hero-shine" aria-hidden="true"></div>
           <div class="admin-title-wrap admin-title-wrap--left admin-title-wrap--layout-page">
-            <div class="admin-layout-intro layout-studio-intro-shell">
-              <p class="layout-studio-eyebrow">Experience design · Houston Badminton Center</p>
-              <h1 class="admin-page-title layout-studio-display-title">Layout</h1>
-              <p class="admin-subtitle layout-studio-lede">Control how <strong>general (public)</strong> and <strong>customer</strong> pages look and feel—spacing, imagery, and presentation so the experience stays clear and appealing. Below: <strong>Upcoming events</strong> on the shared home dashboards (JPEG, PNG, GIF, or WebP, up to about 8 MB each), the <strong>Popular Times</strong> sheet (PDF or image) on both Availability pages, and <strong>membership pricing</strong> (PDF or image) on General and Client Membership.</p>
-              <nav class="layout-studio-nav" aria-label="Jump to section">
-                <div class="layout-studio-pills" role="group">
-                  <button type="button" class="layout-studio-pill" data-layout-target="layout-section-home">Home</button>
-                  <button type="button" class="layout-studio-pill" data-layout-target="layout-section-availability">Availability</button>
-                  <button type="button" class="layout-studio-pill" data-layout-target="layout-section-membership">Membership</button>
+            <div class="admin-layout-intro layout-studio-intro-shell layout-wb-hero-inner">
+              <div class="layout-wb-hero-top">
+                <div class="layout-wb-hero-copy">
+                  <p class="layout-studio-eyebrow layout-wb-hero-label">Site presentation</p>
+                  <h1 class="admin-page-title layout-studio-display-title layout-wb-title">Layout</h1>
+                  <p class="admin-subtitle layout-studio-lede layout-wb-lede">Control how <strong>general (public)</strong> and <strong>customer</strong> pages look and feel—spacing, imagery, and presentation so the experience stays clear and appealing. Below: <strong>Upcoming events</strong> on the shared home dashboards (JPEG, PNG, GIF, or WebP, up to about 8 MB each), the <strong>Popular Times</strong> sheet (PDF or image) on both Availability pages, and <strong>membership pricing</strong> (PDF or image) on General and Client Membership.</p>
                 </div>
-                <div class="admin-layout-jump layout-studio-jump-select">
-                  <label for="layout-section-jump" class="admin-layout-jump-label">Or choose from list</label>
-                  <select id="layout-section-jump" class="admin-marketing-select">
-                    <option value="">Choose a section…</option>
-                    <option value="layout-section-home">Home</option>
-                    <option value="layout-section-availability">Availability</option>
-                    <option value="layout-section-membership">Membership</option>
-                  </select>
+                <div class="layout-wb-hero-panel" role="region" aria-label="Section navigation">
+                  <p class="layout-wb-panel-title">Go to</p>
+                  <nav class="layout-studio-nav layout-wb-hero-nav" aria-label="Jump to section">
+                    <div class="layout-studio-pills layout-wb-pill-row" role="group">
+                      <button type="button" class="layout-studio-pill layout-wb-pill" data-layout-target="layout-section-home">Home</button>
+                      <button type="button" class="layout-studio-pill layout-wb-pill" data-layout-target="layout-section-availability">Availability</button>
+                      <button type="button" class="layout-studio-pill layout-wb-pill" data-layout-target="layout-section-membership">Membership</button>
+                    </div>
+                    <div class="admin-layout-jump layout-studio-jump-select layout-wb-jump">
+                      <label for="layout-section-jump" class="admin-layout-jump-label">Section list</label>
+                      <select id="layout-section-jump" class="admin-marketing-select">
+                        <option value="">Choose…</option>
+                        <option value="layout-section-home">Home</option>
+                        <option value="layout-section-availability">Availability</option>
+                        <option value="layout-section-membership">Membership</option>
+                      </select>
+                    </div>
+                  </nav>
                 </div>
-              </nav>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="layout-studio-main">
-        <div class="admin-layout-tools" id="layout-section-home">
+        </header>
+        <div class="layout-wb-body">
+          <aside class="layout-wb-rail" aria-label="On this page">
+            <p class="layout-wb-rail-heading">Contents</p>
+            <nav class="layout-wb-rail-nav">
+              <a class="layout-wb-rail-link" href="#layout-section-home"><span class="layout-wb-rail-idx">01</span><span class="layout-wb-rail-label">Home &amp; events</span></a>
+              <a class="layout-wb-rail-link" href="#layout-section-availability"><span class="layout-wb-rail-idx">02</span><span class="layout-wb-rail-label">Availability</span></a>
+              <a class="layout-wb-rail-link" href="#layout-section-membership"><span class="layout-wb-rail-idx">03</span><span class="layout-wb-rail-label">Membership</span></a>
+            </nav>
+          </aside>
+          <div class="layout-wb-stream">
+        <div class="layout-studio-main layout-wb-stream-inner">
+        <div class="admin-layout-tools layout-wb-module layout-wb-mod--events" id="layout-section-home">
           <header class="layout-studio-section-head">
             <span class="layout-studio-kicker">01 — Home</span>
             <h2 class="admin-layout-tools-heading">Home/Dashboard - Modify Upcoming Events</h2>
@@ -140,7 +158,7 @@
         <div class="admin-layout-tools admin-layout-tools--section-divider" aria-hidden="true">
           <hr class="admin-layout-section-rule" />
         </div>
-        <div class="admin-layout-tools" id="layout-section-availability">
+        <div class="admin-layout-tools layout-wb-module layout-wb-mod--availability" id="layout-section-availability">
           <header class="layout-studio-section-head">
             <span class="layout-studio-kicker">02 — Availability</span>
             <h2 class="admin-layout-tools-heading">Availability - Modify Availability Times</h2>
@@ -164,8 +182,8 @@
         <div class="admin-layout-tools admin-layout-tools--section-divider" aria-hidden="true">
           <hr class="admin-layout-section-rule" />
         </div>
-        <div id="layout-section-membership" class="admin-layout-membership-group">
-          <div class="admin-layout-tools admin-layout-tools--no-divider-below">
+        <div id="layout-section-membership" class="admin-layout-membership-group layout-wb-membership-stack">
+          <div class="admin-layout-tools admin-layout-tools--no-divider-below layout-wb-module layout-wb-mod--specials">
             <input type="hidden" id="membership-specials-teaser-input" value="">
             <div class="admin-marketing-grid admin-marketing-grid--n1">
               <div class="admin-membership-open-section">
@@ -185,7 +203,7 @@
               </div>
             </div>
           </div>
-          <div class="admin-layout-tools">
+          <div class="admin-layout-tools layout-wb-module layout-wb-mod--pricing">
             <header class="layout-studio-section-head">
               <span class="layout-studio-kicker">03b — Membership</span>
               <h2 class="admin-layout-tools-heading">Memberships - Modify Membership Pricing</h2>
@@ -207,6 +225,8 @@
             </div>
           </div>
         </div>
+        </div>
+          </div>
         </div>
       </div>
     </div>
