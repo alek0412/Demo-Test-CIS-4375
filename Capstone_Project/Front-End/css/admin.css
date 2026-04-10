@@ -1431,6 +1431,64 @@ body[data-theme="light"] .layout-wb-hero-shine {
   margin-right: 0;
 }
 
+/* Admin_Layout.html — center hero + all workbench blocks (overrides .layout-wb left alignment) */
+.admin-content.layout-studio.layout-wb .layout-wb-hero .layout-wb-hero-copy {
+  text-align: center;
+}
+
+.admin-content.layout-studio.layout-wb .layout-wb-hero .layout-wb-hero-copy .layout-wb-title.layout-studio-display-title::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-content.layout-studio.layout-wb .layout-wb-hero .layout-wb-hero-copy .layout-studio-lede {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 48rem !important;
+}
+
+@media (min-width: 900px) {
+  .admin-content.layout-studio.layout-wb .layout-wb-hero .layout-wb-hero-copy {
+    text-align: center;
+  }
+
+  .admin-content.layout-studio.layout-wb .layout-wb-hero .layout-wb-hero-copy .layout-wb-title.layout-studio-display-title::after {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .admin-content.layout-studio.layout-wb .layout-wb-hero .layout-wb-hero-copy .layout-studio-lede {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 48rem !important;
+  }
+}
+
+.admin-content.layout-studio.layout-wb .layout-studio-section-head,
+.admin-content.layout-studio.layout-wb .layout-studio-section-head--compact {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-content.layout-studio.layout-wb .admin-layout-tools .admin-marketing-toolbar {
+  justify-content: center;
+}
+
+.admin-content.layout-studio.layout-wb .admin-layout-tools .admin-marketing-layout-hint {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-content.layout-studio.layout-wb .admin-membership-specials-open-hint {
+  text-align: center;
+}
+
+.admin-content.layout-studio.layout-wb .admin-membership-specials-toolbar .admin-membership-specials-actions-row {
+  justify-content: center;
+}
+
 /* Layout page: upcoming-events controls aligned with the same column as "Layout" + intro */
 .admin-layout-tools {
   width: 100%;
