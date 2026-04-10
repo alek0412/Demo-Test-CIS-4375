@@ -150,6 +150,63 @@ body[data-theme="dark"] .admin-login-page .login-footer {
   border-top-color: rgba(255, 255, 255, 0.15);
 }
 
+/* Global :root grays are for light UI; redefine tokens when admin is dark so var(--text-muted), modals, etc. stay readable */
+body[data-theme="dark"]:has(.admin-layout) {
+  --text-primary: #f8fafc;
+  --text-muted: #cbd5e1;
+  --text: #e5e7eb;
+  --border: rgba(255, 255, 255, 0.16);
+  --bg-card: #1e293b;
+  --bg-dark: #0f172a;
+  --bg-hover: rgba(255, 255, 255, 0.1);
+  --surface: #1e293b;
+}
+
+body[data-theme="dark"].admin-login-page,
+body[data-theme="dark"] .admin-login-page {
+  --text-primary: #f8fafc;
+  --text-muted: #cbd5e1;
+  --text: #e5e7eb;
+  --border: rgba(255, 255, 255, 0.16);
+  --bg-card: #1e293b;
+}
+
+body[data-theme="dark"].admin-login-page {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+body[data-theme="dark"] .admin-login-page .login-header h1,
+body[data-theme="dark"].admin-login-page .login-header h1 {
+  color: #f8fafc;
+}
+
+body[data-theme="dark"] .admin-login-page .login-header p,
+body[data-theme="dark"].admin-login-page .login-header p {
+  color: #cbd5e1;
+}
+
+body[data-theme="dark"] .admin-login-page .login-form label,
+body[data-theme="dark"].admin-login-page .login-form label {
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .admin-login-page .login-form input,
+body[data-theme="dark"].admin-login-page .login-form input {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+body[data-theme="dark"] .admin-login-page .login-form input::placeholder,
+body[data-theme="dark"].admin-login-page .login-form input::placeholder {
+  color: rgba(203, 213, 225, 0.75);
+}
+
+body[data-theme="dark"] .admin-login-page .login-footer,
+body[data-theme="dark"].admin-login-page .login-footer {
+  color: #94a3b8;
+}
+
 /* ========== Admin layout: sidebar on left + main content (dark theme) ========== */
 /* Ensure full viewport height on admin pages (styles.css sets body to flex column) */
 body:has(.admin-layout) {
@@ -277,11 +334,23 @@ body[data-theme="dark"] .admin-topbar {
 
 body[data-theme="dark"] .theme-dropdown-btn,
 body[data-theme="dark"] .theme-dropdown-btn:hover {
-  border-color: rgba(255, 255, 255, 0.2);
+  color: #f8fafc;
+  background: #334155;
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 body[data-theme="dark"] .theme-dropdown-list {
-  border-color: rgba(255, 255, 255, 0.2);
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+body[data-theme="dark"] .theme-dropdown-option {
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .theme-dropdown-option:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 body[data-theme="dark"] .admin-content table {
@@ -632,7 +701,7 @@ body[data-theme="light"] .admin-sidebar-toggle:hover {
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1.5rem 1.5rem 0.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.94);
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
@@ -736,7 +805,7 @@ body[data-theme="light"] .admin-sidebar-toggle:hover {
 .admin-title-wrap--left p {
   margin: 0.25rem 0 0 0;
   font-size: 0.9375rem;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.88);
   text-align: left;
   max-width: 48rem;
 }
@@ -844,12 +913,12 @@ body[data-theme="light"] .admin-layout-jump-label {
 .layout-studio {
   --ls-accent: #b91c1c;
   --ls-accent-soft: rgba(185, 28, 28, 0.12);
-  --ls-line: rgba(255, 255, 255, 0.1);
-  --ls-card: rgba(17, 24, 39, 0.55);
-  --ls-card-border: rgba(255, 255, 255, 0.09);
-  --ls-pill: rgba(15, 23, 42, 0.75);
-  --ls-text: #f1f5f9;
-  --ls-muted: rgba(241, 245, 249, 0.65);
+  --ls-line: rgba(255, 255, 255, 0.14);
+  --ls-card: rgba(30, 41, 59, 0.78);
+  --ls-card-border: rgba(255, 255, 255, 0.14);
+  --ls-pill: rgba(30, 41, 59, 0.92);
+  --ls-text: #f8fafc;
+  --ls-muted: rgba(226, 232, 240, 0.88);
 }
 
 body[data-theme="light"] .layout-studio {
@@ -1616,7 +1685,7 @@ body[data-theme="dark"] .admin-layout-tools--section-divider .admin-layout-secti
 
 .admin-content p,
 .admin-content label {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .admin-content table {
@@ -1640,7 +1709,7 @@ body[data-theme="dark"] .admin-layout-tools--section-divider .admin-layout-secti
 
 .admin-content input::placeholder,
 .admin-content textarea::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.58);
 }
 
 .admin-welcome {
@@ -1659,7 +1728,7 @@ body[data-theme="dark"] .admin-layout-tools--section-divider .admin-layout-secti
 }
 
 .admin-welcome p {
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.82);
   font-size: 0.9375rem;
   line-height: 1.6;
 }
@@ -1790,6 +1859,12 @@ body[data-theme="light"] .theme-dropdown-option:hover {
   background: #fef2f2;
   border-radius: var(--radius);
   margin-bottom: 1rem;
+}
+
+body[data-theme="dark"] .db-error {
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.45);
+  border: 1px solid rgba(248, 113, 113, 0.35);
 }
 .db-meta {
   color: var(--text-muted);
@@ -2053,7 +2128,7 @@ body[data-theme="dark"] .db-no-results {
   font-weight: 600;
 }
 body[data-theme="dark"] .admin-subtitle {
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.82);
 }
 body[data-theme="dark"] .admin-subtitle strong {
   color: #f3f4f6;
@@ -2103,7 +2178,7 @@ body[data-theme="dark"] .admin-marketing-select {
   color: var(--text-muted, #6b7280);
 }
 body[data-theme="dark"] .admin-marketing-layout-hint {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .admin-marketing-grid {
