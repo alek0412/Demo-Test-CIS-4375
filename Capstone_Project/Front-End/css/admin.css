@@ -1936,22 +1936,120 @@ body[data-theme="dark"] .manager-gate-form input {
 
 .reservations-main-layout {
   display: grid;
-  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
-  gap: 1rem;
+  grid-template-columns: minmax(200px, 228px) minmax(0, 1fr);
+  gap: 0.5rem;
   align-items: start;
   width: 100%;
   min-height: 72vh;
+}
+
+.reservations-main-layout.res-book-layout--collapsed {
+  grid-template-columns: 48px minmax(0, 1fr);
 }
 
 .res-book-panel {
   background: #f3f4f6;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.6rem 0.65rem;
   position: sticky;
   top: 0.5rem;
   max-height: calc(100vh - 5rem);
   overflow-y: auto;
+}
+
+.res-book-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.reservations-main-layout.res-book-layout--collapsed .res-book-panel {
+  padding: 0.45rem 0.3rem;
+  max-height: none;
+}
+
+.reservations-main-layout.res-book-layout--collapsed .res-book-panel-header {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 0;
+}
+
+.reservations-main-layout.res-book-layout--collapsed .res-book-panel-title {
+  display: none;
+}
+
+.reservations-main-layout.res-book-layout--collapsed .res-book-panel-body {
+  display: none !important;
+}
+
+.reservations-main-layout.res-book-layout--collapsed .res-book-collapse-btn {
+  position: relative;
+  width: 100%;
+  justify-content: center;
+  padding: 0.35rem 0.2rem;
+}
+
+.reservations-main-layout.res-book-layout--collapsed .res-book-collapse-btn .res-book-collapse-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.res-book-collapse-btn svg {
+  transition: transform 0.15s ease;
+}
+
+.reservations-main-layout.res-book-layout--collapsed .res-book-collapse-btn svg {
+  transform: rotate(180deg);
+}
+
+.res-book-panel .res-recent-item {
+  padding: 0.48rem 0.45rem;
+  margin-bottom: 0.28rem;
+}
+
+.res-book-panel .res-recent-name {
+  font-size: 0.84rem;
+}
+
+.res-book-panel .res-recent-email {
+  font-size: 0.72rem;
+}
+
+.res-book-panel .res-recent-phone {
+  font-size: 0.72rem;
+}
+
+.res-book-collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #374151;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.28rem 0.4rem;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.res-book-collapse-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
 }
 
 .res-book-view-browse.is-hidden,
@@ -1967,10 +2065,13 @@ body[data-theme="dark"] .manager-gate-form input {
 }
 
 .res-book-panel-title {
-  margin: 0 0 0.75rem;
-  font-size: 1.05rem;
+  margin: 0;
+  font-size: 0.92rem;
   font-weight: 600;
   color: #111827;
+  line-height: 1.25;
+  flex: 1;
+  min-width: 0;
 }
 
 .res-booking-header {
@@ -2064,8 +2165,8 @@ body[data-theme="dark"] .manager-gate-form input {
   background: #ffffff;
   border: 1px solid #c4c4c4;
   border-radius: 6px;
-  padding: 0.35rem 0.5rem;
-  margin-bottom: 0.75rem;
+  padding: 0.3rem 0.45rem;
+  margin-bottom: 0.55rem;
 }
 
 .res-client-search-icon {
@@ -2104,9 +2205,121 @@ body[data-theme="dark"] .manager-gate-form input {
   padding: 0;
 }
 
-.res-recent-heading {
-  margin: 0 0 0.5rem;
+.res-appointments-picker {
+  position: relative;
+  margin-bottom: 0.55rem;
+}
+
+.res-appointments-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #111827;
+  background: #ffffff;
+  border: 1px solid #c4c4c4;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.res-appointments-toggle:hover {
+  border-color: #2563eb;
+  background: #f8fafc;
+}
+
+.res-appointments-toggle:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.res-appointments-toggle.is-open {
+  border-color: #2563eb;
+}
+
+.res-appointments-toggle.is-open .res-appointments-chevron {
+  transform: rotate(180deg);
+}
+
+.res-appointments-chevron {
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.res-appointments-dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 50;
+  max-height: min(340px, 52vh);
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+  padding: 0.35rem 0 0.45rem;
+}
+
+.res-appointments-dropdown.is-hidden {
+  display: none;
+}
+
+.res-appointments-dropdown-hint {
+  margin: 0 0.55rem 0.45rem;
+  padding: 0 0.15rem 0.4rem;
   font-size: 0.7rem;
+  line-height: 1.35;
+  color: #6b7280;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.res-appointments-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.res-appointment-item {
+  padding: 0.55rem 0.65rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  background: #ffffff;
+}
+
+.res-appointment-item:last-child {
+  border-bottom: none;
+}
+
+.res-appointment-item:hover {
+  background: #eff6ff;
+}
+
+.res-appointment-item:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: -2px;
+}
+
+.res-appointment-detail {
+  display: block;
+  margin-top: 0.22rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #1d4ed8;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+
+.res-recent-heading {
+  margin: 0 0 0.4rem;
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: #6b7280;
@@ -3206,6 +3419,16 @@ body[data-theme="dark"] .res-book-panel-title {
   color: #f9fafb;
 }
 
+body[data-theme="dark"] .res-book-collapse-btn {
+  background: #111827;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .res-book-collapse-btn:hover {
+  background: #1f2937;
+}
+
 body[data-theme="dark"] .res-client-search-wrap {
   background: #111827;
   border-color: #4b5563;
@@ -3217,6 +3440,41 @@ body[data-theme="dark"] .res-client-search-input {
 
 body[data-theme="dark"] .res-client-search-input::placeholder {
   color: #9ca3af;
+}
+
+body[data-theme="dark"] .res-appointments-toggle {
+  background: #111827;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+body[data-theme="dark"] .res-appointments-toggle:hover {
+  background: #1f2937;
+  border-color: #60a5fa;
+}
+
+body[data-theme="dark"] .res-appointments-dropdown {
+  background: #111827;
+  border-color: #4b5563;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+body[data-theme="dark"] .res-appointments-dropdown-hint {
+  color: #9ca3af;
+  border-bottom-color: #374151;
+}
+
+body[data-theme="dark"] .res-appointment-item {
+  background: #111827;
+  border-bottom-color: #374151;
+}
+
+body[data-theme="dark"] .res-appointment-item:hover {
+  background: #1e3a5f;
+}
+
+body[data-theme="dark"] .res-appointment-detail {
+  color: #93c5fd;
 }
 
 body[data-theme="dark"] .res-recent-heading {

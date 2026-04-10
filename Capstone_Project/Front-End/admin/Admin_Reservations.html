@@ -101,15 +101,15 @@
             <p class="reservations-subtitle">Booking layout preview inspired by Mindbody style screens.</p>
           </header>
  
-          <div class="reservations-main-layout" id="reservations-main-layout">
+          <div class="reservations-main-layout res-book-layout--collapsed" id="reservations-main-layout">
             <aside class="res-book-panel" id="res-book-panel" aria-label="Book appointments">
               <div class="res-book-panel-header">
                 <h2 class="res-book-panel-title">Book Appointments</h2>
-                <button type="button" class="res-book-collapse-btn" id="res-book-toggle" aria-expanded="true" aria-controls="res-book-panel-body" title="Collapse panel">
+                <button type="button" class="res-book-collapse-btn" id="res-book-toggle" aria-expanded="false" aria-controls="res-book-panel-body" title="Expand Book Appointments (search &amp; client list)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                   </svg>
-                  <span class="res-book-collapse-text">Collapse</span>
+                  <span class="res-book-collapse-text">Expand</span>
                 </button>
               </div>
               <div class="res-book-panel-body" id="res-book-panel-body">
@@ -119,6 +119,18 @@
                   </span>
                   <input type="search" id="res-client-search" class="res-client-search-input" placeholder="Search for client" autocomplete="off" aria-label="Search for client by name or phone">
                   <button type="button" class="res-client-search-info" title="Search by name or phone number" aria-label="Help">i</button>
+                </div>
+                <div class="res-appointments-picker">
+                  <button type="button" class="res-appointments-toggle" id="res-appointments-toggle" aria-expanded="false" aria-haspopup="listbox" aria-controls="res-appointments-dropdown">
+                    <span>All appointments</span>
+                    <svg class="res-appointments-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div class="res-appointments-dropdown is-hidden" id="res-appointments-dropdown" role="listbox" aria-label="All appointments by name" hidden>
+                    <p class="res-appointments-dropdown-hint">Sorted A–Z by client. Connect to the API later for live data.</p>
+                    <ul class="res-appointments-list" id="res-appointments-list"></ul>
+                  </div>
                 </div>
                 <p class="res-recent-heading">Recently viewed</p>
                 <ul class="res-recent-list" id="res-recent-list"></ul>
@@ -413,6 +425,7 @@
       scheduleDate.setHours(12, 0, 0, 0);
       let calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
       let miniCalendarOpen = false;
+      let appointmentsDropdownOpen = false;
  
       function randomPlaceholderPhone() {
         return '(999) 999-9999';
@@ -669,15 +682,141 @@
         });
       }
 
+      var ALL_APPOINTMENTS_PREVIEW = [
+        { name: 'Avery Stone', email: 'avery.stone.12034@mail.demo.org', phone: '(999) 999-9999', detail: 'Court 3 · Queuing · daytime' },
+        { name: 'Cameron Shaw', email: 'cameron.shaw.95111@example.net', phone: '(999) 999-9999', detail: 'Court 12 · Open Play' },
+        { name: 'Casey Jordan', email: 'casey.jordan.68035@inbox.placeholder.com', phone: '(999) 999-9999', detail: 'Court 7 · Training' },
+        { name: 'Dakota Hayes', email: 'dakota.hayes.44102@mailbox.test', phone: '(999) 999-9999', detail: 'Court 1 · 3.50 hr' },
+        { name: 'Jamie Wells', email: 'jamie.wells.22991@mail.demo.org', phone: '(999) 999-9999', detail: 'Court 9 · Court rental' },
+        { name: 'Jordan Blake', email: 'jordan.blake.94983@example.net', phone: '(999) 999-9999', detail: 'Court 6 · 1.00 hr' },
+        { name: 'Morgan Ellis', email: 'morgan.ellis.33401@inbox.placeholder.com', phone: '(999) 999-9999', detail: 'Court 4 · Pickleball block' },
+        { name: 'Parker Reid', email: 'parker.reid.60679@inbox.placeholder.com', phone: '(999) 999-9999', detail: 'Court 2 · Pickleball' },
+        { name: 'Quinn Mercer', email: 'quinn.mercer.77120@mailbox.test', phone: '(999) 999-9999', detail: 'Court 10 · Queuing' },
+        { name: 'Reese Carter', email: 'reese.carter.81939@mailbox.test', phone: '(999) 999-9999', detail: 'Court 8 · Coaching' },
+        { name: 'Riley Brooks', email: 'riley.brooks.73498@mail.demo.org', phone: '(999) 999-9999', detail: 'Court 5 · Training' },
+        { name: 'Rowan Pierce', email: 'rowan.pierce.53371@mailbox.test', phone: '(999) 999-9999', detail: 'Court 11 · Table tennis practice' },
+        { name: 'Skyler James', email: 'skyler.james.22135@mail.demo.org', phone: '(999) 999-9999', detail: 'Court 9 · 2.00 hr' },
+        { name: 'Taylor Quinn', email: 'taylor.quinn.51288@example.net', phone: '(999) 999-9999', detail: 'Court 12 · 3.00 hr' }
+      ];
+      ALL_APPOINTMENTS_PREVIEW.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
+
+      function closeAppointmentsDropdown() {
+        var drop = document.getElementById('res-appointments-dropdown');
+        var btn = document.getElementById('res-appointments-toggle');
+        appointmentsDropdownOpen = false;
+        if (drop) {
+          drop.classList.add('is-hidden');
+          drop.hidden = true;
+        }
+        if (btn) {
+          btn.setAttribute('aria-expanded', 'false');
+          btn.classList.remove('is-open');
+        }
+      }
+
+      function openAppointmentsDropdown() {
+        var drop = document.getElementById('res-appointments-dropdown');
+        var btn = document.getElementById('res-appointments-toggle');
+        if (!drop || !btn) return;
+        appointmentsDropdownOpen = true;
+        drop.classList.remove('is-hidden');
+        drop.hidden = false;
+        btn.setAttribute('aria-expanded', 'true');
+        btn.classList.add('is-open');
+      }
+
+      function renderAllAppointmentsList() {
+        var ul = document.getElementById('res-appointments-list');
+        if (!ul) return;
+        ul.textContent = '';
+        ALL_APPOINTMENTS_PREVIEW.forEach(function (appt) {
+          var li = document.createElement('li');
+          li.className = 'res-appointment-item';
+          li.setAttribute('role', 'option');
+          li.tabIndex = 0;
+          var nameEl = document.createElement('span');
+          nameEl.className = 'res-recent-name';
+          nameEl.textContent = appt.name;
+          var emailEl = document.createElement('span');
+          emailEl.className = 'res-recent-email';
+          emailEl.textContent = appt.email;
+          var phoneEl = document.createElement('span');
+          phoneEl.className = 'res-recent-phone';
+          phoneEl.textContent = 'm: ' + appt.phone;
+          var detailEl = document.createElement('span');
+          detailEl.className = 'res-appointment-detail';
+          detailEl.textContent = appt.detail;
+          li.appendChild(nameEl);
+          li.appendChild(emailEl);
+          li.appendChild(phoneEl);
+          li.appendChild(detailEl);
+          function selectAppt() {
+            selectedClient = { name: appt.name, phone: appt.phone, email: appt.email };
+            applyClientToModal(selectedClient);
+            renderRecentClients();
+            closeAppointmentsDropdown();
+            setStatus('Selected ' + appt.name + ' for this booking (preview).', false);
+          }
+          li.addEventListener('click', selectAppt);
+          li.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectAppt();
+            }
+          });
+          ul.appendChild(li);
+        });
+      }
+
+      function initAllAppointmentsDropdown() {
+        renderAllAppointmentsList();
+        var btn = document.getElementById('res-appointments-toggle');
+        if (btn) {
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (appointmentsDropdownOpen) closeAppointmentsDropdown();
+            else openAppointmentsDropdown();
+          });
+        }
+        document.addEventListener('click', function (e) {
+          if (!appointmentsDropdownOpen) return;
+          if (e.target.closest && e.target.closest('.res-appointments-picker')) return;
+          closeAppointmentsDropdown();
+        });
+      }
+
       function initBookAppointmentsPanel() {
         buildRandomClients();
         applyClientToModal(selectedClient);
         renderRecentClients();
+        initAllAppointmentsDropdown();
         if (clientSearchInput) {
           clientSearchInput.addEventListener('input', renderRecentClients);
         }
       }
- 
+
+      function initBookPanelCollapse() {
+        var layout = document.getElementById('reservations-main-layout');
+        var toggle = document.getElementById('res-book-toggle');
+        if (!layout || !toggle) return;
+        function applyCollapsed(collapsed) {
+          layout.classList.toggle('res-book-layout--collapsed', collapsed);
+          toggle.setAttribute('aria-expanded', String(!collapsed));
+          toggle.title = collapsed
+            ? 'Expand Book Appointments (search & client list)'
+            : 'Collapse panel';
+          var txt = toggle.querySelector('.res-book-collapse-text');
+          if (txt) txt.textContent = collapsed ? 'Expand' : 'Collapse';
+          if (collapsed) closeAppointmentsDropdown();
+        }
+        applyCollapsed(layout.classList.contains('res-book-layout--collapsed'));
+        toggle.addEventListener('click', function () {
+          applyCollapsed(!layout.classList.contains('res-book-layout--collapsed'));
+        });
+      }
+
       var TABLE_TENNIS_RESERVE_LINE = 'Table Tennis Practice — reserve';
       var PICKLEBALL_COURT_NUMBERS = [2, 4, 6, 8, 10];
       var TABLE_TENNIS_COURT_NUMBER = 11;
@@ -1072,6 +1211,11 @@
  
       document.addEventListener('keydown', function (event) {
         if (event.key !== 'Escape') return;
+        if (appointmentsDropdownOpen) {
+          event.preventDefault();
+          closeAppointmentsDropdown();
+          return;
+        }
         if (miniCalendarOpen) {
           event.preventDefault();
           closeMiniCalendar();
@@ -1157,6 +1301,7 @@
       }
  
       initBookAppointmentsPanel();
+      initBookPanelCollapse();
       initScheduleDateControls();
       initFormTimeControls();
       buildTimeScale();
