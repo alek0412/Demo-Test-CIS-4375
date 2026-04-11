@@ -3,8 +3,8 @@
  * Active calendar: reservation_status 1 (pending) and 2 (approved).
  * Cancel sets reservation_status = 4 (canceled) — rows are kept for history.
  *
- * Waiver (Flask /api/reservation): waiver_status 2 = customer may book; 3 = has an active
- * pending or approved reservation. When the last active reservation is canceled, set waiver to 2.
+ * Waiver: 1 = Available to book, 2 = Pending/hold (active reservation). When the last active
+ * reservation is canceled, set waiver back to 1.
  */
 const db = require('../db/connection');
 
@@ -17,7 +17,7 @@ async function restoreBookingEligibilityIfNoActiveReservations(conn, customerId)
   );
   const n = Number(cntRows[0] && cntRows[0].c);
   if (n === 0) {
-    await conn.execute('UPDATE waiver SET waiver_status = 2 WHERE customer_id = ?', [customerId]);
+    await conn.execute('UPDATE waiver SET waiver_status = 1 WHERE customer_id = ?', [customerId]);
   }
 }
 

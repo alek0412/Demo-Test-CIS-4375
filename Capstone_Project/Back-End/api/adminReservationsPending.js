@@ -123,7 +123,7 @@ module.exports = async function handleAdminReservationsPending(req, res, ctx) {
     try {
       await conn.beginTransaction();
       const [sel] = await conn.execute(
-        'SELECT reservation_id, reservation_status, waiver_id FROM reservation WHERE reservation_id = ?',
+        'SELECT reservation_id, reservation_status, waiver_id, customer_id FROM reservation WHERE reservation_id = ?',
         [rid]
       );
       if (!sel.length) {
@@ -138,7 +138,7 @@ module.exports = async function handleAdminReservationsPending(req, res, ctx) {
         res.end(JSON.stringify({ success: false, message: 'This request is no longer pending' }));
         return true;
       }
-      const waiverId = sel[0].waiver_id;
+      const customerId = sel[0].customer_id;
       const [upd] = await conn.execute(
         'UPDATE reservation SET reservation_status = ?, employee_id = ? WHERE reservation_id = ? AND reservation_status = 1',
         [newStatus, employeeId, rid]
@@ -149,8 +149,10 @@ module.exports = async function handleAdminReservationsPending(req, res, ctx) {
         res.end(JSON.stringify({ success: false, message: 'Could not update reservation' }));
         return true;
       }
-      if (action === 'deny' && waiverId != null) {
-        await conn.execute('UPDATE waiver SET waiver_status = 2 WHERE waiver_id = ?', [waiverId]);
+      // Deny → reservation_status 3 (per DB lookup). Always clear waiver by customer so customer can book again
+      // (even if reservation.waiver_id was null or pointed at a stale row).
+      if (action === 'deny' && customerId != null) {
+        await conn.execute('UPDATE waiver SET waiver_status = 1 WHERE customer_id = ?', [customerId]);
       }
       await conn.commit();
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });

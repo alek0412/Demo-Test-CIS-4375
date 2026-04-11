@@ -147,19 +147,19 @@
               return c.toUpperCase();
             });
           }
-          /** DB waiver_status (Flask /api/reservation): 2 = eligible to book; 3 = hold while a reservation is active; 1 = legacy/not eligible. */
+          /** DB waiver_status: 1 = Available to book, 2 = Pending / active reservation hold. */
           function waiverStatusLabel(val) {
-            if (val === 1 || val === '1') return 'Not eligible';
-            if (val === 2 || val === '2') return 'Eligible to book';
-            if (val === 3 || val === '3') return 'Active booking hold';
+            if (val === 1 || val === '1') return 'Available';
+            if (val === 2 || val === '2') return 'Pending';
+            if (val === 3 || val === '3') return 'Legacy / other';
             return val != null && val !== '' ? String(val) : '';
           }
 
           function waiverStatusPillTone(labelText) {
             var s = String(labelText || '').toLowerCase();
-            if (s.indexOf('active booking hold') !== -1) return 'ok';
-            if (s.indexOf('eligible to book') !== -1) return 'neutral';
-            if (s.indexOf('not eligible') !== -1) return 'muted';
+            if (s.indexOf('pending') !== -1 && s.indexOf('legacy') === -1) return 'ok';
+            if (s.indexOf('available') !== -1) return 'neutral';
+            if (s.indexOf('legacy') !== -1) return 'muted';
             return 'neutral';
           }
           html += '<table id="waiver-table"><thead><tr>';
@@ -238,9 +238,9 @@
       var filterStatus = '';
 
       function waiverStatusLabelForRow(val) {
-        if (val === 1 || val === '1') return 'Not eligible';
-        if (val === 2 || val === '2') return 'Eligible to book';
-        if (val === 3 || val === '3') return 'Active booking hold';
+        if (val === 1 || val === '1') return 'Available';
+        if (val === 2 || val === '2') return 'Pending';
+        if (val === 3 || val === '3') return 'Legacy / other';
         return val != null && val !== '' ? String(val) : '';
       }
 

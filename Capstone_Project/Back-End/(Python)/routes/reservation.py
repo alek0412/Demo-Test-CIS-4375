@@ -57,7 +57,9 @@ def add_reservation():
         reservation_conversion = datetime.datetime.strptime(reservation_date, "%Y-%m-%d")
         start_time_conversion = datetime.datetime.strptime(start_time, "%H:%M")
         end_time_conversion = datetime.datetime.strptime(end_time, "%H:%M")
-        advance_days = (reservation_conversion - datetime.datetime.now()).days
+        today_d = datetime.datetime.now().date()
+        req_d = reservation_conversion.date()
+        advance_days = (req_d - today_d).days
         if advance_days < 0 or advance_days > 14:
             return make_response("Unable to reserve in past or reserve for more than 14 days.", 400)
         reservation_day_type = reservation_conversion.weekday()
@@ -94,16 +96,46 @@ def add_reservation():
         if start_time_conversion < court_booking_end and end_time_conversion > court_booking_start:
             return make_response("Court is already booked", 400)
 
-    # Must match the same waiver row we lock below (session waiver_id), not an arbitrary row by customer_id.
+    # One active court reservation at a time — gate on real rows, not a stale waiver flag.
+    active_count = sql_functions.execute_read(
+        secure_connection,
+        "select count(*) as c from reservation where customer_id=%s and reservation_status in (1,2)",
+        (customer,),
+    )
+    if type(active_count) == int:
+        return make_response("Server is unable to verify reservations", 503)
+    n_active = int(active_count[0]["c"]) if active_count else 999
+    if n_active > 0:
+        return make_response(
+            "You already have a pending or confirmed reservation. Wait until staff removes it or it is completed.",
+            400,
+        )
+
+    # waiver_status: 1 = Available, 2 = Hold while request exists. No active reservation (1,2) ⇒ allow book;
+    # reset waiver rows so deny/delete drift cannot block the next request.
+    sql_functions.execute_query(
+        secure_connection,
+        "update waiver set waiver_status=1 where customer_id=%s",
+        (customer,),
+    )
+    sql_functions.execute_query(
+        secure_connection,
+        "update waiver set waiver_status=1 where waiver_id=%s and customer_id=%s",
+        (waiver, customer),
+    )
+
     customer_availability = sql_functions.execute_read(
         secure_connection,
-        "select waiver_id, waiver_status from waiver where waiver_id=%s and customer_id=%s",
+        "select waiver_id from waiver where waiver_id=%s and customer_id=%s",
         (waiver, customer),
     )
     if type(customer_availability) == int:
         return make_response("Server is unable to fetch waiver", 503)
-    if customer_availability[0]["waiver_status"] != 1:
-        return make_response("Customer is not available for booking", 400)
+    if not customer_availability:
+        return make_response(
+            "Session is out of date; please log out and log in again, then try reserving.",
+            400,
+        )
     reservation_create = sql_functions.execute_query(
         secure_connection,
         "insert into reservation(court_id,customer_id,waiver_id,reservation_date,reservation_start_time,reservation_end_time,reservation_status) values(%s,%s,%s,%s,%s,%s,%s)",
@@ -112,7 +144,7 @@ def add_reservation():
     if type(reservation_create) == int:
         return make_response("Server is unable to create reservation", 503)
     customer_update = sql_functions.execute_query(
-        secure_connection, "update waiver set waiver_status=3 where waiver_id=%s", (waiver,)
+        secure_connection, "update waiver set waiver_status=2 where waiver_id=%s", (waiver,)
     )
     if type(customer_update) == int:
         return make_response("Server is unable to update customer", 503)
@@ -168,9 +200,10 @@ def reservation_approval():
     if type(reservation_update) == int:
         return make_response("Server cannot update reservation", 503)
     if reservation_status == 2:
+        # Approved: still one active booking — keep waiver at 2 (Pending/hold per DB spec).
         update_customer = sql_functions.execute_query(
             secure_connection,
-            "update waiver set waiver_status=3 where customer_id=%s",
+            "update waiver set waiver_status=2 where customer_id=%s",
             (reservation_fetch[0]["customer_id"],),
         )
         if type(update_customer) == int:
