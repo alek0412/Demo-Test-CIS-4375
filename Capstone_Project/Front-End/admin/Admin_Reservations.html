@@ -139,6 +139,9 @@
                   </button>
                   <div class="res-pending-dropdown is-hidden" id="res-pending-dropdown" role="region" aria-label="Pending court booking requests" hidden></div>
                 </div>
+                <button type="button" class="res-clear-day-btn" id="res-clear-day-btn" title="Mark all pending and confirmed reservations for this day as canceled (kept in database)">
+                  Clear day
+                </button>
                 <div class="res-calendar-dropdown">
                   <button type="button" class="res-calendar-toggle" id="res-calendar-toggle" aria-expanded="false" aria-haspopup="dialog" aria-controls="res-mini-calendar-root">Calendar</button>
                   <div class="res-mini-calendar-root is-hidden" id="res-mini-calendar-root" role="dialog" aria-label="Pick a date" aria-modal="true" hidden>
@@ -174,83 +177,18 @@
               </div>
               <aside class="reservations-time-scale" id="reservations-time-scale" aria-label="Time scale"></aside>
               <section class="reservations-calendar" aria-label="Reservations calendar">
-                <div class="cal-col" data-court="Court 1">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-white" data-slot-start="24" data-slot-span="3">Queuing<br>10:00 PM-11:30 PM</div>
-                    <div class="cal-block is-blue" data-slot-start="10" data-slot-span="7">3.50 hr</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 2">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-event" data-slot-start="0" data-slot-span="14">Pickleball<br>10:00 AM-5:00 PM</div>
-                    <div class="cal-block is-event" data-slot-start="14" data-slot-span="2">Training</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 3">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-white" data-slot-start="0" data-slot-span="14">Queuing<br>10:00 AM-5:00 PM</div>
-                    <div class="cal-block is-blue" data-slot-start="14" data-slot-span="3">1.50 hr</div>
-                    <div class="cal-block is-blue" data-slot-start="17" data-slot-span="1">0.5 hr</div>
-                    <div class="cal-block is-blue" data-slot-start="18" data-slot-span="2">1.00 hr</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 4">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-event" data-slot-start="0" data-slot-span="14">Pickleball<br>10:00 AM-5:00 PM</div>
-                    <div class="cal-block is-event" data-slot-start="14" data-slot-span="2">Training</div>
-                    <div class="cal-block is-blue" data-slot-start="16" data-slot-span="2">1.00 hr</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 5">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-white" data-slot-start="0" data-slot-span="14">Badminton open play<br>10:00 AM-5:00 PM</div>
-                    <div class="cal-block is-blue" data-slot-start="14" data-slot-span="3">1.50 hr</div>
-                    <div class="cal-block is-blue" data-slot-start="17" data-slot-span="7">3.50 hr</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 6">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-event" data-slot-start="2" data-slot-span="8">Open Play<br>11:00 AM-3:00 PM</div>
-                    <div class="cal-block is-blue" data-slot-start="10" data-slot-span="2">1.00 hr</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 7">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-white" data-slot-start="1" data-slot-span="15">Queuing<br>10:30 AM-6:00 PM</div>
-                    <div class="cal-block is-orange" data-slot-start="16" data-slot-span="2">Training</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 8">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-event" data-slot-start="0" data-slot-span="13">Pickleball<br>10:00 AM-4:30 PM</div>
-                    <div class="cal-block is-blue" data-slot-start="13" data-slot-span="4">2.00 hr</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 9">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-white" data-slot-start="4" data-slot-span="16">Court Rental<br>12:00 PM-8:00 PM</div>
-                    <div class="cal-block is-blue" data-slot-start="20" data-slot-span="1">0.5 hr</div>
-                    <div class="cal-block is-blue" data-slot-start="21" data-slot-span="3">1.50 hr</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 10">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-event" data-slot-start="0" data-slot-span="14">Queuing<br>10:00 AM-5:00 PM</div>
-                    <div class="cal-block is-blue" data-slot-start="14" data-slot-span="2">1.00 hr</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 11" data-court-use="table-tennis-practice">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-table-tennis" data-slot-start="0" data-slot-span="14">Table tennis lessons<br>10:00 AM-5:00 PM</div>
-                    <div class="cal-block is-white" data-slot-start="14" data-slot-span="4">Badminton<br>5:00 PM-7:00 PM</div>
-                  </div>
-                </div>
-                <div class="cal-col" data-court="Court 12">
-                  <div class="cal-col-body">
-                    <div class="cal-block is-white" data-slot-start="0" data-slot-span="16">Open Play<br>10:00 AM-6:00 PM</div>
-                    <div class="cal-block is-blue" data-slot-start="16" data-slot-span="6">3.00 hr</div>
-                  </div>
-                </div>
+                <div class="cal-col" data-court="Court 1"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 2"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 3"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 4"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 5"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 6"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 7"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 8"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 9"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 10"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 11" data-court-use="table-tennis-practice"><div class="cal-col-body"></div></div>
+                <div class="cal-col" data-court="Court 12"><div class="cal-col-body"></div></div>
               </section>
             </div>
             </div>
@@ -402,6 +340,7 @@
       const resPendingToggle = document.getElementById('res-pending-toggle');
       const resPendingDropdown = document.getElementById('res-pending-dropdown');
       const resPagePendingBadge = document.getElementById('res-page-pending-badge');
+      const resClearDayBtn = document.getElementById('res-clear-day-btn');
 
       let recentClients = [];
       let selectedClient = null;
@@ -556,6 +495,7 @@
         calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
         updateScheduleDateDisplay();
         if (miniCalendarOpen) buildMiniCalendarGrid();
+        refreshScheduleFromServer();
       }
 
       function openMiniCalendar() {
@@ -613,6 +553,7 @@
             calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
             updateScheduleDateDisplay();
             closeMiniCalendar();
+            refreshScheduleFromServer();
           });
           resMiniCalGrid.appendChild(cell);
         }
@@ -648,6 +589,46 @@
           if (e.target.closest && e.target.closest('.res-calendar-dropdown')) return;
           closeMiniCalendar();
         });
+        if (resClearDayBtn) {
+          resClearDayBtn.addEventListener('click', function () {
+            var iso = formatScheduleDateIso(scheduleDate);
+            if (
+              !window.confirm(
+                'Mark every pending and confirmed reservation on ' +
+                  iso +
+                  ' as canceled? Rows stay in the database for history.'
+              )
+            ) {
+              return;
+            }
+            resClearDayBtn.disabled = true;
+            fetch('/api/admin/schedule-reservations/clear-day', {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ date: iso }),
+            })
+              .then(function (r) {
+                return r.json().then(function (d) {
+                  return { ok: r.ok, d: d };
+                });
+              })
+              .then(function (out) {
+                if (!out.ok || !out.d || !out.d.success) {
+                  window.alert((out.d && out.d.message) || 'Could not clear day.');
+                  return;
+                }
+                setStatus('Canceled ' + (out.d.canceled || 0) + ' reservation(s) for this day.', false);
+                return refreshScheduleFromServer();
+              })
+              .catch(function () {
+                window.alert('Network error.');
+              })
+              .finally(function () {
+                resClearDayBtn.disabled = false;
+              });
+          });
+        }
       }
 
       var ALL_APPOINTMENTS_PREVIEW = [
@@ -897,6 +878,125 @@
       const ICON_EDIT = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>';
       const ICON_DELETE = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>';
 
+      function hhmm24ToMinutes(s) {
+        var p = String(s || '').trim().split(':');
+        var h = parseInt(p[0], 10);
+        var m = parseInt(p[1] || '0', 10);
+        if (!Number.isFinite(h) || !Number.isFinite(m)) return 0;
+        return h * 60 + m;
+      }
+
+      function hhmm24To12Label(s) {
+        return formatMinutesAsTime12(hhmm24ToMinutes(s));
+      }
+
+      function hhmm24ToSlotStart(s) {
+        var minutes = hhmm24ToMinutes(s);
+        var base = 10 * 60;
+        return Math.max(0, Math.min(27, Math.floor((minutes - base) / 30)));
+      }
+
+      function hhmm24ToSlotEnd(s) {
+        var minutes = hhmm24ToMinutes(s);
+        var base = 10 * 60;
+        return Math.max(0, Math.min(28, Math.ceil((minutes - base) / 30)));
+      }
+
+      function visualClassForDbBlock(courtNum, status) {
+        var pending = Number(status) === 1;
+        if (pending) return 'is-orange';
+        if (isPickleballCourtNumber(courtNum)) return 'is-event';
+        if (isTableTennisCourtNumber(courtNum)) return 'is-table-tennis';
+        return 'is-blue';
+      }
+
+      function buildDbReservationBlock(row) {
+        var courtNum = row.court_id != null ? parseInt(row.court_id, 10) : null;
+        var block = document.createElement('div');
+        block.className = 'cal-block cal-block--db ' + visualClassForDbBlock(courtNum, row.reservation_status);
+        var ss = hhmm24ToSlotStart(row.reservation_start_time);
+        var es = hhmm24ToSlotEnd(row.reservation_end_time);
+        var span = Math.max(1, es - ss);
+        block.dataset.slotStart = String(ss);
+        block.dataset.slotSpan = String(span);
+        block.dataset.reservationId = String(row.reservation_id);
+        block.setAttribute('data-reservation-id', String(row.reservation_id));
+
+        var name =
+          [row.customer_first_name, row.customer_last_name].filter(Boolean).join(' ').trim() || 'Guest';
+        var t1 = hhmm24To12Label(row.reservation_start_time);
+        var t2 = hhmm24To12Label(row.reservation_end_time);
+        var meta =
+          t1 + ' – ' + t2 + ' · ' + (Number(row.reservation_status) === 1 ? 'Pending approval' : 'Confirmed');
+
+        var titleEl = document.createElement('div');
+        titleEl.className = 'cal-block-title';
+        titleEl.textContent = name;
+        var metaEl = document.createElement('div');
+        metaEl.className = 'cal-block-meta';
+        metaEl.textContent = meta;
+        block.appendChild(titleEl);
+        block.appendChild(metaEl);
+
+        var actions = document.createElement('div');
+        actions.className = 'cal-block-actions';
+        actions.setAttribute('role', 'toolbar');
+        actions.setAttribute('aria-label', 'Reservation actions');
+        var editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'cal-block-action-btn cal-block-action-edit';
+        editBtn.setAttribute('aria-label', 'Edit reservation');
+        editBtn.innerHTML = ICON_EDIT;
+        var delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'cal-block-action-btn cal-block-action-delete';
+        delBtn.setAttribute('aria-label', 'Delete reservation');
+        delBtn.innerHTML = ICON_DELETE;
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
+        block.appendChild(actions);
+
+        block.dataset.decorated = '1';
+        attachBlockActionHandlers(block);
+        applyBlockSlotLayout(block);
+        return block;
+      }
+
+      function refreshScheduleFromServer() {
+        if (!calendar) return Promise.resolve();
+        var dateIso = formatScheduleDateIso(scheduleDate);
+        return fetch('/api/admin/schedule-reservations?date=' + encodeURIComponent(dateIso), {
+          credentials: 'same-origin',
+        })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, data: data };
+            });
+          })
+          .then(function (out) {
+            if (!out.ok || !out.data || !out.data.success) {
+              return;
+            }
+            calendar.querySelectorAll('.cal-block--db').forEach(function (el) {
+              el.remove();
+            });
+            (out.data.reservations || []).forEach(function (row) {
+              var cid = row.court_id;
+              var col = calendar.querySelector('.cal-col[data-court="Court ' + cid + '"]');
+              if (!col) return;
+              var body = col.querySelector('.cal-col-body');
+              if (!body) return;
+              body.appendChild(buildDbReservationBlock(row));
+            });
+          })
+          .catch(function () {})
+          .then(function () {
+            if (typeof loadPendingReservations === 'function') {
+              loadPendingReservations();
+            }
+          });
+      }
+
       function attachBlockActionHandlers(block) {
         const toolbar = block.querySelector('.cal-block-actions');
         if (!toolbar) return;
@@ -913,10 +1013,37 @@
         toolbar.querySelector('.cal-block-action-delete').addEventListener('click', function (e) {
           e.stopPropagation();
           hideHoverCard();
+          var rid = block.getAttribute('data-reservation-id');
+          if (rid) {
+            if (!window.confirm('Mark this reservation as canceled? It will stay in the database.')) return;
+            fetch('/api/admin/schedule-reservations', {
+              method: 'DELETE',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ reservation_id: parseInt(rid, 10) }),
+            })
+              .then(function (r) {
+                return r.json().then(function (data) {
+                  return { ok: r.ok, data: data };
+                });
+              })
+              .then(function (out) {
+                if (!out.ok || !out.data || !out.data.success) {
+                  window.alert((out.data && out.data.message) || 'Could not cancel reservation.');
+                  return;
+                }
+                setStatus('Reservation marked as canceled.', false);
+                return refreshScheduleFromServer();
+              })
+              .catch(function () {
+                window.alert('Network error.');
+              });
+            return;
+          }
           block.classList.add('is-removing');
           window.setTimeout(function () {
             block.remove();
-            setStatus('Removed "' + label + '" from the preview grid (not saved).', false);
+            setStatus('Removed "' + label + '" from the schedule (local only).', false);
           }, 160);
         });
       }
@@ -967,10 +1094,6 @@
         attachBlockActionHandlers(block);
       }
  
-      function decorateAllReservationBlocks() {
-        calendar.querySelectorAll('.cal-block').forEach(decorateReservationBlock);
-      }
- 
       function applyBlockSlotLayout(block) {
         if (!block) return;
         const start = parseInt(block.dataset.slotStart, 10);
@@ -979,10 +1102,6 @@
         const n = Number.isFinite(span) ? span : 2;
         block.style.setProperty('--slot-start', String(s));
         block.style.setProperty('--slot-span', String(Math.max(1, n)));
-      }
- 
-      function applyAllBlockLayouts() {
-        calendar.querySelectorAll('.cal-block').forEach(applyBlockSlotLayout);
       }
  
       function parseTimeLabelToMinutes(str) {
@@ -1432,10 +1551,8 @@
       initPendingCourtRequests();
       buildTimeScale();
       syncModalCourtFields();
-      if (calendar) {
-        decorateAllReservationBlocks();
-        applyAllBlockLayouts();
-      }
+      refreshScheduleFromServer();
+      window.setInterval(refreshScheduleFromServer, 45000);
     })();
   </script>
 </body>
