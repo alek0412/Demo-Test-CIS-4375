@@ -236,3 +236,156 @@
   border: 1px solid var(--border);
   color: var(--text-primary);
 }
+
+/* Court schedule embed (admin reservations grid on Availability pages) */
+.availability-page .features--court-schedule {
+  padding-top: clamp(2rem, 4vw, 3rem);
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.availability-page .av-court-schedule-section {
+  max-width: 100%;
+}
+
+.availability-page .av-court-schedule-heading {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.availability-page .av-court-schedule-sub {
+  text-align: center;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.5rem;
+}
+
+.availability-page .public-res-embed {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.5rem;
+}
+
+.availability-page .public-res-embed .av-court-schedule-intro {
+  margin-bottom: 1rem;
+}
+
+.availability-page .public-res-embed .av-court-schedule-intro h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+  color: var(--text-primary);
+}
+
+.availability-page .public-res-embed .av-court-schedule-lead {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 40rem;
+}
+
+.availability-page .public-res-embed .reservations-shell {
+  min-width: min(1100px, 100%);
+}
+
+/* Modal — request reservation (client logged-in) */
+.pub-res-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.pub-res-modal-overlay.is-hidden {
+  display: none;
+}
+
+.pub-res-modal {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+  max-width: 420px;
+  width: 100%;
+  padding: 1.25rem 1.35rem;
+  color: #111827;
+}
+
+.pub-res-modal-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  border: none;
+  background: transparent;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.pub-res-modal h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.pub-res-modal-court,
+.pub-res-modal-date {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.pub-res-modal-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.pub-res-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.pub-res-label select {
+  padding: 0.45rem 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font: inherit;
+}
+
+.pub-res-modal-msg {
+  font-size: 0.875rem;
+  margin: 0.5rem 0 0;
+  min-height: 1.25em;
+}
+
+.pub-res-modal-msg--ok {
+  color: #047857;
+}
+
+.pub-res-modal-msg--err {
+  color: #b91c1c;
+}
+
+.pub-res-modal-actions {
+  margin-top: 1rem;
+}
+
+.pub-res-modal-actions .btn {
+  width: 100%;
+  justify-content: center;
+}

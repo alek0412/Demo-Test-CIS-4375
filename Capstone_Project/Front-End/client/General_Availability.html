@@ -10,9 +10,10 @@
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/membership-page.css">
   <link rel="stylesheet" href="../css/availability.css">
+  <link rel="stylesheet" href="../css/admin.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
-<body class="availability-page mem-page">
+<body class="availability-page mem-page" data-availability-embed="guest">
   <a href="#main-content" class="av-skip-link">Skip to main content</a>
   <header>
     <div class="container">
@@ -71,6 +72,16 @@
           </div>
         </div>
 
+        <section class="features features--court-schedule" aria-labelledby="av-court-schedule-title">
+          <div class="container av-court-schedule-section">
+            <h2 id="av-court-schedule-title" class="av-court-schedule-heading">Reservations</h2>
+            <p class="availability-intro av-court-schedule-sub">
+              Same court schedule as our team dashboard. Create an account and complete the waiver to book online.
+            </p>
+            <div id="availability-court-schedule-root"></div>
+          </div>
+        </section>
+
         <div class="av-cta">
           <div class="av-cta__copy">
             <strong>Found a time that works?</strong>
@@ -91,6 +102,7 @@
     </div>
   </footer>
   <script src="/availability-popular-times.js"></script>
+  <script src="../js/availability-court-schedule.js"></script>
   <script src="../js/client-nav.js"></script>
 </body>
 </html>

@@ -36,7 +36,7 @@ def _time_to_base_dt(val):
 
 @reservation_blueprint.route("/api/reservation", methods=["post"])
 def add_reservation():
-    request_json = request.get_json()
+    request_json = request.get_json(force=True, silent=True) or {}
     is_valid_start = False
     is_valid_end = False
     if not session.get("is_customer"):
