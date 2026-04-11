@@ -137,7 +137,7 @@ def customer_me_get():
 def customer_remove():
     request_json=request.get_json()
     session_id=session.get("customer_id")
-    if not session.get("customer_id") or not request_json.get("customer_id"):
+    if not session.get("customer_id") and not request_json.get("customer_id"):
         return make_response("Invalid customer to delete",400)
     elif not session.get("is_employee") and not session.get("is_customer"):
         return make_response("Authorization required for deleting customer",401)
