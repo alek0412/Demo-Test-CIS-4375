@@ -1,6 +1,63 @@
 (function () {
   var STORAGE_KEY = 'admin-theme';
+  var SIDEBAR_KEY = 'admin-sidebar-collapsed';
   var DEFAULT_THEME = 'dark';
+
+  function getSidebarCollapsedFromStorage() {
+    try {
+      return localStorage.getItem(SIDEBAR_KEY) === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function applySidebarOnLoad() {
+    if (getSidebarCollapsedFromStorage()) {
+      document.body.classList.add('admin-sidebar-collapsed');
+    }
+  }
+
+  function isSidebarCollapsed() {
+    return document.body.classList.contains('admin-sidebar-collapsed');
+  }
+
+  function syncSidebarAria() {
+    var aside = document.querySelector('.admin-sidebar');
+    if (!aside) return;
+    if (isSidebarCollapsed()) {
+      aside.setAttribute('aria-hidden', 'true');
+    } else {
+      aside.removeAttribute('aria-hidden');
+    }
+  }
+
+  function setSidebarCollapsed(collapsed) {
+    document.body.classList.toggle('admin-sidebar-collapsed', collapsed);
+    try {
+      localStorage.setItem(SIDEBAR_KEY, collapsed ? '1' : '0');
+    } catch (e) {}
+    syncSidebarAria();
+    syncSidebarToggle();
+    if (collapsed && sidebarToggleEl && document.activeElement) {
+      var aside = document.querySelector('.admin-sidebar');
+      if (aside && aside.contains(document.activeElement) && sidebarToggleEl.focus) {
+        sidebarToggleEl.focus();
+      }
+    }
+  }
+
+  var sidebarToggleEl = null;
+
+  function syncSidebarToggle() {
+    if (!sidebarToggleEl) return;
+    var collapsed = isSidebarCollapsed();
+    sidebarToggleEl.setAttribute('aria-pressed', collapsed ? 'true' : 'false');
+    sidebarToggleEl.setAttribute(
+      'aria-label',
+      collapsed ? 'Show navigation menu' : 'Hide navigation menu'
+    );
+    sidebarToggleEl.textContent = collapsed ? 'Show menu' : 'Hide menu';
+  }
 
   function getTheme() {
     try {
@@ -75,6 +132,8 @@
 
   function init() {
     applyThemeOnLoad();
+    applySidebarOnLoad();
+    syncSidebarAria();
     var container = document.getElementById('admin-theme-container');
     if (container) {
       var topbarRight = document.createElement('div');
@@ -88,17 +147,117 @@
           .then(function () { window.location.href = '/client/General_Dashboard.html'; })
           .catch(function () { window.location.href = '/client/General_Dashboard.html'; });
       });
+      if (document.querySelector('.admin-layout')) {
+        sidebarToggleEl = document.createElement('button');
+        sidebarToggleEl.type = 'button';
+        sidebarToggleEl.className = 'admin-sidebar-toggle';
+        sidebarToggleEl.addEventListener('click', function () {
+          setSidebarCollapsed(!isSidebarCollapsed());
+        });
+        topbarRight.appendChild(sidebarToggleEl);
+        syncSidebarToggle();
+      }
       container.parentNode.insertBefore(topbarRight, container);
       topbarRight.appendChild(container);
       topbarRight.appendChild(logoutBtn);
       renderDropdown(container);
       bindDropdown(container);
     }
-    initBackToTop();
+    if (!document.querySelector('.reservations-page')) {
+      initBackToTop();
+    }
   }
 
   function easeInOutQuad(t) {
     return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  }
+
+  function getDocScrollHeight() {
+    var doc = document.documentElement;
+    var body = document.body;
+    return Math.max(
+      doc.scrollHeight,
+      doc.offsetHeight,
+      body ? body.scrollHeight : 0,
+      body ? body.offsetHeight : 0
+    );
+  }
+
+  /** When the window does not scroll, find the main overflow element (e.g. .admin-content). */
+  function findPrimaryScrollContainer() {
+    var vh = window.innerHeight;
+    var sh = getDocScrollHeight();
+    if (sh > vh + 4) return null;
+    var best = null;
+    var bestArea = 0;
+    var nodes = document.body ? document.body.getElementsByTagName('*') : [];
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var st = window.getComputedStyle(el);
+      var oy = st.overflowY;
+      if (oy !== 'auto' && oy !== 'scroll' && oy !== 'overlay') continue;
+      var ch = el.clientHeight;
+      if (ch < 100) continue;
+      if (el.scrollHeight <= ch + 2) continue;
+      var area = el.clientWidth * ch;
+      if (area > bestArea) {
+        bestArea = area;
+        best = el;
+      }
+    }
+    return best;
+  }
+
+  function isAtScrollBottom() {
+    var pad = 2;
+    var sc = findPrimaryScrollContainer();
+    if (!sc) {
+      var sh = getDocScrollHeight();
+      var vh = window.innerHeight;
+      if (sh <= vh + pad) return false;
+      var scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+      return scrollTop + vh >= sh - pad;
+    }
+    if (sc.scrollHeight <= sc.clientHeight + pad) return false;
+    return sc.scrollTop + sc.clientHeight >= sc.scrollHeight - pad;
+  }
+
+  function resetAllScrollToTop() {
+    try {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    } catch (e) {}
+    var nodes = document.body ? document.body.getElementsByTagName('*') : [];
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var st = window.getComputedStyle(el);
+      if (st.overflowY !== 'auto' && st.overflowY !== 'scroll' && st.overflowY !== 'overlay') continue;
+      if (el.scrollHeight > el.clientHeight + 1) el.scrollTop = 0;
+    }
+  }
+
+  /** Picks window vs nested scroll by largest scroll offset (fixes click when doc is tall but main scroll is inside a panel). */
+  function pickScrollTargetForClick() {
+    var winY = window.scrollY || document.documentElement.scrollTop || 0;
+    var bestEl = null;
+    var bestTop = 0;
+    var nodes = document.body ? document.body.getElementsByTagName('*') : [];
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var st = window.getComputedStyle(el);
+      if (st.overflowY !== 'auto' && st.overflowY !== 'scroll' && st.overflowY !== 'overlay') continue;
+      if (el.clientHeight < 80) continue;
+      if (el.scrollHeight <= el.clientHeight + 2) continue;
+      if (el.scrollTop > bestTop) {
+        bestTop = el.scrollTop;
+        bestEl = el;
+      }
+    }
+    if (winY > bestTop) return { type: 'window', start: winY };
+    if (bestEl && bestTop > 0) return { type: 'element', el: bestEl, start: bestTop };
+    if (winY > 0) return { type: 'window', start: winY };
+    return null;
   }
 
   function ensureBackToTopButton() {
@@ -124,13 +283,10 @@
     var back = ensureBackToTopButton();
     if (!back) return;
 
+    var nestedScrollEl = null;
+
     function toggleBack() {
-      var el = document.documentElement;
-      var scrollTop = window.scrollY || 0;
-      var vh = window.innerHeight;
-      var sh = Math.max(el.scrollHeight, document.body ? document.body.scrollHeight : 0);
-      var atBottom = scrollTop + vh >= sh - 2;
-      if (atBottom) {
+      if (isAtScrollBottom()) {
         back.classList.add('gh-back-top--visible');
         back.setAttribute('aria-hidden', 'false');
         back.removeAttribute('tabindex');
@@ -141,25 +297,64 @@
       }
     }
 
+    function bindNestedScroll() {
+      if (nestedScrollEl) {
+        nestedScrollEl.removeEventListener('scroll', toggleBack);
+        nestedScrollEl = null;
+      }
+      var n = findPrimaryScrollContainer();
+      if (n) {
+        nestedScrollEl = n;
+        n.addEventListener('scroll', toggleBack, { passive: true });
+      }
+    }
+
     toggleBack();
+    bindNestedScroll();
     window.addEventListener('scroll', toggleBack, { passive: true });
-    window.addEventListener('resize', toggleBack, { passive: true });
+    window.addEventListener('resize', function () {
+      bindNestedScroll();
+      toggleBack();
+    }, { passive: true });
 
     back.addEventListener('click', function () {
-      var start = window.scrollY || 0;
-      if (reduce || start <= 0) {
-        window.scrollTo(0, 0);
+      function finish() {
+        resetAllScrollToTop();
+      }
+      if (reduce) {
+        finish();
         return;
       }
-      var duration = Math.min(3800, Math.max(900, start * 0.95));
-      var t0 = performance.now();
-      function step(now) {
-        var p = Math.min((now - t0) / duration, 1);
-        var y = start * (1 - easeInOutQuad(p));
-        window.scrollTo(0, y);
-        if (p < 1) window.requestAnimationFrame(step);
+      var t = pickScrollTargetForClick();
+      if (!t || t.start <= 0) {
+        finish();
+        return;
       }
-      window.requestAnimationFrame(step);
+      if (t.type === 'window') {
+        var start = t.start;
+        var duration = Math.min(3800, Math.max(900, start * 0.95));
+        var t0 = performance.now();
+        function stepWin(now) {
+          var p = Math.min((now - t0) / duration, 1);
+          var y = start * (1 - easeInOutQuad(p));
+          window.scrollTo(0, y);
+          if (p < 1) window.requestAnimationFrame(stepWin);
+          else finish();
+        }
+        window.requestAnimationFrame(stepWin);
+        return;
+      }
+      var sc = t.el;
+      var startSc = t.start;
+      var dur = Math.min(3800, Math.max(900, startSc * 0.95));
+      var t1 = performance.now();
+      function stepEl(now) {
+        var p = Math.min((now - t1) / dur, 1);
+        sc.scrollTop = startSc * (1 - easeInOutQuad(p));
+        if (p < 1) window.requestAnimationFrame(stepEl);
+        else finish();
+      }
+      window.requestAnimationFrame(stepEl);
     });
   }
 

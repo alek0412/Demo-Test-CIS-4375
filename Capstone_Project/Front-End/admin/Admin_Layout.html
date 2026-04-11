@@ -95,24 +95,30 @@
     </aside>
     <div class="admin-main">
       <header class="admin-topbar"><div id="admin-theme-container"></div></header>
-      <div class="admin-content">
-        <div class="admin-title-wrap admin-title-wrap--left admin-title-wrap--layout-page">
-          <div class="admin-layout-intro">
-            <h1 class="admin-page-title">Layout</h1>
-            <p class="admin-subtitle">Control how <strong>general (public)</strong> and <strong>customer</strong> pages look and feel—spacing, imagery, and presentation so the experience stays clear and appealing. Below: <strong>Upcoming events</strong> on the shared home dashboards (JPEG, PNG, GIF, or WebP, up to about 8 MB each), the <strong>Popular Times</strong> sheet (PDF or image) on both Availability pages, and <strong>membership pricing</strong> (PDF or image) on General and Client Membership.</p>
-            <div class="admin-layout-jump">
-              <label for="layout-section-jump" class="admin-layout-jump-label">Jump to section</label>
-              <select id="layout-section-jump" class="admin-marketing-select">
-                <option value="">Choose a section…</option>
-                <option value="layout-section-home">Home</option>
-                <option value="layout-section-availability">Availability</option>
-                <option value="layout-section-membership">Membership</option>
-              </select>
+      <div class="admin-content layout-studio layout-wb">
+        <header class="layout-studio-hero layout-wb-hero" aria-hidden="false">
+          <div class="layout-studio-hero-grid layout-wb-hero-noise" aria-hidden="true"></div>
+          <div class="layout-wb-hero-shine" aria-hidden="true"></div>
+          <div class="admin-title-wrap admin-title-wrap--left admin-title-wrap--layout-page">
+            <div class="admin-layout-intro layout-studio-intro-shell layout-wb-hero-inner">
+              <div class="layout-wb-hero-top">
+                <div class="layout-wb-hero-copy">
+                  <h1 class="admin-page-title layout-studio-display-title layout-wb-title">Layout</h1>
+                  <p class="admin-subtitle layout-studio-lede layout-wb-lede">Control how <strong>general (public)</strong> and <strong>customer</strong> pages look and feel—spacing, imagery, and presentation so the experience stays clear and appealing. Below: <strong>Upcoming events</strong> on the shared home dashboards (JPEG, PNG, GIF, or WebP, up to about 8 MB each), the <strong>Popular Times</strong> sheet (PDF or image) on both Availability pages, and <strong>membership pricing</strong> (PDF or image) on General and Client Membership.</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="admin-layout-tools" id="layout-section-home">
-          <h2 class="admin-layout-tools-heading">Home/Dashboard - Modify Upcoming Events</h2>
+        </header>
+        <div class="layout-wb-body">
+          <div class="layout-wb-stream">
+        <div class="layout-studio-main layout-wb-stream-inner">
+        <div class="admin-layout-tools layout-wb-module layout-wb-mod--events" id="layout-section-home">
+          <header class="layout-studio-section-head">
+            <span class="layout-studio-kicker">01 — Home</span>
+            <h2 class="admin-layout-tools-heading">Home/Dashboard - Modify Upcoming Events</h2>
+            <p class="layout-studio-section-tagline">Hero imagery on the shared general and client home dashboards.</p>
+          </header>
           <div class="admin-marketing-toolbar">
             <label for="marketing-slot-count" class="admin-marketing-toolbar-label">Number of images</label>
             <select id="marketing-slot-count" class="admin-marketing-select" aria-describedby="marketing-slot-hint"></select>
@@ -124,8 +130,12 @@
         <div class="admin-layout-tools admin-layout-tools--section-divider" aria-hidden="true">
           <hr class="admin-layout-section-rule" />
         </div>
-        <div class="admin-layout-tools" id="layout-section-availability">
-          <h2 class="admin-layout-tools-heading">Availability - Modify Availability Times</h2>
+        <div class="admin-layout-tools layout-wb-module layout-wb-mod--availability" id="layout-section-availability">
+          <header class="layout-studio-section-head">
+            <span class="layout-studio-kicker">02 — Availability</span>
+            <h2 class="admin-layout-tools-heading">Availability - Modify Availability Times</h2>
+            <p class="layout-studio-section-tagline">Popular Times on both Availability experiences.</p>
+          </header>
           <p class="admin-marketing-layout-hint">This appears on <strong>General</strong> and <strong>Client</strong> Availability. Upload a <strong>PDF</strong> or <strong>image</strong> (PNG, JPEG, GIF, WebP, or SVG—up to about 15 MB). <strong>Remove</strong> hides the Popular Times block on those pages until you save a new file.</p>
           <div id="popular-times-slot-root" class="admin-marketing-grid admin-marketing-grid--n1">
             <div class="admin-marketing-slot">
@@ -144,12 +154,15 @@
         <div class="admin-layout-tools admin-layout-tools--section-divider" aria-hidden="true">
           <hr class="admin-layout-section-rule" />
         </div>
-        <div id="layout-section-membership" class="admin-layout-membership-group">
-          <div class="admin-layout-tools admin-layout-tools--no-divider-below">
+        <div id="layout-section-membership" class="admin-layout-membership-group layout-wb-membership-stack">
+          <div class="admin-layout-tools admin-layout-tools--no-divider-below layout-wb-module layout-wb-mod--specials">
             <input type="hidden" id="membership-specials-teaser-input" value="">
             <div class="admin-marketing-grid admin-marketing-grid--n1">
               <div class="admin-membership-open-section">
-                <h2 class="admin-marketing-slot-title">Memberships - Modify Specials</h2>
+                <header class="layout-studio-section-head layout-studio-section-head--compact">
+                  <span class="layout-studio-kicker">03a — Membership</span>
+                  <h2 class="admin-marketing-slot-title">Memberships - Modify Specials</h2>
+                </header>
                 <p class="admin-marketing-layout-hint admin-membership-specials-open-hint">Each block has a <strong>Name of Special</strong> and a <strong>Description</strong>. New lines in the description become new lines on the site.</p>
                 <div id="membership-specials-items-admin"></div>
                 <div id="membership-specials-toolbar" class="admin-membership-specials-toolbar">
@@ -162,8 +175,12 @@
               </div>
             </div>
           </div>
-          <div class="admin-layout-tools">
-            <h2 class="admin-layout-tools-heading">Memberships - Modify Membership Pricing</h2>
+          <div class="admin-layout-tools layout-wb-module layout-wb-mod--pricing">
+            <header class="layout-studio-section-head">
+              <span class="layout-studio-kicker">03b — Membership</span>
+              <h2 class="admin-layout-tools-heading">Memberships - Modify Membership Pricing</h2>
+              <p class="layout-studio-section-tagline">Pricing sheet on General and Client Membership.</p>
+            </header>
             <p class="admin-marketing-layout-hint">This appears on <strong>General</strong> and <strong>Client</strong> Membership. Upload a <strong>PDF</strong> or <strong>image</strong> (PNG, JPG, WebP, SVG, HEIC, AVIF, and most other common formats—up to about 50 MB). Unsupported types are rejected. <strong>Remove</strong> hides the pricing block on those pages until you save a new file.</p>
             <div id="membership-pricing-slot-root" class="admin-marketing-grid admin-marketing-grid--n1">
               <div class="admin-marketing-slot">
@@ -180,6 +197,9 @@
             </div>
           </div>
         </div>
+        </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -187,20 +207,5 @@
   <script src="/admin-popular-times.js"></script>
   <script src="/admin-membership-pricing.js"></script>
   <script src="/admin-membership-specials.js"></script>
-  <script>
-    (function () {
-      var sel = document.getElementById('layout-section-jump');
-      if (!sel) return;
-      sel.addEventListener('change', function () {
-        var id = sel.value;
-        if (!id) return;
-        var target = document.getElementById(id);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        sel.selectedIndex = 0;
-      });
-    })();
-  </script>
 </body>
 </html>

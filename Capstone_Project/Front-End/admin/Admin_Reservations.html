@@ -95,12 +95,1204 @@
     </aside>
     <div class="admin-main">
       <header class="admin-topbar"><div id="admin-theme-container"></div></header>
-      <div class="admin-content">
-        <div class="admin-title-wrap admin-title-wrap--left">
-          <h1 class="admin-page-title">Reservations</h1>
-        </div>
+      <div class="admin-content"><section class="reservations-page" aria-label="Reservations">
+          <div class="reservations-main-layout res-book-layout--collapsed" id="reservations-main-layout">
+            <aside class="res-book-panel" id="res-book-panel" aria-label="Book appointments">
+              <div class="res-book-panel-header">
+                <h2 class="res-book-panel-title">Book Appointments</h2>
+                <button type="button" class="res-book-collapse-btn" id="res-book-toggle" aria-expanded="false" aria-controls="res-book-panel-body" title="Open all customers — expands Book Appointments">
+                  <svg class="res-book-collapse-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span class="res-book-collapse-text">Open customer list</span>
+                </button>
+              </div>
+              <div class="res-book-panel-body" id="res-book-panel-body">
+                <div class="res-client-search-wrap">
+                  <span class="res-client-search-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                  </span>
+                  <input type="search" id="res-client-search" class="res-client-search-input" placeholder="Search for client" autocomplete="off" aria-label="Search for client by name or phone">
+                  <button type="button" class="res-client-search-info" title="Search by name or phone number" aria-label="Help">i</button>
+                </div>
+                <div class="res-appointments-picker">
+                  <button type="button" class="res-appointments-toggle" id="res-appointments-toggle" aria-expanded="false" aria-haspopup="listbox" aria-controls="res-appointments-dropdown">
+                    <svg class="res-appointments-customer-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>All customers</span>
+                    <svg class="res-appointments-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div class="res-appointments-dropdown is-hidden" id="res-appointments-dropdown" role="listbox" aria-label="All customers by name" hidden>
+                    <p class="res-appointments-dropdown-hint">All customers, sorted A–Z. Connect to the API later for live data.</p>
+                    <ul class="res-appointments-list" id="res-appointments-list"></ul>
+                  </div>
+                </div>
+                <p class="res-recent-heading">Recently viewed</p>
+                <ul class="res-recent-list" id="res-recent-list"></ul>
+              </div>
+            </aside>
+            <div class="reservations-shell">
+            <div class="res-date-toolbar" id="res-date-toolbar" role="region" aria-label="Schedule date">
+              <div class="res-date-nav">
+                <button type="button" class="res-date-arrow" id="res-date-prev" aria-label="Previous day">‹</button>
+                <div class="res-date-label-block">
+                  <span class="res-date-weekday" id="res-date-weekday"></span>
+                  <time class="res-date-full" id="res-date-full" datetime=""></time>
+                </div>
+                <button type="button" class="res-date-arrow" id="res-date-next" aria-label="Next day">›</button>
+              </div>
+              <div class="res-date-toolbar-actions">
+                <div class="res-calendar-dropdown">
+                  <button type="button" class="res-calendar-toggle" id="res-calendar-toggle" aria-expanded="false" aria-haspopup="dialog" aria-controls="res-mini-calendar-root">Calendar</button>
+                  <div class="res-mini-calendar-root is-hidden" id="res-mini-calendar-root" role="dialog" aria-label="Pick a date" aria-modal="true" hidden>
+                    <div class="res-mini-cal-header">
+                      <button type="button" class="res-date-arrow" id="res-cal-prev-month" aria-label="Previous month">‹</button>
+                      <span class="res-mini-cal-month-year" id="res-cal-month-year"></span>
+                      <button type="button" class="res-date-arrow" id="res-cal-next-month" aria-label="Next month">›</button>
+                    </div>
+                    <div class="res-mini-cal-weekdays">
+                      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                    </div>
+                    <div class="res-mini-cal-grid" id="res-mini-cal-grid"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="reservations-schedule-outer" id="res-schedule-outer">
+            <div class="reservations-schedule-wrap">
+              <div class="res-schedule-corner" aria-hidden="true"></div>
+              <div class="res-schedule-headers" id="res-schedule-headers">
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 1</span><button type="button" class="cal-col-add-btn" data-court="Court 1" title="Add reservation" aria-label="Add reservation on Court 1"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 2</span><button type="button" class="cal-col-add-btn" data-court="Court 2" title="Add reservation" aria-label="Add reservation on Court 2"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 3</span><button type="button" class="cal-col-add-btn" data-court="Court 3" title="Add reservation" aria-label="Add reservation on Court 3"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 4</span><button type="button" class="cal-col-add-btn" data-court="Court 4" title="Add reservation" aria-label="Add reservation on Court 4"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 5</span><button type="button" class="cal-col-add-btn" data-court="Court 5" title="Add reservation" aria-label="Add reservation on Court 5"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 6</span><button type="button" class="cal-col-add-btn" data-court="Court 6" title="Add reservation" aria-label="Add reservation on Court 6"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 7</span><button type="button" class="cal-col-add-btn" data-court="Court 7" title="Add reservation" aria-label="Add reservation on Court 7"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 8</span><button type="button" class="cal-col-add-btn" data-court="Court 8" title="Add reservation" aria-label="Add reservation on Court 8"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 9</span><button type="button" class="cal-col-add-btn" data-court="Court 9" title="Add reservation" aria-label="Add reservation on Court 9"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 10</span><button type="button" class="cal-col-add-btn" data-court="Court 10" title="Add reservation" aria-label="Add reservation on Court 10"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head cal-col-head--stack"><span class="cal-col-head-label cal-col-head-label--stack"><span class="cal-col-head-line">Court 11</span><span class="cal-col-head-sub">Badminton / table tennis</span></span><button type="button" class="cal-col-add-btn" data-court="Court 11" title="Add reservation (Court 11: badminton or table tennis)" aria-label="Add reservation on Court 11, badminton or table tennis"><span aria-hidden="true">+</span></button></div>
+                <div class="cal-col-head"><span class="cal-col-head-label">Court 12</span><button type="button" class="cal-col-add-btn" data-court="Court 12" title="Add reservation" aria-label="Add reservation on Court 12"><span aria-hidden="true">+</span></button></div>
+              </div>
+              <aside class="reservations-time-scale" id="reservations-time-scale" aria-label="Time scale"></aside>
+              <section class="reservations-calendar" aria-label="Reservations calendar">
+                <div class="cal-col" data-court="Court 1">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-white" data-slot-start="24" data-slot-span="3">Queuing<br>10:00 PM-11:30 PM</div>
+                    <div class="cal-block is-blue" data-slot-start="10" data-slot-span="7">3.50 hr</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 2">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-event" data-slot-start="0" data-slot-span="14">Pickleball<br>10:00 AM-5:00 PM</div>
+                    <div class="cal-block is-event" data-slot-start="14" data-slot-span="2">Training</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 3">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-white" data-slot-start="0" data-slot-span="14">Queuing<br>10:00 AM-5:00 PM</div>
+                    <div class="cal-block is-blue" data-slot-start="14" data-slot-span="3">1.50 hr</div>
+                    <div class="cal-block is-blue" data-slot-start="17" data-slot-span="1">0.5 hr</div>
+                    <div class="cal-block is-blue" data-slot-start="18" data-slot-span="2">1.00 hr</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 4">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-event" data-slot-start="0" data-slot-span="14">Pickleball<br>10:00 AM-5:00 PM</div>
+                    <div class="cal-block is-event" data-slot-start="14" data-slot-span="2">Training</div>
+                    <div class="cal-block is-blue" data-slot-start="16" data-slot-span="2">1.00 hr</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 5">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-white" data-slot-start="0" data-slot-span="14">Badminton open play<br>10:00 AM-5:00 PM</div>
+                    <div class="cal-block is-blue" data-slot-start="14" data-slot-span="3">1.50 hr</div>
+                    <div class="cal-block is-blue" data-slot-start="17" data-slot-span="7">3.50 hr</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 6">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-event" data-slot-start="2" data-slot-span="8">Open Play<br>11:00 AM-3:00 PM</div>
+                    <div class="cal-block is-blue" data-slot-start="10" data-slot-span="2">1.00 hr</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 7">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-white" data-slot-start="1" data-slot-span="15">Queuing<br>10:30 AM-6:00 PM</div>
+                    <div class="cal-block is-orange" data-slot-start="16" data-slot-span="2">Training</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 8">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-event" data-slot-start="0" data-slot-span="13">Pickleball<br>10:00 AM-4:30 PM</div>
+                    <div class="cal-block is-blue" data-slot-start="13" data-slot-span="4">2.00 hr</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 9">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-white" data-slot-start="4" data-slot-span="16">Court Rental<br>12:00 PM-8:00 PM</div>
+                    <div class="cal-block is-blue" data-slot-start="20" data-slot-span="1">0.5 hr</div>
+                    <div class="cal-block is-blue" data-slot-start="21" data-slot-span="3">1.50 hr</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 10">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-event" data-slot-start="0" data-slot-span="14">Queuing<br>10:00 AM-5:00 PM</div>
+                    <div class="cal-block is-blue" data-slot-start="14" data-slot-span="2">1.00 hr</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 11" data-court-use="table-tennis-practice">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-table-tennis" data-slot-start="0" data-slot-span="14">Table tennis lessons<br>10:00 AM-5:00 PM</div>
+                    <div class="cal-block is-white" data-slot-start="14" data-slot-span="4">Badminton<br>5:00 PM-7:00 PM</div>
+                  </div>
+                </div>
+                <div class="cal-col" data-court="Court 12">
+                  <div class="cal-col-body">
+                    <div class="cal-block is-white" data-slot-start="0" data-slot-span="16">Open Play<br>10:00 AM-6:00 PM</div>
+                    <div class="cal-block is-blue" data-slot-start="16" data-slot-span="6">3.00 hr</div>
+                  </div>
+                </div>
+              </section>
+            </div>
+            </div>
+          </div>
+ 
+          <div class="res-modal-overlay is-hidden" id="res-modal-overlay" aria-hidden="true">
+            <aside class="reservations-left" role="dialog" aria-modal="true" aria-labelledby="res-modal-title">
+              <div class="res-modal-toolbar">
+                <h2 id="res-modal-title">Create Appointment</h2>
+                <button class="res-modal-close" type="button" id="res-modal-close" aria-label="Close appointment form">x</button>
+              </div>
+              <p class="res-modal-court-hint is-hidden" id="res-modal-court-hint" aria-live="polite"></p>
+              <p class="res-modal-booking-court is-hidden" id="res-modal-booking-court" aria-live="polite">
+                <span class="res-modal-booking-court-label">Booking for</span>
+                <strong class="res-modal-booking-court-name" id="res-modal-court-display"></strong>
+              </p>
+              <article class="res-card res-card-client">
+                <div class="res-card-grid">
+                  <div class="res-label">Client</div>
+                  <div class="res-value"><span id="res-client-name">Jordan Blake</span> <span class="res-linkish">Change</span></div>
+                  <div class="res-label">Phone</div>
+                  <div class="res-value"><span id="res-client-phone">(999) 999-9999</span> <span class="res-linkish">Change</span></div>
+                  <div class="res-label">Email</div>
+                  <div class="res-value"><span id="res-client-email">client@example.com</span> <span class="res-linkish">Change</span></div>
+                </div>
+                <label class="res-confirm" title="Confirmation email is always sent for this booking.">
+                  <input type="checkbox" id="res-send-confirm" checked disabled aria-label="Send confirmation email (always on)">
+                  <span>Send Confirmation</span>
+                </label>
+              </article>
+ 
+              <article class="res-card res-card-history">
+                <h2>Rebook a Past Visit</h2>
+                <p>No visit history available.</p>
+              </article>
+ 
+              <article class="res-card res-card-form">
+                <div class="res-field">
+                  <label for="res-service">Service length</label>
+                  <select id="res-service" aria-label="Service length">
+                    <option>0.5 hr</option>
+                    <option selected>1.00 hr</option>
+                    <option>1.50 hr</option>
+                    <option>2.00 hr</option>
+                    <option>2.50 hr</option>
+                    <option>3.00 hr</option>
+                    <option>3.50 hr</option>
+                    <option>4.00 hr</option>
+                    <option>4.50 hr</option>
+                  </select>
+                </div>
+ 
+                <div class="res-field">
+                  <label for="res-start">Start time</label>
+                  <select id="res-start" class="res-select-time" aria-label="Start time"></select>
+                </div>
+ 
+                <div class="res-field">
+                  <label for="res-end">End time</label>
+                  <input id="res-end" type="text" value="" readonly aria-live="polite">
+                </div>
+
+                <div class="res-field res-field-event-name is-hidden" id="res-event-name-wrap" hidden>
+                  <label for="res-event-name">Event name</label>
+                  <div class="res-field-event-name-stack">
+                    <input type="text" id="res-event-name" class="res-input-event-name" placeholder="e.g. Open play, League night, Training" maxlength="120" autocomplete="off" aria-describedby="res-event-name-hint" disabled>
+                    <p class="res-field-hint" id="res-event-name-hint">Required on Courts 1, 3, 5, 7, 9, and 12. Courts 2, 4, 6, 8, and 10 are badminton or pickleball. Court 11 is badminton or table tennis (lessons often 10:00 AM–5:00 PM).</p>
+                  </div>
+                </div>
+ 
+                <div class="res-field">
+                  <label for="res-notes">Notes</label>
+                  <textarea id="res-notes" rows="2"></textarea>
+                </div>
+ 
+                <div class="res-actions">
+                  <button class="res-btn res-btn-primary" type="button" id="res-add-btn">Add Reservation</button>
+                </div>
+                <p class="res-status" id="res-status" aria-live="polite"></p>
+              </article>
+            </aside>
+          </div>
+          </div>
+ 
+        </section>
       </div>
     </div>
   </div>
+  <div class="res-hover-card is-hidden" id="res-hover-card" aria-hidden="true">
+    <div class="res-hover-head">
+      <span id="res-hover-name">Morgan Ellis</span>
+      <span id="res-hover-phone">(999) 999-9999</span>
+    </div>
+    <div class="res-hover-body">
+      <p id="res-hover-time">4:30 PM - 6:30 PM</p>
+      <p id="res-hover-service">Court Rental | 2.00 hr</p>
+      <div class="res-hover-dots" aria-hidden="true">
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-red"></span>
+        <span class="dot dot-green"></span>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const calendar = document.querySelector('.reservations-calendar');
+      const addBtn = document.getElementById('res-add-btn');
+      const statusEl = document.getElementById('res-status');
+      const serviceSelect = document.getElementById('res-service');
+      const startSelect = document.getElementById('res-start');
+      const endInput = document.getElementById('res-end');
+      const timeScale = document.getElementById('reservations-time-scale');
+      const hoverCard = document.getElementById('res-hover-card');
+      const hoverName = document.getElementById('res-hover-name');
+      const hoverPhone = document.getElementById('res-hover-phone');
+      const hoverTime = document.getElementById('res-hover-time');
+      const hoverService = document.getElementById('res-hover-service');
+      const hoverPeople = [
+        { name: 'Morgan Ellis', phone: '(999) 999-9999' },
+        { name: 'Avery Stone', phone: '(999) 999-9999' },
+        { name: 'Parker Reid', phone: '(999) 999-9999' },
+        { name: 'Riley Brooks', phone: '(999) 999-9999' },
+        { name: 'Cameron Shaw', phone: '(999) 999-9999' },
+        { name: 'Taylor Quinn', phone: '(999) 999-9999' },
+        { name: 'Dakota Hayes', phone: '(999) 999-9999' },
+        { name: 'Rowan Pierce', phone: '(999) 999-9999' }
+      ];
+ 
+      const overlay = document.getElementById('res-modal-overlay');
+      const closeBtn = document.getElementById('res-modal-close');
+      const clientSearchInput = document.getElementById('res-client-search');
+      const recentListEl = document.getElementById('res-recent-list');
+      const resClientName = document.getElementById('res-client-name');
+      const resClientPhone = document.getElementById('res-client-phone');
+      const resClientEmail = document.getElementById('res-client-email');
+      const resDatePrev = document.getElementById('res-date-prev');
+      const resDateNext = document.getElementById('res-date-next');
+      const resDateWeekday = document.getElementById('res-date-weekday');
+      const resDateFull = document.getElementById('res-date-full');
+      const resDateToolbar = document.getElementById('res-date-toolbar');
+      const resScheduleOuter = document.getElementById('res-schedule-outer');
+      const resCalendarToggle = document.getElementById('res-calendar-toggle');
+      const resMiniCalendarRoot = document.getElementById('res-mini-calendar-root');
+      const resMiniCalGrid = document.getElementById('res-mini-cal-grid');
+      const resCalMonthYear = document.getElementById('res-cal-month-year');
+      const resCalPrevMonth = document.getElementById('res-cal-prev-month');
+      const resCalNextMonth = document.getElementById('res-cal-next-month');
+      const scheduleHeadersEl = document.getElementById('res-schedule-headers');
+
+      let recentClients = [];
+      let selectedClient = null;
+      let scheduleDate = new Date();
+      scheduleDate.setHours(12, 0, 0, 0);
+      let calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
+      let miniCalendarOpen = false;
+      let appointmentsDropdownOpen = false;
+ 
+      function randomPlaceholderPhone() {
+        return '(999) 999-9999';
+      }
+ 
+      function randomEmailForName(displayName) {
+        const domains = ['example.net', 'mail.demo.org', 'inbox.placeholder.com', 'mailbox.test'];
+        const slug = String(displayName)
+          .toLowerCase()
+          .replace(/[^a-z]+/g, '.')
+          .replace(/^\.+|\.+$/g, '') || 'client';
+        const n = Math.floor(Math.random() * 90000) + 10000;
+        return slug + '.' + n + '@' + domains[Math.floor(Math.random() * domains.length)];
+      }
+ 
+      function buildRandomClients() {
+        var names = [
+          'Jordan Blake', 'Morgan Ellis', 'Avery Stone', 'Parker Reid', 'Riley Brooks',
+          'Cameron Shaw', 'Taylor Quinn', 'Dakota Hayes', 'Rowan Pierce', 'Skyler James',
+          'Quinn Mercer', 'Reese Carter', 'Casey Jordan', 'Jamie Wells'
+        ];
+        names.sort(function () { return Math.random() - 0.5; });
+        recentClients = names.slice(0, 8).map(function (name) {
+          return { name: name, phone: randomPlaceholderPhone(), email: randomEmailForName(name) };
+        });
+        selectedClient = recentClients[0] || null;
+      }
+ 
+      function applyClientToModal(client) {
+        if (!client) return;
+        if (resClientName) resClientName.textContent = client.name;
+        if (resClientPhone) resClientPhone.textContent = client.phone;
+        if (resClientEmail) resClientEmail.textContent = client.email;
+      }
+ 
+      function phoneDigits(s) {
+        return String(s || '').replace(/\D/g, '');
+      }
+ 
+      function filterClients() {
+        var raw = clientSearchInput ? clientSearchInput.value.trim() : '';
+        var q = raw.toLowerCase();
+        var qd = phoneDigits(raw);
+        if (!q && !qd) return recentClients;
+        return recentClients.filter(function (c) {
+          var nameMatch = c.name.toLowerCase().indexOf(q) !== -1;
+          var emailMatch = c.email.toLowerCase().indexOf(q) !== -1;
+          var phoneMatch = qd.length > 0 ? phoneDigits(c.phone).indexOf(qd) !== -1 : false;
+          return nameMatch || emailMatch || phoneMatch;
+        });
+      }
+ 
+      function renderRecentClients() {
+        var rows = filterClients();
+        if (!recentListEl) return;
+        recentListEl.textContent = '';
+        if (!rows.length) {
+          var empty = document.createElement('li');
+          empty.className = 'res-recent-empty';
+          empty.textContent = 'No clients match your search.';
+          recentListEl.appendChild(empty);
+          return;
+        }
+        rows.forEach(function (client) {
+          var li = document.createElement('li');
+          li.className = 'res-recent-item';
+          li.setAttribute('role', 'button');
+          li.tabIndex = 0;
+          if (selectedClient === client) li.classList.add('is-selected');
+          var nameEl = document.createElement('span');
+          nameEl.className = 'res-recent-name';
+          nameEl.textContent = client.name;
+          var emailEl = document.createElement('span');
+          emailEl.className = 'res-recent-email';
+          emailEl.textContent = client.email;
+          var phoneEl = document.createElement('span');
+          phoneEl.className = 'res-recent-phone';
+          phoneEl.textContent = 'm: ' + client.phone;
+          li.appendChild(nameEl);
+          li.appendChild(emailEl);
+          li.appendChild(phoneEl);
+          function selectThis() {
+            selectedClient = client;
+            applyClientToModal(client);
+            renderRecentClients();
+          }
+          li.addEventListener('click', selectThis);
+          li.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectThis();
+            }
+          });
+          recentListEl.appendChild(li);
+        });
+      }
+ 
+      function isSameCalendarDay(a, b) {
+        return (
+          a.getFullYear() === b.getFullYear() &&
+          a.getMonth() === b.getMonth() &&
+          a.getDate() === b.getDate()
+        );
+      }
+
+      function pad2(n) {
+        return String(n).padStart(2, '0');
+      }
+
+      function formatScheduleDateIso(d) {
+        return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+      }
+
+      function updateScheduleDateDisplay() {
+        if (!resDateWeekday || !resDateFull) return;
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = [
+          'January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        const today = new Date();
+        today.setHours(12, 0, 0, 0);
+        const isToday = isSameCalendarDay(scheduleDate, today);
+        resDateWeekday.textContent = days[scheduleDate.getDay()] + (isToday ? ' · Today' : '');
+        resDateFull.textContent =
+          months[scheduleDate.getMonth()] + ' ' + scheduleDate.getDate() + ', ' + scheduleDate.getFullYear();
+        resDateFull.setAttribute('datetime', formatScheduleDateIso(scheduleDate));
+
+        if (resDateToolbar) {
+          resDateToolbar.classList.toggle('res-date-toolbar--other-day', !isToday);
+          resDateToolbar.classList.toggle('res-date-toolbar--today', isToday);
+        }
+        if (resScheduleOuter) {
+          resScheduleOuter.setAttribute('data-selected-date', formatScheduleDateIso(scheduleDate));
+          resScheduleOuter.classList.toggle('res-schedule-outer--other-day', !isToday);
+        }
+      }
+
+      function shiftScheduleDay(delta) {
+        const d = new Date(scheduleDate.getTime());
+        d.setHours(12, 0, 0, 0);
+        d.setDate(d.getDate() + delta);
+        scheduleDate = d;
+        calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
+        updateScheduleDateDisplay();
+        if (miniCalendarOpen) buildMiniCalendarGrid();
+      }
+
+      function openMiniCalendar() {
+        if (!resMiniCalendarRoot || !resCalendarToggle) return;
+        miniCalendarOpen = true;
+        calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
+        resMiniCalendarRoot.classList.remove('is-hidden');
+        resMiniCalendarRoot.hidden = false;
+        resCalendarToggle.setAttribute('aria-expanded', 'true');
+        buildMiniCalendarGrid();
+      }
+
+      function closeMiniCalendar() {
+        if (!resMiniCalendarRoot || !resCalendarToggle) return;
+        miniCalendarOpen = false;
+        resMiniCalendarRoot.classList.add('is-hidden');
+        resMiniCalendarRoot.hidden = true;
+        resCalendarToggle.setAttribute('aria-expanded', 'false');
+      }
+
+      function buildMiniCalendarGrid() {
+        if (!resMiniCalGrid || !resCalMonthYear) return;
+        const y = calendarViewMonth.getFullYear();
+        const m = calendarViewMonth.getMonth();
+        const monthNames = [
+          'January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        resCalMonthYear.textContent = monthNames[m] + ' ' + y;
+
+        resMiniCalGrid.textContent = '';
+        const firstDow = new Date(y, m, 1).getDay();
+        const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+        for (let i = 0; i < firstDow; i++) {
+          const padEl = document.createElement('div');
+          padEl.className = 'res-mini-cal-cell is-empty';
+          resMiniCalGrid.appendChild(padEl);
+        }
+
+        const today = new Date();
+        today.setHours(12, 0, 0, 0);
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const cell = document.createElement('button');
+          cell.type = 'button';
+          cell.className = 'res-mini-cal-day';
+          cell.textContent = String(day);
+          const cellDate = new Date(y, m, day);
+          cellDate.setHours(12, 0, 0, 0);
+          if (isSameCalendarDay(cellDate, scheduleDate)) cell.classList.add('is-selected');
+          if (isSameCalendarDay(cellDate, today)) cell.classList.add('is-today');
+          cell.addEventListener('click', function () {
+            scheduleDate = cellDate;
+            calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
+            updateScheduleDateDisplay();
+            closeMiniCalendar();
+          });
+          resMiniCalGrid.appendChild(cell);
+        }
+      }
+
+      function initScheduleDateControls() {
+        updateScheduleDateDisplay();
+        if (resDatePrev) resDatePrev.addEventListener('click', function () { shiftScheduleDay(-1); });
+        if (resDateNext) resDateNext.addEventListener('click', function () { shiftScheduleDay(1); });
+        if (resCalPrevMonth) {
+          resCalPrevMonth.addEventListener('click', function (e) {
+            e.stopPropagation();
+            calendarViewMonth.setMonth(calendarViewMonth.getMonth() - 1);
+            buildMiniCalendarGrid();
+          });
+        }
+        if (resCalNextMonth) {
+          resCalNextMonth.addEventListener('click', function (e) {
+            e.stopPropagation();
+            calendarViewMonth.setMonth(calendarViewMonth.getMonth() + 1);
+            buildMiniCalendarGrid();
+          });
+        }
+        if (resCalendarToggle && resMiniCalendarRoot) {
+          resCalendarToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (miniCalendarOpen) closeMiniCalendar();
+            else openMiniCalendar();
+          });
+        }
+        document.addEventListener('click', function (e) {
+          if (!miniCalendarOpen) return;
+          if (e.target.closest && e.target.closest('.res-calendar-dropdown')) return;
+          closeMiniCalendar();
+        });
+      }
+
+      var ALL_APPOINTMENTS_PREVIEW = [
+        { name: 'Avery Stone', email: 'avery.stone.12034@mail.demo.org', phone: '(999) 999-9999', detail: 'Court 3 · Queuing · daytime' },
+        { name: 'Cameron Shaw', email: 'cameron.shaw.95111@example.net', phone: '(999) 999-9999', detail: 'Court 12 · Open Play' },
+        { name: 'Casey Jordan', email: 'casey.jordan.68035@inbox.placeholder.com', phone: '(999) 999-9999', detail: 'Court 7 · Training' },
+        { name: 'Dakota Hayes', email: 'dakota.hayes.44102@mailbox.test', phone: '(999) 999-9999', detail: 'Court 1 · 3.50 hr' },
+        { name: 'Jamie Wells', email: 'jamie.wells.22991@mail.demo.org', phone: '(999) 999-9999', detail: 'Court 9 · Court rental' },
+        { name: 'Jordan Blake', email: 'jordan.blake.94983@example.net', phone: '(999) 999-9999', detail: 'Court 6 · 1.00 hr' },
+        { name: 'Morgan Ellis', email: 'morgan.ellis.33401@inbox.placeholder.com', phone: '(999) 999-9999', detail: 'Court 4 · Pickleball block' },
+        { name: 'Parker Reid', email: 'parker.reid.60679@inbox.placeholder.com', phone: '(999) 999-9999', detail: 'Court 2 · Pickleball' },
+        { name: 'Quinn Mercer', email: 'quinn.mercer.77120@mailbox.test', phone: '(999) 999-9999', detail: 'Court 10 · Queuing' },
+        { name: 'Reese Carter', email: 'reese.carter.81939@mailbox.test', phone: '(999) 999-9999', detail: 'Court 8 · Coaching' },
+        { name: 'Riley Brooks', email: 'riley.brooks.73498@mail.demo.org', phone: '(999) 999-9999', detail: 'Court 5 · Training' },
+        { name: 'Rowan Pierce', email: 'rowan.pierce.53371@mailbox.test', phone: '(999) 999-9999', detail: 'Court 11 · Table tennis lessons' },
+        { name: 'Skyler James', email: 'skyler.james.22135@mail.demo.org', phone: '(999) 999-9999', detail: 'Court 9 · 2.00 hr' },
+        { name: 'Taylor Quinn', email: 'taylor.quinn.51288@example.net', phone: '(999) 999-9999', detail: 'Court 12 · 3.00 hr' }
+      ];
+      ALL_APPOINTMENTS_PREVIEW.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
+
+      function closeAppointmentsDropdown() {
+        var drop = document.getElementById('res-appointments-dropdown');
+        var btn = document.getElementById('res-appointments-toggle');
+        appointmentsDropdownOpen = false;
+        if (drop) {
+          drop.classList.add('is-hidden');
+          drop.hidden = true;
+        }
+        if (btn) {
+          btn.setAttribute('aria-expanded', 'false');
+          btn.classList.remove('is-open');
+        }
+      }
+
+      function openAppointmentsDropdown() {
+        var drop = document.getElementById('res-appointments-dropdown');
+        var btn = document.getElementById('res-appointments-toggle');
+        if (!drop || !btn) return;
+        appointmentsDropdownOpen = true;
+        drop.classList.remove('is-hidden');
+        drop.hidden = false;
+        btn.setAttribute('aria-expanded', 'true');
+        btn.classList.add('is-open');
+      }
+
+      function renderAllAppointmentsList() {
+        var ul = document.getElementById('res-appointments-list');
+        if (!ul) return;
+        ul.textContent = '';
+        ALL_APPOINTMENTS_PREVIEW.forEach(function (appt) {
+          var li = document.createElement('li');
+          li.className = 'res-appointment-item';
+          li.setAttribute('role', 'option');
+          li.tabIndex = 0;
+          var nameEl = document.createElement('span');
+          nameEl.className = 'res-recent-name';
+          nameEl.textContent = appt.name;
+          var emailEl = document.createElement('span');
+          emailEl.className = 'res-recent-email';
+          emailEl.textContent = appt.email;
+          var phoneEl = document.createElement('span');
+          phoneEl.className = 'res-recent-phone';
+          phoneEl.textContent = 'm: ' + appt.phone;
+          var detailEl = document.createElement('span');
+          detailEl.className = 'res-appointment-detail';
+          detailEl.textContent = appt.detail;
+          li.appendChild(nameEl);
+          li.appendChild(emailEl);
+          li.appendChild(phoneEl);
+          li.appendChild(detailEl);
+          function selectAppt() {
+            selectedClient = { name: appt.name, phone: appt.phone, email: appt.email };
+            applyClientToModal(selectedClient);
+            renderRecentClients();
+            closeAppointmentsDropdown();
+            setStatus('Selected ' + appt.name + ' for this booking (preview).', false);
+          }
+          li.addEventListener('click', selectAppt);
+          li.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectAppt();
+            }
+          });
+          ul.appendChild(li);
+        });
+      }
+
+      function initAllAppointmentsDropdown() {
+        renderAllAppointmentsList();
+        var btn = document.getElementById('res-appointments-toggle');
+        if (btn) {
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (appointmentsDropdownOpen) closeAppointmentsDropdown();
+            else openAppointmentsDropdown();
+          });
+        }
+        document.addEventListener('click', function (e) {
+          if (!appointmentsDropdownOpen) return;
+          if (e.target.closest && e.target.closest('.res-appointments-picker')) return;
+          closeAppointmentsDropdown();
+        });
+      }
+
+      function initBookAppointmentsPanel() {
+        buildRandomClients();
+        applyClientToModal(selectedClient);
+        renderRecentClients();
+        initAllAppointmentsDropdown();
+        if (clientSearchInput) {
+          clientSearchInput.addEventListener('input', renderRecentClients);
+        }
+      }
+
+      function initBookPanelCollapse() {
+        var layout = document.getElementById('reservations-main-layout');
+        var toggle = document.getElementById('res-book-toggle');
+        if (!layout || !toggle) return;
+        function applyCollapsed(collapsed) {
+          layout.classList.toggle('res-book-layout--collapsed', collapsed);
+          toggle.setAttribute('aria-expanded', String(!collapsed));
+          toggle.title = collapsed
+            ? 'Open all customers — expands Book Appointments'
+            : 'Collapse Book Appointments panel';
+          var txt = toggle.querySelector('.res-book-collapse-text');
+          if (txt) txt.textContent = collapsed ? 'Open customer list' : 'Collapse';
+          if (collapsed) closeAppointmentsDropdown();
+        }
+        applyCollapsed(layout.classList.contains('res-book-layout--collapsed'));
+        toggle.addEventListener('click', function () {
+          var collapsed = layout.classList.contains('res-book-layout--collapsed');
+          if (collapsed) {
+            applyCollapsed(false);
+            requestAnimationFrame(function () {
+              openAppointmentsDropdown();
+            });
+          } else {
+            applyCollapsed(true);
+          }
+        });
+      }
+
+      // Facility court rules (see PM / ops): badminton-only 1,3,5,7,9,12; badminton or pickleball 2,4,6,8,10;
+      // Court 11: badminton or table tennis (lessons often 10:00 AM–5:00 PM).
+      var BADMINTON_ONLY_COURTS = [1, 3, 5, 7, 9, 12];
+      var PICKLEBALL_COURT_NUMBERS = [2, 4, 6, 8, 10];
+      var TABLE_TENNIS_COURT_NUMBER = 11;
+      var COURT_11_USAGE_HINT =
+        'Court 11: badminton or table tennis. Table tennis lessons are usually scheduled 10:00 AM–5:00 PM.';
+      var CUSTOM_EVENT_NAME_COURTS = [1, 3, 5, 7, 9, 12];
+      var modalCourtName = '';
+
+      function parseCourtNumberFromName(name) {
+        if (!name) return null;
+        var m = String(name).match(/Court\s*(\d+)/i);
+        return m ? parseInt(m[1], 10) : null;
+      }
+
+      function courtNeedsCustomEventName(courtNum) {
+        return courtNum !== null && CUSTOM_EVENT_NAME_COURTS.indexOf(courtNum) !== -1;
+      }
+
+      function isPickleballCourtNumber(courtNum) {
+        return courtNum !== null && PICKLEBALL_COURT_NUMBERS.indexOf(courtNum) !== -1;
+      }
+
+      function isTableTennisCourtNumber(courtNum) {
+        return courtNum === TABLE_TENNIS_COURT_NUMBER;
+      }
+
+      function syncModalCourtFields() {
+        var v = modalCourtName;
+        var n = parseCourtNumberFromName(v);
+        var courtHint = document.getElementById('res-modal-court-hint');
+        var wrap = document.getElementById('res-event-name-wrap');
+        var input = document.getElementById('res-event-name');
+        if (courtHint) {
+          if (n === TABLE_TENNIS_COURT_NUMBER) {
+            courtHint.textContent = COURT_11_USAGE_HINT;
+            courtHint.classList.remove('is-hidden');
+          } else {
+            courtHint.textContent = '';
+            courtHint.classList.add('is-hidden');
+          }
+        }
+        if (wrap && input) {
+          if (courtNeedsCustomEventName(n)) {
+            wrap.classList.remove('is-hidden');
+            wrap.removeAttribute('hidden');
+            input.disabled = false;
+            input.removeAttribute('readonly');
+            input.setAttribute('aria-required', 'true');
+          } else {
+            wrap.classList.add('is-hidden');
+            wrap.setAttribute('hidden', '');
+            input.disabled = true;
+            input.removeAttribute('aria-required');
+            input.value = '';
+          }
+        }
+      }
+
+      function openModal(courtName) {
+        if (!overlay) return;
+        modalCourtName = String(courtName || '').trim();
+        var courtDisplay = document.getElementById('res-modal-court-display');
+        var bookingStrip = document.getElementById('res-modal-booking-court');
+        if (courtDisplay) {
+          courtDisplay.textContent = modalCourtName || '';
+        }
+        if (bookingStrip) {
+          bookingStrip.classList.toggle('is-hidden', !modalCourtName);
+        }
+        setStatus('');
+        syncModalCourtFields();
+        applyClientToModal(selectedClient);
+        updateEndTimeFromForm();
+        overlay.classList.remove('is-hidden');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+ 
+      function closeModal() {
+        if (!overlay) return;
+        modalCourtName = '';
+        var courtDisplay = document.getElementById('res-modal-court-display');
+        var bookingStrip = document.getElementById('res-modal-booking-court');
+        if (courtDisplay) courtDisplay.textContent = '';
+        if (bookingStrip) bookingStrip.classList.add('is-hidden');
+        var input = document.getElementById('res-event-name');
+        if (input) {
+          input.value = '';
+          input.disabled = true;
+        }
+        overlay.classList.add('is-hidden');
+        overlay.setAttribute('aria-hidden', 'true');
+      }
+ 
+      function setStatus(message, isError) {
+        if (!statusEl) return;
+        statusEl.textContent = message || '';
+        statusEl.classList.toggle('is-error', Boolean(isError));
+      }
+ 
+      const ICON_EDIT = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>';
+      const ICON_DELETE = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>';
+
+      function attachBlockActionHandlers(block) {
+        const toolbar = block.querySelector('.cal-block-actions');
+        if (!toolbar) return;
+        const courtCol = block.closest('.cal-col');
+        const courtName = courtCol ? courtCol.getAttribute('data-court') : '';
+        const titleEl = block.querySelector('.cal-block-title');
+        const label = titleEl ? titleEl.textContent.trim() : 'Reservation';
+
+        toolbar.querySelector('.cal-block-action-edit').addEventListener('click', function (e) {
+          e.stopPropagation();
+          hideHoverCard();
+          setStatus('Edit "' + label + '"' + (courtName ? ' on ' + courtName : '') + ' — connect to API later.', false);
+        });
+        toolbar.querySelector('.cal-block-action-delete').addEventListener('click', function (e) {
+          e.stopPropagation();
+          hideHoverCard();
+          block.classList.add('is-removing');
+          window.setTimeout(function () {
+            block.remove();
+            setStatus('Removed "' + label + '" from the preview grid (not saved).', false);
+          }, 160);
+        });
+      }
+
+      function decorateReservationBlock(block) {
+        if (!block || block.dataset.decorated === '1') return;
+        const lines = block.innerHTML
+          .split('<br>')
+          .map(function (line) { return line.replace(/<[^>]+>/g, '').trim(); })
+          .filter(Boolean);
+        if (!lines.length) return;
+ 
+        const first = lines[0];
+        const rest = lines.slice(1).join(' ');
+ 
+        block.innerHTML = '';
+        const titleEl = document.createElement('div');
+        titleEl.className = 'cal-block-title';
+        titleEl.textContent = first;
+        block.appendChild(titleEl);
+ 
+        if (rest) {
+          const metaEl = document.createElement('div');
+          metaEl.className = 'cal-block-meta';
+          metaEl.textContent = rest;
+          block.appendChild(metaEl);
+        }
+
+        const actions = document.createElement('div');
+        actions.className = 'cal-block-actions';
+        actions.setAttribute('role', 'toolbar');
+        actions.setAttribute('aria-label', 'Reservation actions');
+        const editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'cal-block-action-btn cal-block-action-edit';
+        editBtn.setAttribute('aria-label', 'Edit reservation');
+        editBtn.innerHTML = ICON_EDIT;
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'cal-block-action-btn cal-block-action-delete';
+        delBtn.setAttribute('aria-label', 'Delete reservation');
+        delBtn.innerHTML = ICON_DELETE;
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
+        block.appendChild(actions);
+ 
+        block.dataset.decorated = '1';
+        attachBlockActionHandlers(block);
+      }
+ 
+      function decorateAllReservationBlocks() {
+        calendar.querySelectorAll('.cal-block').forEach(decorateReservationBlock);
+      }
+ 
+      function applyBlockSlotLayout(block) {
+        if (!block) return;
+        const start = parseInt(block.dataset.slotStart, 10);
+        const span = parseInt(block.dataset.slotSpan, 10);
+        const s = Number.isFinite(start) ? start : 0;
+        const n = Number.isFinite(span) ? span : 2;
+        block.style.setProperty('--slot-start', String(s));
+        block.style.setProperty('--slot-span', String(Math.max(1, n)));
+      }
+ 
+      function applyAllBlockLayouts() {
+        calendar.querySelectorAll('.cal-block').forEach(applyBlockSlotLayout);
+      }
+ 
+      function parseTimeLabelToMinutes(str) {
+        const s = String(str || '').trim();
+        const m = s.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (!m) return null;
+        let h = parseInt(m[1], 10);
+        const min = parseInt(m[2], 10);
+        const ap = m[3].toUpperCase();
+        if (ap === 'PM' && h !== 12) h += 12;
+        if (ap === 'AM' && h === 12) h = 0;
+        return h * 60 + min;
+      }
+ 
+      function formatMinutesAsTime12(totalMins) {
+        let t = totalMins % (24 * 60);
+        if (t < 0) t += 24 * 60;
+        const h24 = Math.floor(t / 60);
+        const min = t % 60;
+        const suffix = h24 >= 12 ? 'PM' : 'AM';
+        let h12 = h24 % 12;
+        if (h12 === 0) h12 = 12;
+        return h12 + ':' + String(min).padStart(2, '0') + ' ' + suffix;
+      }
+ 
+      /** Minutes from service length select (e.g. "1.00 hr"); snapped to 15 min, 15–480. */
+      function serviceLabelToMinutes(serviceLabel) {
+        const match = String(serviceLabel || '').match(/([\d.]+)\s*hr/i);
+        if (!match) return 60;
+        const mins = Math.round(parseFloat(match[1]) * 60);
+        const snapped = Math.round(mins / 15) * 15;
+        return Math.min(480, Math.max(15, snapped));
+      }
+ 
+      function parseTimeToSlot(timeStr) {
+        const minutes = parseTimeLabelToMinutes(timeStr);
+        if (minutes === null) return 0;
+        const base = 10 * 60;
+        const idx = Math.floor((minutes - base) / 30);
+        return Math.max(0, Math.min(27, idx));
+      }
+ 
+      function parseEndTimeToSlot(timeStr) {
+        const minutes = parseTimeLabelToMinutes(timeStr);
+        if (minutes === null) return 0;
+        const base = 10 * 60;
+        const idx = Math.ceil((minutes - base) / 30);
+        return Math.max(0, Math.min(28, idx));
+      }
+ 
+      function updateEndTimeFromForm() {
+        if (!startSelect || !serviceSelect || !endInput) return;
+        const sm = parseTimeLabelToMinutes(startSelect.value);
+        const len = serviceLabelToMinutes(serviceSelect.value);
+        if (sm === null) return;
+        endInput.value = formatMinutesAsTime12(sm + len);
+      }
+ 
+      function initFormTimeControls() {
+        if (!startSelect || !serviceSelect) return;
+ 
+        startSelect.innerHTML = '';
+        for (let m = 10 * 60; m <= 23 * 60 + 45; m += 15) {
+          const opt = document.createElement('option');
+          opt.value = formatMinutesAsTime12(m);
+          opt.textContent = opt.value;
+          if (m === 14 * 60) opt.selected = true;
+          startSelect.appendChild(opt);
+        }
+ 
+        startSelect.addEventListener('change', updateEndTimeFromForm);
+        serviceSelect.addEventListener('change', updateEndTimeFromForm);
+ 
+        updateEndTimeFromForm();
+      }
+ 
+      function serviceToSlotSpan(serviceLabel) {
+        const m = String(serviceLabel || '').match(/([\d.]+)\s*hr/i);
+        const hrs = m ? parseFloat(m[1]) : 1;
+        return Math.max(1, Math.round(hrs * 2));
+      }
+ 
+      function buildTimeScale() {
+        if (!timeScale || timeScale.dataset.built === '1') return;
+        const labels = [];
+        for (let minutes = 10 * 60; minutes <= 23 * 60 + 30; minutes += 30) {
+          const h24 = Math.floor(minutes / 60);
+          const m = minutes % 60;
+          const suffix = h24 >= 12 ? 'PM' : 'AM';
+          const h12 = ((h24 + 11) % 12) + 1;
+          labels.push(h12 + ':' + String(m).padStart(2, '0') + ' ' + suffix);
+        }
+        labels.forEach(function (label) {
+          const row = document.createElement('div');
+          row.className = 'time-slot';
+          row.textContent = label;
+          timeScale.appendChild(row);
+        });
+        timeScale.dataset.built = '1';
+      }
+ 
+      function getCourtNumberFromBlock(block) {
+        var col = block && block.closest('.cal-col');
+        if (!col) return null;
+        var attr = col.getAttribute('data-court') || '';
+        var m = attr.match(/Court\s*(\d+)/i);
+        return m ? parseInt(m[1], 10) : null;
+      }
+
+      function showHoverCard(block) {
+        if (!hoverCard || !hoverTime || !hoverService) return;
+        const titleEl = block.querySelector('.cal-block-title');
+        const metaEl = block.querySelector('.cal-block-meta');
+        const title = titleEl ? titleEl.textContent.trim() : 'Reservation';
+        const meta = metaEl ? metaEl.textContent.trim() : '';
+        const person = hoverPeople[Math.floor(Math.random() * hoverPeople.length)];
+ 
+        if (hoverName) hoverName.textContent = person.name;
+        if (hoverPhone) hoverPhone.textContent = person.phone;
+ 
+        hoverTime.textContent = meta || '4:30 PM - 6:30 PM';
+        var courtN = getCourtNumberFromBlock(block);
+        if (courtN === TABLE_TENNIS_COURT_NUMBER) {
+          hoverService.textContent = 'Badminton or table tennis | ' + title;
+        } else if (courtN !== null && PICKLEBALL_COURT_NUMBERS.indexOf(courtN) !== -1) {
+          hoverService.textContent = 'Badminton or pickleball | ' + title;
+        } else if (courtN !== null && BADMINTON_ONLY_COURTS.indexOf(courtN) !== -1) {
+          hoverService.textContent = 'Badminton | ' + title;
+        } else {
+          hoverService.textContent = title;
+        }
+        hoverCard.classList.remove('is-hidden');
+        hoverCard.setAttribute('aria-hidden', 'false');
+ 
+        const rect = block.getBoundingClientRect();
+        const cardRect = hoverCard.getBoundingClientRect();
+        const left = Math.max(8, Math.min(rect.left + rect.width + 10, window.innerWidth - cardRect.width - 8));
+        const top = Math.max(8, Math.min(rect.top - 10, window.innerHeight - cardRect.height - 8));
+ 
+        hoverCard.style.left = left + 'px';
+        hoverCard.style.top = top + 'px';
+      }
+ 
+      function hideHoverCard() {
+        if (!hoverCard) return;
+        hoverCard.classList.add('is-hidden');
+        hoverCard.setAttribute('aria-hidden', 'true');
+      }
+ 
+      if (scheduleHeadersEl) {
+        scheduleHeadersEl.addEventListener('click', function (e) {
+          const btn = e.target.closest('.cal-col-add-btn');
+          if (!btn) return;
+          e.preventDefault();
+          e.stopPropagation();
+          openModal(btn.getAttribute('data-court') || '');
+        });
+      }
+
+      if (calendar) {
+        calendar.addEventListener('click', function (event) {
+          if (event.target.closest('.cal-block-actions')) return;
+          var block = event.target.closest('.cal-block');
+          if (block && calendar.contains(block)) {
+            showHoverCard(block);
+            return;
+          }
+          const col = event.target.closest('.cal-col');
+          if (!col) return;
+          const court = col.getAttribute('data-court') || '';
+          openModal(court);
+        });
+ 
+        calendar.addEventListener('mouseover', function (event) {
+          const block = event.target.closest('.cal-block');
+          if (!block || !calendar.contains(block)) return;
+          showHoverCard(block);
+        });
+ 
+        calendar.addEventListener('mouseout', function (event) {
+          const fromBlock = event.target.closest('.cal-block');
+          if (!fromBlock) return;
+          const next = event.relatedTarget;
+          if (next && (fromBlock.contains(next) || (hoverCard && hoverCard.contains(next)))) return;
+          hideHoverCard();
+        });
+      }
+ 
+      if (hoverCard) {
+        hoverCard.addEventListener('mouseleave', hideHoverCard);
+      }
+ 
+      if (overlay && closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', function (event) {
+          if (event.target === overlay) closeModal();
+        });
+      }
+ 
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        if (appointmentsDropdownOpen) {
+          event.preventDefault();
+          closeAppointmentsDropdown();
+          return;
+        }
+        if (miniCalendarOpen) {
+          event.preventDefault();
+          closeMiniCalendar();
+          return;
+        }
+        if (overlay && !overlay.classList.contains('is-hidden')) {
+          closeModal();
+        }
+      });
+ 
+      window.addEventListener('scroll', hideHoverCard, { passive: true });
+      window.addEventListener('resize', hideHoverCard);
+ 
+      if (addBtn && calendar) {
+        addBtn.addEventListener('click', function () {
+          var resource = modalCourtName;
+          if (!resource) {
+            setStatus('Open this form from a court column (or the + button on a court).', true);
+            return;
+          }
+
+          var courtNum = parseCourtNumberFromName(resource);
+          var eventNameEl = document.getElementById('res-event-name');
+          var customEventName = eventNameEl ? eventNameEl.value.trim() : '';
+          if (courtNeedsCustomEventName(courtNum)) {
+            if (!customEventName) {
+              setStatus('Enter an event name for this court (e.g. Pickleball, Training).', true);
+              if (eventNameEl) eventNameEl.focus();
+              return;
+            }
+          }
+ 
+          var targetCol = Array.from(calendar.querySelectorAll('.cal-col')).find(function (col) {
+            return col.getAttribute('data-court') === resource;
+          });
+ 
+          if (!targetCol) {
+            setStatus('Unable to find the selected court column.', true);
+            return;
+          }
+ 
+          const body = targetCol.querySelector('.cal-col-body');
+          if (!body) {
+            setStatus('Schedule column is missing.', true);
+            return;
+          }
+ 
+          const service = serviceSelect ? serviceSelect.value : '1.00 hr';
+          const start = startSelect ? startSelect.value : '';
+          const end = endInput ? endInput.value : '';
+ 
+          const newBlock = document.createElement('div');
+          newBlock.className = isPickleballCourtNumber(courtNum)
+            ? 'cal-block is-event'
+            : isTableTennisCourtNumber(courtNum)
+              ? 'cal-block is-table-tennis'
+              : 'cal-block is-blue';
+          if (courtNeedsCustomEventName(courtNum) && customEventName) {
+            if (start && end) {
+              newBlock.innerHTML = customEventName + '<br>' + start + ' – ' + end + ' · ' + service;
+            } else {
+              newBlock.innerHTML = customEventName + '<br>' + service;
+            }
+          } else if (start && end) {
+            newBlock.innerHTML = start + ' - ' + end + '<br>' + service;
+          } else {
+            newBlock.innerHTML = service;
+          }
+          decorateReservationBlock(newBlock);
+ 
+          let slotStart = parseTimeToSlot(start);
+          let slotSpan = serviceToSlotSpan(service);
+          if (start && end) {
+            const endSlot = parseEndTimeToSlot(end);
+            slotSpan = Math.max(1, endSlot - slotStart);
+          }
+          newBlock.dataset.slotStart = String(slotStart);
+          newBlock.dataset.slotSpan = String(slotSpan);
+          applyBlockSlotLayout(newBlock);
+ 
+          body.appendChild(newBlock);
+          newBlock.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+ 
+          setStatus('Reservation added to ' + resource + (start && end ? ' at ' + start + ' - ' + end + '.' : '.'), false);
+          closeModal();
+        });
+      }
+ 
+      initBookAppointmentsPanel();
+      initBookPanelCollapse();
+      initScheduleDateControls();
+      initFormTimeControls();
+      buildTimeScale();
+      syncModalCourtFields();
+      if (calendar) {
+        decorateAllReservationBlocks();
+        applyAllBlockLayouts();
+      }
+    })();
+  </script>
 </body>
 </html>
+ 
+ 

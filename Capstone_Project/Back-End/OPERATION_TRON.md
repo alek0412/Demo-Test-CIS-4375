@@ -51,13 +51,13 @@ Use `kill -9 <PID>` only if it will not stop.
 
 ```bash
 cd ~
-rm -rf Demo-Test-CIS-4375
+rm -rf CIS-4375-Project
 ```
 
-If you used a different folder name (e.g. `CIS-4375-Project`), remove that instead:
+If you used a different folder name (e.g. an old **`Demo-Test-CIS-4375`** clone), remove that instead:
 
 ```bash
-rm -rf CIS-4375-Project
+rm -rf Demo-Test-CIS-4375
 ```
 
 ---

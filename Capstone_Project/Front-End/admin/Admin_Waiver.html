@@ -96,11 +96,24 @@
     <div class="admin-main">
       <header class="admin-topbar"><div id="admin-theme-container"></div></header>
       <div class="admin-content">
-        <div class="admin-title-wrap admin-title-wrap--left admin-title-wrap--waiver">
+        <div class="admin-title-wrap admin-title-wrap--left">
           <h1 class="admin-page-title">Waiver</h1>
         </div>
+        <div id="waiver-search-wrap" class="db-search-wrap is-hidden">
+          <div class="db-search-filter-row">
+            <input type="text" id="waiver-search" placeholder="Search waivers..." aria-label="Search waiver table">
+            <div class="db-filter-wrap">
+              <button type="button" id="waiver-filter-btn" class="db-filter-btn" aria-haspopup="true" aria-expanded="false">Filter by status ▾</button>
+              <div id="waiver-filter-dropdown" class="db-filter-dropdown is-hidden" role="menu"></div>
+            </div>
+          </div>
+          <p class="db-search-hint">The Customer column shows each person’s full name (from the customer table). Hover a cell to see the customer ID. Search and filter work as usual.</p>
+          <p class="db-result-count is-hidden" id="waiver-result-count" aria-live="polite">Showing <span id="waiver-count-num">—</span> waivers</p>
+        </div>
+        <div id="db-content" class="db-loading"></div>
       </div>
     </div>
   </div>
+  <script src="admin-waiver.js"></script>
 </body>
 </html>
