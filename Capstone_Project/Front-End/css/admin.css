@@ -2798,6 +2798,12 @@ body:has(.reservations-page) #gh-back-top {
   min-height: 72vh;
 }
 
+/* Schedule grid only (Book Appointments sidebar removed) */
+.reservations-main-layout.reservations-main-layout--schedule-only {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
 .reservations-main-layout.res-book-layout--collapsed {
   grid-template-columns: 48px minmax(0, 1fr);
 }
