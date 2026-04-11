@@ -1,5 +1,5 @@
 /**
- * Proxy Flask-owned routes (employee login/logout, employee-create, courts) so the browser
+ * Proxy Flask-owned routes (employee login/logout, employee-create, courts, reservations) so the browser
  * stays on the Node origin. Paths match Back-End/[Python]/routes/*.py without changing Python.
  */
 const { proxyToFlask, writeFlaskResponse } = require('../lib/flaskHttp');
@@ -116,6 +116,33 @@ module.exports = async function flaskApiProxy(req, res, ctx) {
       writeFlaskResponse(res, upstream);
     } catch (err) {
       console.error('[flask proxy] /api/court', err.message);
+      res.writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('Unable to reach Flask.');
+    }
+    return true;
+  }
+
+  if (pathname === '/api/reservation') {
+    const m = req.method;
+    if (!['GET', 'POST', 'PATCH'].includes(m)) {
+      return false;
+    }
+    try {
+      let bodyOpt = null;
+      let contentType;
+      if (m === 'POST' || m === 'PATCH') {
+        const data = await parseBody(req);
+        bodyOpt = JSON.stringify(data);
+        contentType = 'application/json';
+      }
+      const upstream = await proxyToFlask(base, m, '/api/reservation', {
+        body: bodyOpt,
+        cookie,
+        contentType,
+      });
+      writeFlaskResponse(res, upstream);
+    } catch (err) {
+      console.error('[flask proxy] /api/reservation', err.message);
       res.writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end('Unable to reach Flask.');
     }
