@@ -208,7 +208,8 @@ def reservation_approval():
         )
         if type(update_customer) == int:
             return make_response("Server is unable to update customer", 503)
-    elif reservation_status == 3:
+    #If employee denies or cancels reservation
+    elif reservation_status in [3,4]:
         update_customer = sql_functions.execute_query(secure_connection,"update waiver set waiver_status=1 where customer_id=%s",(reservation_fetch[0]["customer_id"],))
         if type(update_customer) == int:
             return make_response("Server is unable to update customer", 503)
