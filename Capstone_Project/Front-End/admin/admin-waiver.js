@@ -139,7 +139,7 @@
           var colLabels = {
             waiver_id: 'Waiver ID',
             customer_id: 'Customer',
-            waiver_status: 'Waiver status',
+            waiver_status: 'Reservation status',
           };
           function columnHeaderLabel(colName) {
             var key = colName.toLowerCase().replace(/\s+/g, '_');
@@ -147,11 +147,20 @@
               return c.toUpperCase();
             });
           }
+          /** DB waiver_status: 1 = available, 2 = pending staff approval, 3 = reserved (see Python reservation flow). */
           function waiverStatusLabel(val) {
-            if (val === 1 || val === '1') return 'Pending';
-            if (val === 2 || val === '2') return 'On file';
-            if (val === 3 || val === '3') return 'Inactive';
+            if (val === 1 || val === '1') return 'Available for Reservation';
+            if (val === 2 || val === '2') return 'Pending for Approval';
+            if (val === 3 || val === '3') return 'Already Reserved';
             return val != null && val !== '' ? String(val) : '';
+          }
+
+          function waiverStatusPillTone(labelText) {
+            var s = String(labelText || '').toLowerCase();
+            if (s.indexOf('already reserved') !== -1) return 'ok';
+            if (s.indexOf('pending for approval') !== -1) return 'muted';
+            if (s.indexOf('available for reservation') !== -1) return 'neutral';
+            return 'neutral';
           }
           html += '<table id="waiver-table"><thead><tr>';
           cols.forEach(function (c) {
@@ -199,12 +208,7 @@
               }
               var safe = display != null && display !== '' ? String(display) : '';
               if (c === statusColName && safe) {
-                var tone =
-                  String(safe).toLowerCase() === 'on file'
-                    ? 'ok'
-                    : String(safe).toLowerCase() === 'pending'
-                      ? 'muted'
-                      : 'neutral';
+                var tone = waiverStatusPillTone(safe);
                 html += '<td><span class="db-pill db-pill--' + tone + '">' + escapeHtmlText(safe) + '</span></td>';
               } else {
                 html += '<td>' + escapeHtmlText(safe) + '</td>';
@@ -234,9 +238,9 @@
       var filterStatus = '';
 
       function waiverStatusLabelForRow(val) {
-        if (val === 1 || val === '1') return 'Pending';
-        if (val === 2 || val === '2') return 'On file';
-        if (val === 3 || val === '3') return 'Inactive';
+        if (val === 1 || val === '1') return 'Available for Reservation';
+        if (val === 2 || val === '2') return 'Pending for Approval';
+        if (val === 3 || val === '3') return 'Already Reserved';
         return val != null && val !== '' ? String(val) : '';
       }
 
@@ -264,7 +268,7 @@
 
         var dropdownHtml = '';
         if (Object.keys(statusCounts).length > 0) {
-          dropdownHtml += '<div class="db-filter-section"><div class="db-filter-section-title">By waiver status</div>';
+          dropdownHtml += '<div class="db-filter-section"><div class="db-filter-section-title">By reservation status</div>';
           dropdownHtml +=
             '<button type="button" class="db-filter-option db-filter-status' +
             (filterStatus === '' ? ' is-active' : '') +
