@@ -8,6 +8,55 @@
     return true;
   }
 
+  function escapeHtmlAttr(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;');
+  }
+
+  function escapeHtmlText(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;');
+  }
+
+  /** Build map customer_id -> "First Last" from GET /api/db `customer` table rows */
+  function buildCustomerNameById(customerRows) {
+    var map = {};
+    if (!customerRows || !customerRows.length || customerRows[0]._error) return map;
+    var keys = Object.keys(customerRows[0]);
+    var idKey = keys.find(function (k) {
+      return k.toLowerCase() === 'customer_id';
+    });
+    var firstKey = keys.find(function (k) {
+      return k.toLowerCase() === 'customer_first_name';
+    });
+    var lastKey = keys.find(function (k) {
+      return k.toLowerCase() === 'customer_last_name';
+    });
+    if (!idKey) return map;
+    customerRows.forEach(function (cust) {
+      var id = cust[idKey];
+      if (id == null && id !== 0) return;
+      var fn = firstKey && cust[firstKey] != null ? String(cust[firstKey]).trim() : '';
+      var ln = lastKey && cust[lastKey] != null ? String(cust[lastKey]).trim() : '';
+      var name = (fn + ' ' + ln).trim();
+      if (!name) name = 'Customer #' + String(id);
+      map[String(id)] = name;
+    });
+    return map;
+  }
+
+  function customerFullName(lookup, idVal) {
+    if (idVal == null || idVal === '') return '';
+    var s = String(idVal).trim();
+    if (lookup[s]) return lookup[s];
+    var n = parseInt(s, 10);
+    if (Number.isFinite(n) && lookup[String(n)]) return lookup[String(n)];
+    return '';
+  }
+
   fetch('/api/me', { credentials: 'same-origin' })
     .then(function (r) {
       return r.json();
@@ -63,6 +112,7 @@
 
       el.className = '';
       var tables = data.tables || {};
+      var customerNameById = buildCustomerNameById(tables.customer || tables.Customer);
       var rows = tables.waiver || tables.Waiver;
       var html = '';
 
@@ -88,7 +138,7 @@
           });
           var colLabels = {
             waiver_id: 'Waiver ID',
-            customer_id: 'Customer ID',
+            customer_id: 'Customer',
             waiver_status: 'Waiver status',
           };
           function columnHeaderLabel(colName) {
@@ -130,12 +180,24 @@
             html += '<tr class="waiver-data-row"' + (wid ? ' data-waiver-id="' + wid + '"' : '') + '>';
             cols.forEach(function (c) {
               var display = row[c];
+              var lower = String(c || '').toLowerCase();
+              if (lower === 'customer_id') {
+                var idRaw = display != null && display !== '' ? String(display).trim() : '';
+                var fullName = idRaw ? customerFullName(customerNameById, idRaw) : '';
+                var showText = fullName || idRaw;
+                var tip = idRaw ? 'Customer ID: ' + idRaw : '';
+                html +=
+                  '<td title="' +
+                  escapeHtmlAttr(tip || showText) +
+                  '">' +
+                  escapeHtmlText(showText) +
+                  '</td>';
+                return;
+              }
               if (c === statusColName && display != null && display !== '') {
                 display = waiverStatusLabel(display);
               }
               var safe = display != null && display !== '' ? String(display) : '';
-              var lower = String(c || '').toLowerCase();
-              var cellClass = lower === 'customer_id' ? ' class="db-cell-mono"' : '';
               if (c === statusColName && safe) {
                 var tone =
                   String(safe).toLowerCase() === 'on file'
@@ -143,9 +205,9 @@
                     : String(safe).toLowerCase() === 'pending'
                       ? 'muted'
                       : 'neutral';
-                html += '<td><span class="db-pill db-pill--' + tone + '">' + safe + '</span></td>';
+                html += '<td><span class="db-pill db-pill--' + tone + '">' + escapeHtmlText(safe) + '</span></td>';
               } else {
-                html += '<td' + cellClass + '>' + safe + '</td>';
+                html += '<td>' + escapeHtmlText(safe) + '</td>';
               }
             });
             html += '</tr>';
