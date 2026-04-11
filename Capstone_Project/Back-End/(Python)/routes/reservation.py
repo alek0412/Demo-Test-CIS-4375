@@ -99,7 +99,7 @@ def add_reservation():
     )
     if type(customer_availability) == int:
         return make_response("Server is unable to fetch waiver", 503)
-    if customer_availability[0]["waiver_status"] != 2:
+    if customer_availability[0]["waiver_status"] != 1:
         return make_response("Customer is not available for booking", 400)
     reservation_create = sql_functions.execute_query(
         secure_connection,
