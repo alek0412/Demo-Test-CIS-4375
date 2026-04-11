@@ -147,19 +147,19 @@
               return c.toUpperCase();
             });
           }
-          /** DB waiver_status: 1 = available, 2 = pending staff approval, 3 = reserved (see Python reservation flow). */
+          /** DB waiver_status (Flask /api/reservation): 2 = eligible to book; 3 = hold while a reservation is active; 1 = legacy/not eligible. */
           function waiverStatusLabel(val) {
-            if (val === 1 || val === '1') return 'Available for Reservation';
-            if (val === 2 || val === '2') return 'Pending for Approval';
-            if (val === 3 || val === '3') return 'Already Reserved';
+            if (val === 1 || val === '1') return 'Not eligible';
+            if (val === 2 || val === '2') return 'Eligible to book';
+            if (val === 3 || val === '3') return 'Active booking hold';
             return val != null && val !== '' ? String(val) : '';
           }
 
           function waiverStatusPillTone(labelText) {
             var s = String(labelText || '').toLowerCase();
-            if (s.indexOf('already reserved') !== -1) return 'ok';
-            if (s.indexOf('pending for approval') !== -1) return 'muted';
-            if (s.indexOf('available for reservation') !== -1) return 'neutral';
+            if (s.indexOf('active booking hold') !== -1) return 'ok';
+            if (s.indexOf('eligible to book') !== -1) return 'neutral';
+            if (s.indexOf('not eligible') !== -1) return 'muted';
             return 'neutral';
           }
           html += '<table id="waiver-table"><thead><tr>';
@@ -238,9 +238,9 @@
       var filterStatus = '';
 
       function waiverStatusLabelForRow(val) {
-        if (val === 1 || val === '1') return 'Available for Reservation';
-        if (val === 2 || val === '2') return 'Pending for Approval';
-        if (val === 3 || val === '3') return 'Already Reserved';
+        if (val === 1 || val === '1') return 'Not eligible';
+        if (val === 2 || val === '2') return 'Eligible to book';
+        if (val === 3 || val === '3') return 'Active booking hold';
         return val != null && val !== '' ? String(val) : '';
       }
 

@@ -144,7 +144,7 @@ def reservation_approval():
         return make_response("Invalid reservation parameters", 400)
     reservation_fetch = sql_functions.execute_read(
         secure_connection,
-        "select reservation_status from reservation where reservation_id=%s",
+        "select reservation_status, customer_id from reservation where reservation_id=%s",
         (reservation_id,),
     )
     if type(reservation_fetch) == int:
@@ -164,14 +164,30 @@ def reservation_approval():
 
     if type(reservation_update) == int:
         return make_response("Server cannot update reservation", 503)
-    if reservation_status==2:
-        update_customer=sql_functions.execute_query(secure_connection,"update waiver set waiver_status=3 where customer_id=%s",(reservation_fetch[0]['customer_id']))
-        if type(update_customer)==int:
-            return make_response("Server is unable to update customer",503)
-    elif reservation_status==4:
-        update_customer=sql_functions.execute_query(secure_connection,"update waiver set waiver_status=1 where customer_id=%s",(reservation_fetch[0]['customer_id']))
-        if type(update_customer)==int:
-            return make_response("Server is unable to update customer",503)     
+    if reservation_status == 2:
+        update_customer = sql_functions.execute_query(
+            secure_connection,
+            "update waiver set waiver_status=3 where customer_id=%s",
+            (reservation_fetch[0]["customer_id"],),
+        )
+        if type(update_customer) == int:
+            return make_response("Server is unable to update customer", 503)
+    elif reservation_status == 4:
+        # Match Node admin cancel: waiver_status 2 = eligible to book (see add_reservation check).
+        cid = reservation_fetch[0]["customer_id"]
+        still_active = sql_functions.execute_read(
+            secure_connection,
+            "select count(*) as c from reservation where customer_id=%s and reservation_status in (1,2)",
+            (cid,),
+        )
+        if type(still_active) != int and still_active and int(still_active[0]["c"]) == 0:
+            update_customer = sql_functions.execute_query(
+                secure_connection,
+                "update waiver set waiver_status=2 where customer_id=%s",
+                (cid,),
+            )
+            if type(update_customer) == int:
+                return make_response("Server is unable to update customer", 503)
     if current == 1:
         verb = "approved" if reservation_status == 2 else "denied"
     else:

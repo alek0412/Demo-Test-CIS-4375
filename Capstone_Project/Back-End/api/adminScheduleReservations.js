@@ -2,8 +2,24 @@
  * Admin schedule: list / cancel / clear-day for court reservations (MySQL).
  * Active calendar: reservation_status 1 (pending) and 2 (approved).
  * Cancel sets reservation_status = 4 (canceled) — rows are kept for history.
+ *
+ * Waiver (Flask /api/reservation): waiver_status 2 = customer may book; 3 = has an active
+ * pending or approved reservation. When the last active reservation is canceled, set waiver to 2.
  */
 const db = require('../db/connection');
+
+/** After canceling a row, set waiver to 2 only if customer has no other reservation in (1,2). */
+async function restoreBookingEligibilityIfNoActiveReservations(conn, customerId) {
+  if (customerId == null) return;
+  const [cntRows] = await conn.execute(
+    'SELECT COUNT(*) AS c FROM reservation WHERE customer_id = ? AND reservation_status IN (1, 2)',
+    [customerId]
+  );
+  const n = Number(cntRows[0] && cntRows[0].c);
+  if (n === 0) {
+    await conn.execute('UPDATE waiver SET waiver_status = 2 WHERE customer_id = ?', [customerId]);
+  }
+}
 
 function getCookie(req, name) {
   const c = req.headers.cookie || '';
@@ -142,8 +158,6 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
         sendJson(res, 404, { success: false, message: 'Reservation not found or not active' });
         return true;
       }
-      const current = Number(sel[0].reservation_status);
-      const waiverId = sel[0].waiver_id;
       const customerId = sel[0].customer_id;
       const [upd] = await conn.execute(
         'UPDATE reservation SET reservation_status = 4, employee_id = ? WHERE reservation_id = ? AND reservation_status IN (1, 2)',
@@ -154,11 +168,7 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
         sendJson(res, 409, { success: false, message: 'Could not update reservation' });
         return true;
       }
-      if (current === 1 && waiverId != null) {
-        await conn.execute('UPDATE waiver SET waiver_status = 2 WHERE waiver_id = ?', [waiverId]);
-      } else if (current === 2 && customerId != null) {
-        await conn.execute('UPDATE waiver SET waiver_status = 1 WHERE customer_id = ?', [customerId]);
-      }
+      await restoreBookingEligibilityIfNoActiveReservations(conn, customerId);
       await conn.commit();
       sendJson(res, 200, { success: true, reservation_id: rid, reservation_status: 4 });
     } catch (e) {
@@ -199,21 +209,16 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
     try {
       await conn.beginTransaction();
       const [rlist] = await conn.execute(
-        'SELECT reservation_id, reservation_status, waiver_id, customer_id FROM reservation WHERE reservation_date = ? AND reservation_status IN (1, 2)',
+        'SELECT reservation_id, customer_id FROM reservation WHERE reservation_date = ? AND reservation_status IN (1, 2)',
         [dateStr]
       );
       for (let i = 0; i < rlist.length; i++) {
         const row = rlist[i];
-        const cur = Number(row.reservation_status);
         await conn.execute(
           'UPDATE reservation SET reservation_status = 4, employee_id = ? WHERE reservation_id = ?',
           [employeeId, row.reservation_id]
         );
-        if (cur === 1 && row.waiver_id != null) {
-          await conn.execute('UPDATE waiver SET waiver_status = 2 WHERE waiver_id = ?', [row.waiver_id]);
-        } else if (cur === 2 && row.customer_id != null) {
-          await conn.execute('UPDATE waiver SET waiver_status = 1 WHERE customer_id = ?', [row.customer_id]);
-        }
+        await restoreBookingEligibilityIfNoActiveReservations(conn, row.customer_id);
       }
       await conn.commit();
       sendJson(res, 200, {
