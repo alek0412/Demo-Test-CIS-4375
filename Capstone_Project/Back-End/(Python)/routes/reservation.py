@@ -161,11 +161,20 @@ def reservation_approval():
         "update reservation set reservation_status=%s,employee_id=%s where reservation_id=%s",
         (reservation_status, session["employee_id"], reservation_id),
     )
+
     if type(reservation_update) == int:
         return make_response("Server cannot update reservation", 503)
+    if reservation_status==2:
+        update_customer=sql_functions.execute_query(secure_connection,"update waiver set waiver_status=3 where customer_id=%s",(reservation_fetch[0]['customer_id']))
+        if type(update_customer)==int:
+            return make_response("Server is unable to update customer",503)
+    elif reservation_status==4:
+        update_customer=sql_functions.execute_query(secure_connection,"update waiver set waiver_status=1 where customer_id=%s",(reservation_fetch[0]['customer_id']))
+        if type(update_customer)==int:
+            return make_response("Server is unable to update customer",503)     
     if current == 1:
         verb = "approved" if reservation_status == 2 else "denied"
     else:
-        verb = "canceled"
+        verb = "cancelled"
     return make_response(f"Successfully {verb} reservation!", 201)
 
