@@ -745,6 +745,11 @@ body[data-theme="light"] .admin-sidebar-toggle:hover {
   padding-top: 0.5rem;
 }
 
+/* Waiver page: same spacing as Customers */
+.admin-content:has(#waiver-search-wrap) {
+  padding-top: 0.5rem;
+}
+
 /* Reservations: pull content up — default topbar uses a large bottom pad */
 .admin-main:has(.reservations-page) .admin-topbar {
   padding: 0.5rem 1.5rem 0.35rem 0.5rem;
