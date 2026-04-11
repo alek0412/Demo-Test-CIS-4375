@@ -96,7 +96,7 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
       const { rows } = await db.query(
         `SELECT r.reservation_id, r.court_id, r.customer_id, r.waiver_id, r.reservation_date,
                 r.reservation_start_time, r.reservation_end_time, r.reservation_status,
-                c.customer_first_name, c.customer_last_name
+                c.customer_first_name, c.customer_last_name, c.phone AS customer_phone
          FROM reservation r
          LEFT JOIN customer c ON c.customer_id = r.customer_id
          WHERE r.reservation_date = ?
@@ -115,6 +115,7 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
         reservation_status: row.reservation_status,
         customer_first_name: row.customer_first_name,
         customer_last_name: row.customer_last_name,
+        phone: row.customer_phone != null ? String(row.customer_phone).trim() : '',
       }));
       sendJson(res, 200, { success: true, reservations });
     } catch (e) {
