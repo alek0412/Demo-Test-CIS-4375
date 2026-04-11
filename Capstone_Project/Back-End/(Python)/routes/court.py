@@ -1,6 +1,6 @@
 from flask import jsonify,request,make_response,Blueprint,session
 import sql_functions
-from ssh_connection import sql_connection
+from ssh_connection import secure_connection
 
 court_blueprint=Blueprint("court",__name__,template_folder="templates")
 
@@ -12,11 +12,11 @@ def add_court():
         if type(court_type)!=int:
             return make_response("Invalid court type",400)
         if not session.get("is_employee") and not session.get("is_manager"):
-            return make_response("Invalid authorization",403)
+            return make_response("Invalid authorization",401)
     except KeyError:
         return make_response("Unable to make court",400)
 
-    court_query=sql_functions.execute_query(sql_connection,"insert into court (court_type,court_availability) values(%s,%s)",(court_type,True))
+    court_query=sql_functions.execute_query(secure_connection,"insert into court (court_type,court_availability) values(%s,%s)",(court_type,True))
     if type(court_query)==int:
         return make_response("Unable to create court",503)
     return make_response("Court successfully created",201)
@@ -31,7 +31,7 @@ def get_court():
             return make_response("Invalid court",400)
     except KeyError:
         return make_response("Invalid court",400)
-    court_fetch = sql_functions.execute_read(sql_connection,"select court_type.sport,court_availability from court left join court_type on court.court_type=court_type.court_type where court_id=%s;",(court_id,))
+    court_fetch = sql_functions.execute_read(secure_connection,"select court_type.sport,court_availability from court left join court_type on court.court_type=court_type.court_type where court_id=%s;",(court_id,))
     if type(court_fetch)==int:
         return make_response("Unable to retrieve court",503)
     return jsonify(court_fetch)
@@ -45,11 +45,11 @@ def update_court():
         if type(available)!= bool or type(court_id)!=int:
             return make_response("Invalid court or attribute",400)
         if not session.get("is_employee"):
-            return make_response("Invalid authorization",403)
+            return make_response("Invalid authorization",401)
     except KeyError:
         return make_response("Invalid court",400)
 
-    court_query=sql_functions.execute_query(sql_connection,"update table court set court_availability =%s where court_id=%s",(available,court_id))
+    court_query=sql_functions.execute_query(secure_connection,"update table court set court_availability =%s where court_id=%s",(available,court_id))
     if type(court_query)==int:
         return make_response("Server is unable to update",503)
     return make_response("Court successfully updated",200)
@@ -62,7 +62,7 @@ def delete_court():
         if type(court_id)!=int:
             return make_response("Invalid court",400)
         if not session.get("is_employee") and not session.get("is_manager"):
-            return make_response("Invalid authorization",403)
+            return make_response("Invalid authorization",401)
     except KeyError:
         return make_response("Invalid court",400)
 
@@ -73,3 +73,10 @@ def delete_court():
     if type(delete_court)==int:
         return make_response("Unable to delete court",503)
     return make_response("Court successfully deleted",200)
+
+@court_blueprint.route("/api/available-court",method=['get'])
+def available_courts():
+    available_court_result=sql_functions.execute_read(secure_connection,"select court_id,court_type.sport from court left join court_type on court.court_type=court_type.court_type where court_availability=1 order by sport;")
+    if type(available_court_result)==int:
+        return make_response("Unable to fetch available courts",503)
+    return jsonify(available_court_result)

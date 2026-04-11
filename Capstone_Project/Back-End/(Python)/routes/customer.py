@@ -85,7 +85,7 @@ def customer_login():
         return make_response("Server cannot find your email",400)
     hashed_password=hashlib.pbkdf2_hmac('sha256',password.encode(encoding='utf-8'),bytes.fromhex(customer_query[0]['salt']),50000).hex()
     if hashed_password!=customer_query[0]['password'] or email.lower() != customer_query[0]['email']:
-        return make_response("Invalid email or password",403)
+        return make_response("Invalid email or password",401)
     #Purge employee in session
     session.clear()
     for attribute in customer_query[0]:
@@ -135,13 +135,23 @@ def customer_me_get():
 
 @customer_blueprint.route("/api/customer",methods=['delete'])
 def customer_remove():
-    delete_reservations=sql_functions.execute_query(sql_connection,"delete from reservation where customer_id =%s",(session['customer_id'],))
+    request_json=request.get_json()
+    session_id=session.get("customer_id")
+    if not session.get("customer_id") or not request_json.get("customer_id"):
+        return make_response("Invalid customer to delete",400)
+    elif not session.get("is_employee") and not session.get("is_customer"):
+        return make_response("Authorization required for deleting customer",401)
+    try:
+        customer_id=session_id if session_id else request_json.get("customer_id")
+    except ValueError:
+        return make_response("Invalid customer",400)
+    delete_reservations=sql_functions.execute_query(sql_connection,"delete from reservation where customer_id =%s",(customer_id,))
     if type(delete_reservations)==int:
         return make_response("Unable to delete from reservations",503)
-    delete_waiver=sql_functions.execute_query(sql_connection,"delete from waiver where customer_id = %s",(session['customer_id'],))
+    delete_waiver=sql_functions.execute_query(sql_connection,"delete from waiver where customer_id = %s",(customer_id,))
     if type(delete_waiver)==int:
         return make_response("Unable to delete from waiver",503)
-    delete_customer=sql_functions.execute_query(sql_connection,"delete from customer where customer_id=%s",(session['customer_id'],))
+    delete_customer=sql_functions.execute_query(sql_connection,"delete from customer where customer_id=%s",(customer_id,))
     if type(delete_customer)==int:
         return make_response("Unable to delete customer",503)
     session.clear()

@@ -10,7 +10,7 @@ def create_employee():
     request_json=request.get_json()
     try:
         if not session.get("is_manager") or not session.get("is_employee") or session.get("is_customer"):
-            return make_response("You don't have the authorization to create employee",403)
+            return make_response("You don't have the authorization to create employee",401)
         last_name:str=request_json['last_name'].capitalize()
         first_name:str=request_json['first_name'].capitalize()
         phone=request_json['phone']
@@ -27,7 +27,7 @@ def create_employee():
             return make_response("Server is unable to create employee")
         return make_response("Employee successfully created",201)
     except (KeyError,TypeError):
-        return make_response("Invalid employee details or improper authorization",403)
+        return make_response("Invalid employee details or improper authorization",401)
     
 
 @employee_blueprint.route("/api/login",methods=["post"])
@@ -43,7 +43,7 @@ def login_employee():
         return make_response("Unable to fetch employee details",503)
     hashed_password=hashlib.pbkdf2_hmac("sha256",password.encode(encoding='utf-8'),bytes.fromhex(employee_query[0]['employee_salt']),50000).hex()
     if hashed_password != employee_query[0]['employee_password'] or email.lower() != employee_query[0]['employee_email']:
-        return make_response("Invalid email or password",403)
+        return make_response("Invalid email or password",401)
     #Purge customer in session
     session.clear()
     #Add employee details
@@ -70,7 +70,7 @@ def employee_fire():
         if type(employee_id)!=int:
             raise TypeError("Invalid employee")
         if not session.get("is_manager"):
-            return make_response("Invalid authorization",403)
+            return make_response("Invalid authorization",401)
     except (KeyError,TypeError):
         return make_response("Invalid employee",400)
     delete_reservations=sql_functions.execute_query(sql_connection,"delete from reservation where employee_id=%s",(employee_id,))
@@ -91,7 +91,7 @@ def employee_change():
     if not employee_id:
         return make_response("Invalid employee",400)
     if not session.get("is_manager"):
-        return make_response("Invalid permissions",403)
+        return make_response("Invalid permissions",401)
     employee_retrieve=sql_functions.execute_read(sql_connection,"select * from employee where employee_id=%s",(employee_id,))
     if type(employee_retrieve) == int or len(employee_retrieve)==0:
         return make_response("Server is unable to fetch employee",503)
