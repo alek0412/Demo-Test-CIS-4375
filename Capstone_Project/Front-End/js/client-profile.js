@@ -218,7 +218,12 @@
       confirmDeleteBtn.disabled = deleteInput.value.trim() !== 'DELETE';
     });
     confirmDeleteBtn.addEventListener('click', function () {
-      fetch('/api/customer', { method: 'DELETE', credentials: 'same-origin' })
+      fetch('/api/customer', {
+        method: 'DELETE',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
+      })
         .then(function (r) {
           return r.text().then(function (text) {
             return { ok: r.ok, text: text };
