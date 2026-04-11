@@ -74,7 +74,7 @@ def delete_court():
         return make_response("Unable to delete court",503)
     return make_response("Court successfully deleted",200)
 
-@court_blueprint.route("/api/available-court",method=['get'])
+@court_blueprint.route("/api/available-court", methods=["get"])
 def available_courts():
     available_court_result=sql_functions.execute_read(secure_connection,"select court_id,court_type.sport from court left join court_type on court.court_type=court_type.court_type where court_availability=1 order by sport;")
     if type(available_court_result)==int:
