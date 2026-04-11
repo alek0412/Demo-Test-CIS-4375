@@ -4,12 +4,39 @@
 (function () {
   'use strict';
 
+  var HIDDEN_EMPLOYEE_COLS = { employee_password: true, employee_salt: true };
+
+  function isHiddenEmployeeColumn(name) {
+    var k = String(name || '')
+      .toLowerCase()
+      .replace(/\s+/g, '_');
+    return HIDDEN_EMPLOYEE_COLS[k] === true;
+  }
+
+  function visibleEmployeeColumns(keys) {
+    return keys.filter(function (c) {
+      return !isHiddenEmployeeColumn(c);
+    });
+  }
+
+  /** DB: employee_rank 1 = manager, 2 = regular (matches Flask session checks). */
+  function formatEmployeeCell(colName, raw) {
+    var key = String(colName || '')
+      .toLowerCase()
+      .replace(/\s+/g, '_');
+    if (key === 'employee_rank') {
+      var n = parseInt(raw, 10);
+      if (n === 1) return 'Manager';
+      if (n === 2) return 'Regular Employee';
+    }
+    if (raw != null && raw !== '') return String(raw);
+    return '';
+  }
+
   var overlay = document.getElementById('manager-gate-overlay');
   var gateForm = document.getElementById('manager-gate-form');
   var gateError = document.getElementById('manager-gate-error');
   var gateSubmit = document.getElementById('manager-gate-submit');
-  var managerNote = document.getElementById('manager-session-note');
-  var managerLogoutBtn = document.getElementById('manager-logout-btn');
 
   function showManagerGate(show) {
     if (!overlay) return;
@@ -84,13 +111,14 @@
             if (searchWrap) searchWrap.classList.remove('is-hidden');
             var countWrap = document.getElementById('employee-result-count');
             if (countWrap) countWrap.classList.remove('is-hidden');
-            var cols = Object.keys(rows[0]);
+            var cols = visibleEmployeeColumns(Object.keys(rows[0]));
             var colLabels = {
               employee_id: 'Employee ID',
               employee_first_name: 'First Name',
               employee_last_name: 'Last Name',
               employee_email: 'Email',
-              employee_phone: 'Phone'
+              employee_phone: 'Phone',
+              employee_rank: 'Rank'
             };
             function columnHeaderLabel(colName) {
               var key = colName.toLowerCase().replace(/\s+/g, '_');
@@ -108,8 +136,8 @@
             rows.forEach(function (row) {
               html += '<tr>';
               cols.forEach(function (c) {
-                var display = row[c];
-                html += '<td>' + (display != null && display !== '' ? String(display) : '') + '</td>';
+                var display = formatEmployeeCell(c, row[c]);
+                html += '<td>' + display + '</td>';
               });
               html += '</tr>';
             });
@@ -120,17 +148,14 @@
 
         el.innerHTML = html;
 
-        if (managerNote && rows && rows.length && !rows[0]._error) {
-          managerNote.classList.remove('is-hidden');
-        }
-
         var searchInput = document.getElementById('employee-search');
         var table = document.getElementById('employee-table');
         var noResultsEl = document.getElementById('employee-no-results');
         var filterBtn = document.getElementById('employee-filter-btn');
         var filterDropdown = document.getElementById('employee-filter-dropdown');
 
-        var cols = rows && rows.length && !rows[0]._error ? Object.keys(rows[0]) : [];
+        var cols =
+          rows && rows.length && !rows[0]._error ? visibleEmployeeColumns(Object.keys(rows[0])) : [];
         var emailCol = cols.find(function (c) {
           var l = c.toLowerCase();
           return l === 'employee_email' || l === 'email';
@@ -328,22 +353,6 @@
           }
           gateSubmit.disabled = false;
           gateSubmit.textContent = 'Continue';
-        });
-    });
-  }
-
-  if (managerLogoutBtn) {
-    managerLogoutBtn.addEventListener('click', function () {
-      managerLogoutBtn.disabled = true;
-      fetch('/api/admin/manager-logout', {
-        method: 'POST',
-        credentials: 'same-origin'
-      })
-        .then(function () {
-          window.location.reload();
-        })
-        .catch(function () {
-          managerLogoutBtn.disabled = false;
         });
     });
   }
