@@ -1,7 +1,8 @@
 /**
  * Embeds the admin-style court schedule on Availability pages (below Popular times).
+ * Loads GET /api/schedule-reservations — same pending + confirmed rows as the admin calendar for that day.
  * - data-availability-embed="guest" (General): clicks prompt waiver message.
- * - data-availability-embed="client" (Client): logged-in customers can POST /api/reservation (Flask reservation.py).
+ * - data-availability-embed="client" (Client): logged-in customers can POST /api/reservation (Flask).
  */
 (function () {
   'use strict';
@@ -14,6 +15,24 @@
     'You must sign the waiver to make an account to reserve!';
   var scheduleDate = new Date();
   scheduleDate.setHours(12, 0, 0, 0);
+
+  var PICKLEBALL_COURT_NUMBERS = [2, 4, 6, 8, 10];
+  var TABLE_TENNIS_COURT_NUMBER = 11;
+
+  function isPickleballCourtNumber(n) {
+    return n !== null && PICKLEBALL_COURT_NUMBERS.indexOf(n) !== -1;
+  }
+  function isTableTennisCourtNumber(n) {
+    return n === TABLE_TENNIS_COURT_NUMBER;
+  }
+  /** Match Admin_Reservations.html: pending = orange; confirmed uses court-type colors. */
+  function visualClassForDbBlock(courtNum, status) {
+    var pending = Number(status) === 1;
+    if (pending) return 'is-orange';
+    if (isPickleballCourtNumber(courtNum)) return 'is-event';
+    if (isTableTennisCourtNumber(courtNum)) return 'is-table-tennis';
+    return 'is-blue';
+  }
 
   function pad2(n) {
     return String(n).padStart(2, '0');
@@ -31,7 +50,15 @@
     );
   }
 
-  /** Same grid markup as Admin_Reservations.html (schedule strip only). */
+  var CAL_COLS_HTML = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    .map(function (n) {
+      var label = 'Court ' + n;
+      var tt = n === 11 ? ' data-court-use="table-tennis-practice"' : '';
+      return '<div class="cal-col" data-court="' + label + '"' + tt + '><div class="cal-col-body"></div></div>';
+    })
+    .join('');
+
+  /** Same shell as admin: empty court bodies; blocks come from API. */
   var SCHEDULE_INNER =
     '<div class="reservations-shell">' +
     '<div class="res-date-toolbar" id="pub-res-date-toolbar" role="region" aria-label="Schedule date">' +
@@ -72,63 +99,46 @@
     '</div>' +
     '<aside class="reservations-time-scale" id="pub-reservations-time-scale" aria-label="Time scale"></aside>' +
     '<section class="reservations-calendar" id="pub-reservations-calendar" aria-label="Court availability">' +
-    '<div class="cal-col" data-court="Court 1"><div class="cal-col-body">' +
-    '<div class="cal-block is-white" data-slot-start="24" data-slot-span="3">Queuing<br>10:00 PM-11:30 PM</div>' +
-    '<div class="cal-block is-blue" data-slot-start="10" data-slot-span="7">3.50 hr</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 2"><div class="cal-col-body">' +
-    '<div class="cal-block is-event" data-slot-start="0" data-slot-span="14">Pickleball<br>10:00 AM-5:00 PM</div>' +
-    '<div class="cal-block is-event" data-slot-start="14" data-slot-span="2">Training</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 3"><div class="cal-col-body">' +
-    '<div class="cal-block is-white" data-slot-start="0" data-slot-span="14">Queuing<br>10:00 AM-5:00 PM</div>' +
-    '<div class="cal-block is-blue" data-slot-start="14" data-slot-span="3">1.50 hr</div>' +
-    '<div class="cal-block is-blue" data-slot-start="17" data-slot-span="1">0.5 hr</div>' +
-    '<div class="cal-block is-blue" data-slot-start="18" data-slot-span="2">1.00 hr</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 4"><div class="cal-col-body">' +
-    '<div class="cal-block is-event" data-slot-start="0" data-slot-span="14">Pickleball<br>10:00 AM-5:00 PM</div>' +
-    '<div class="cal-block is-event" data-slot-start="14" data-slot-span="2">Training</div>' +
-    '<div class="cal-block is-blue" data-slot-start="16" data-slot-span="2">1.00 hr</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 5"><div class="cal-col-body">' +
-    '<div class="cal-block is-white" data-slot-start="0" data-slot-span="14">Badminton open play<br>10:00 AM-5:00 PM</div>' +
-    '<div class="cal-block is-blue" data-slot-start="14" data-slot-span="3">1.50 hr</div>' +
-    '<div class="cal-block is-blue" data-slot-start="17" data-slot-span="7">3.50 hr</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 6"><div class="cal-col-body">' +
-    '<div class="cal-block is-event" data-slot-start="2" data-slot-span="8">Open Play<br>11:00 AM-3:00 PM</div>' +
-    '<div class="cal-block is-blue" data-slot-start="10" data-slot-span="2">1.00 hr</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 7"><div class="cal-col-body">' +
-    '<div class="cal-block is-white" data-slot-start="1" data-slot-span="15">Queuing<br>10:30 AM-6:00 PM</div>' +
-    '<div class="cal-block is-orange" data-slot-start="16" data-slot-span="2">Training</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 8"><div class="cal-col-body">' +
-    '<div class="cal-block is-event" data-slot-start="0" data-slot-span="13">Pickleball<br>10:00 AM-4:30 PM</div>' +
-    '<div class="cal-block is-blue" data-slot-start="13" data-slot-span="4">2.00 hr</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 9"><div class="cal-col-body">' +
-    '<div class="cal-block is-white" data-slot-start="4" data-slot-span="16">Court Rental<br>12:00 PM-8:00 PM</div>' +
-    '<div class="cal-block is-blue" data-slot-start="20" data-slot-span="1">0.5 hr</div>' +
-    '<div class="cal-block is-blue" data-slot-start="21" data-slot-span="3">1.50 hr</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 10"><div class="cal-col-body">' +
-    '<div class="cal-block is-event" data-slot-start="0" data-slot-span="14">Queuing<br>10:00 AM-5:00 PM</div>' +
-    '<div class="cal-block is-blue" data-slot-start="14" data-slot-span="2">1.00 hr</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 11" data-court-use="table-tennis-practice"><div class="cal-col-body">' +
-    '<div class="cal-block is-table-tennis" data-slot-start="0" data-slot-span="14">Table tennis lessons<br>10:00 AM-5:00 PM</div>' +
-    '<div class="cal-block is-white" data-slot-start="14" data-slot-span="4">Badminton<br>5:00 PM-7:00 PM</div>' +
-    '</div></div>' +
-    '<div class="cal-col" data-court="Court 12"><div class="cal-col-body">' +
-    '<div class="cal-block is-white" data-slot-start="0" data-slot-span="16">Open Play<br>10:00 AM-6:00 PM</div>' +
-    '<div class="cal-block is-blue" data-slot-start="16" data-slot-span="6">3.00 hr</div>' +
-    '</div></div>' +
+    CAL_COLS_HTML +
     '</section>' +
     '</div>' +
     '</div>' +
     '</div>';
+
+  function hhmm24ToMinutes(s) {
+    var p = String(s || '').trim().split(':');
+    var h = parseInt(p[0], 10);
+    var m = parseInt(p[1] || '0', 10);
+    if (!Number.isFinite(h) || !Number.isFinite(m)) return 0;
+    return h * 60 + m;
+  }
+
+  function formatMinutesAsTime12(totalMins) {
+    var t = totalMins % (24 * 60);
+    if (t < 0) t += 24 * 60;
+    var h24 = Math.floor(t / 60);
+    var min = t % 60;
+    var suffix = h24 >= 12 ? 'PM' : 'AM';
+    var h12 = h24 % 12;
+    if (h12 === 0) h12 = 12;
+    return h12 + ':' + String(min).padStart(2, '0') + ' ' + suffix;
+  }
+
+  function hhmm24To12Label(s) {
+    return formatMinutesAsTime12(hhmm24ToMinutes(s));
+  }
+
+  function hhmm24ToSlotStart(s) {
+    var minutes = hhmm24ToMinutes(s);
+    var base = 10 * 60;
+    return Math.max(0, Math.min(27, Math.floor((minutes - base) / 30)));
+  }
+
+  function hhmm24ToSlotEnd(s) {
+    var minutes = hhmm24ToMinutes(s);
+    var base = 10 * 60;
+    return Math.max(0, Math.min(28, Math.ceil((minutes - base) / 30)));
+  }
 
   function decorateBlockNoActions(block) {
     if (!block || block.dataset.decorated === '1') return;
@@ -163,6 +173,71 @@
     var n = Number.isFinite(span) ? span : 2;
     block.style.setProperty('--slot-start', String(s));
     block.style.setProperty('--slot-span', String(Math.max(1, n)));
+  }
+
+  function buildScheduleBlock(row) {
+    var courtNum = row.court_id != null ? parseInt(row.court_id, 10) : null;
+    var block = document.createElement('div');
+    block.className =
+      'cal-block cal-block--db cal-block--public ' + visualClassForDbBlock(courtNum, row.reservation_status);
+    var ss = hhmm24ToSlotStart(row.reservation_start_time);
+    var es = hhmm24ToSlotEnd(row.reservation_end_time);
+    var span = Math.max(1, es - ss);
+    block.dataset.slotStart = String(ss);
+    block.dataset.slotSpan = String(span);
+    block.dataset.reservationId = String(row.reservation_id);
+
+    var name =
+      [row.customer_first_name, row.customer_last_name].filter(Boolean).join(' ').trim() || 'Guest';
+    var t1 = hhmm24To12Label(row.reservation_start_time);
+    var t2 = hhmm24To12Label(row.reservation_end_time);
+    var meta =
+      t1 +
+      ' – ' +
+      t2 +
+      ' · ' +
+      (Number(row.reservation_status) === 1 ? 'Pending approval' : 'Confirmed');
+
+    var titleEl = document.createElement('div');
+    titleEl.className = 'cal-block-title';
+    titleEl.textContent = name;
+    var metaEl = document.createElement('div');
+    metaEl.className = 'cal-block-meta';
+    metaEl.textContent = meta;
+    block.appendChild(titleEl);
+    block.appendChild(metaEl);
+    block.dataset.decorated = '1';
+    applyBlockSlotLayout(block);
+    return block;
+  }
+
+  function refreshScheduleFromApi() {
+    var calendar = document.getElementById('pub-reservations-calendar');
+    if (!calendar) return Promise.resolve();
+    var dateIso = formatScheduleDateIso(scheduleDate);
+    return fetch('/api/schedule-reservations?date=' + encodeURIComponent(dateIso), {
+      credentials: 'same-origin',
+    })
+      .then(function (r) {
+        return r.json().then(function (data) {
+          return { ok: r.ok, data: data };
+        });
+      })
+      .then(function (out) {
+        calendar.querySelectorAll('.cal-block--db').forEach(function (el) {
+          el.remove();
+        });
+        if (!out.ok || !out.data || !out.data.success || !out.data.reservations) return;
+        out.data.reservations.forEach(function (row) {
+          var cid = row.court_id;
+          var col = calendar.querySelector('.cal-col[data-court="Court ' + cid + '"]');
+          if (!col) return;
+          var body = col.querySelector('.cal-col-body');
+          if (!body) return;
+          body.appendChild(buildScheduleBlock(row));
+        });
+      })
+      .catch(function () {});
   }
 
   function buildTimeScale(el) {
@@ -332,6 +407,7 @@
           if (out.ok && out.status === 201) {
             msg.textContent = (out.text || '').trim() || 'Reservation submitted.';
             msg.className = 'pub-res-modal-msg pub-res-modal-msg--ok';
+            refreshScheduleFromApi();
           } else {
             msg.textContent = (out.text || '').trim() || 'Could not create reservation.';
             msg.className = 'pub-res-modal-msg pub-res-modal-msg--err';
@@ -362,9 +438,14 @@
   }
 
   function handleScheduleClick(e, canBook) {
+    var block = e.target.closest && e.target.closest('.cal-block');
+    if (block && block.classList.contains('cal-block--db')) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     var addBtn = e.target.closest && e.target.closest('.pub-cal-col-add');
     var col = e.target.closest && e.target.closest('.cal-col');
-    var block = e.target.closest && e.target.closest('.cal-block');
     if (!addBtn && !col && !block) return;
     if (!canBook) {
       e.preventDefault();
@@ -387,20 +468,20 @@
 
   root.innerHTML =
     '<div class="public-res-embed reservations-page">' +
-    '<p class="av-court-schedule-lead">Same view as admin reservations. Pick a day, then tap a court column, a time block, or <strong>+</strong> to request a booking.</p>' +
+    '<p class="av-court-schedule-lead">Live schedule matches the staff calendar: pending requests and confirmed bookings refresh automatically. Orange blocks are awaiting approval. Use <strong>+</strong> or a column to request a time.</p>' +
     SCHEDULE_INNER +
     '</div>';
 
   var calendar = document.getElementById('pub-reservations-calendar');
   var timeScale = document.getElementById('pub-reservations-time-scale');
   buildTimeScale(timeScale);
-  if (calendar) {
-    calendar.querySelectorAll('.cal-block').forEach(function (b) {
-      decorateBlockNoActions(b);
-      applyBlockSlotLayout(b);
-    });
-  }
   updateDateDisplay();
+  refreshScheduleFromApi();
+  window.setInterval(refreshScheduleFromApi, 20000);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') refreshScheduleFromApi();
+  });
+
   var prev = document.getElementById('pub-res-date-prev');
   var next = document.getElementById('pub-res-date-next');
   if (prev)
@@ -409,6 +490,7 @@
       d.setDate(d.getDate() - 1);
       scheduleDate = d;
       updateDateDisplay();
+      refreshScheduleFromApi();
     });
   if (next)
     next.addEventListener('click', function () {
@@ -416,6 +498,7 @@
       d.setDate(d.getDate() + 1);
       scheduleDate = d;
       updateDateDisplay();
+      refreshScheduleFromApi();
     });
 
   var shell = document.querySelector('.public-res-embed .reservations-shell');

@@ -2,6 +2,7 @@
  * HTTP API entry: try route modules in order until one handles the request.
  */
 const handlers = [
+  require('./publicScheduleReservations'),
   require('./adminAuth'),
   require('./adminReservationsPending'),
   require('./adminScheduleReservations'),

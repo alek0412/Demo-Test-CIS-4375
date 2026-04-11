@@ -1536,6 +1536,9 @@
               }
               return loadPendingReservations();
             })
+            .then(function () {
+              return refreshScheduleFromServer();
+            })
             .finally(function () {
               btn.disabled = false;
             });
