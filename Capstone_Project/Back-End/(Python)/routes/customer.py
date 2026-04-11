@@ -66,7 +66,19 @@ def add_customer():
     emergency_execute=sql_functions.execute_query(sql_connection,emergency_query,emergency_tuple+(customer_id[0]['customer_id'],))
     if type(emergency_execute)==int:
         return make_response("Server is unable to create emergency contact",503)
-    add_waiver_id=sql_functions.execute_query(sql_connection,"update customer set waiver_id=%s where customer_id=%s",(customer_id[0]['customer_id'],)*2)
+    wid_rows = sql_functions.execute_read(
+        sql_connection,
+        "select waiver_id from waiver where customer_id=%s order by waiver_id desc limit 1",
+        (customer_id[0]['customer_id'],),
+    )
+    if type(wid_rows) == int or not wid_rows:
+        return make_response("Server is unable to fetch waiver id", 503)
+    new_waiver_id = wid_rows[0]["waiver_id"]
+    add_waiver_id = sql_functions.execute_query(
+        sql_connection,
+        "update customer set waiver_id=%s where customer_id=%s",
+        (new_waiver_id, customer_id[0]['customer_id']),
+    )
     if type(add_waiver_id)==int:
         return make_response("Server is unable to create waiver id",503)
     return make_response("Customer created successfully!",201)
@@ -95,6 +107,16 @@ def customer_login():
     session['is_employee']=False
     session['is_manager']=False
     session['is_customer']=True
+    # Point session at the real waiver row (fixes legacy rows where customer.waiver_id was set incorrectly).
+    cid = session.get("customer_id")
+    if cid is not None:
+        wrows = sql_functions.execute_read(
+            sql_connection,
+            "select waiver_id from waiver where customer_id=%s order by waiver_id desc limit 1",
+            (cid,),
+        )
+        if type(wrows) != int and wrows and len(wrows):
+            session["waiver_id"] = wrows[0]["waiver_id"]
     return make_response("Login successful!",200)
 
 @customer_blueprint.route("/api/customer-logout",methods=['post'])    

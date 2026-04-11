@@ -94,12 +94,24 @@ def add_reservation():
         if start_time_conversion < court_booking_end and end_time_conversion > court_booking_start:
             return make_response("Court is already booked", 400)
 
+    # Must match the same waiver row we lock below (session waiver_id), not an arbitrary row by customer_id.
     customer_availability = sql_functions.execute_read(
-        secure_connection, "select * from waiver where customer_id=%s", (customer,)
+        secure_connection,
+        "select waiver_id, waiver_status from waiver where waiver_id=%s and customer_id=%s",
+        (waiver, customer),
     )
     if type(customer_availability) == int:
         return make_response("Server is unable to fetch waiver", 503)
+<<<<<<< HEAD
     if customer_availability[0]["waiver_status"] != 1:
+=======
+    if not customer_availability:
+        return make_response(
+            "Session is out of date; please log out and log in again, then try reserving.",
+            400,
+        )
+    if customer_availability[0]["waiver_status"] != 2:
+>>>>>>> e2245d0e72a99f4732dccc1970a94ec53046392e
         return make_response("Customer is not available for booking", 400)
     reservation_create = sql_functions.execute_query(
         secure_connection,
