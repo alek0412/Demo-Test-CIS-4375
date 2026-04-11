@@ -383,6 +383,9 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
         const data = await parseBody(req);
         bodyOpt = JSON.stringify(data);
         contentType = 'application/json';
+      } else if (req.method === 'DELETE') {
+        bodyOpt = '{}';
+        contentType = 'application/json';
       }
       const upstream = await proxyToFlask(base, req.method, '/api/customer', {
         body: bodyOpt,

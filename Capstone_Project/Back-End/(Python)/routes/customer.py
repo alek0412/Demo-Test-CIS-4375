@@ -135,7 +135,8 @@ def customer_me_get():
 
 @customer_blueprint.route("/api/customer",methods=['delete'])
 def customer_remove():
-    request_json=request.get_json()
+    # DELETE may omit body/Content-Type; force/silent avoids 415 from get_json()
+    request_json = request.get_json(force=True, silent=True) or {}
     session_id=session.get("customer_id")
     if not session.get("customer_id") and not request_json.get("customer_id"):
         return make_response("Invalid customer to delete",400)
