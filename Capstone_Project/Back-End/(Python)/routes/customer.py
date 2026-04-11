@@ -146,6 +146,9 @@ def customer_remove():
         customer_id=session_id if session_id else request_json.get("customer_id")
     except ValueError:
         return make_response("Invalid customer",400)
+    delete_emergency=sql_functions.execute_query(sql_connection,"delete from emergency_contact where customer_id = %s",(customer_id,))
+    if type(delete_emergency)==int:
+        return make_response("Unable to delete emergency contacts",503)
     delete_reservations=sql_functions.execute_query(sql_connection,"delete from reservation where customer_id =%s",(customer_id,))
     if type(delete_reservations)==int:
         return make_response("Unable to delete from reservations",503)

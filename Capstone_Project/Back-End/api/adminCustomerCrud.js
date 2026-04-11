@@ -52,7 +52,25 @@ module.exports = async function handleAdminCustomerCrud(req, res, ctx) {
 
   try {
     if (op === 'delete') {
-      await db.query('DELETE FROM `customer` WHERE `customer_id` = ?', [customerId]);
+      // Match Flask customer_remove: child rows first (FK-safe), same as routes/customer.py
+      const conn = await db.getClient();
+      try {
+        await conn.beginTransaction();
+        try {
+          await conn.execute('DELETE FROM `emergency_contact` WHERE `customer_id` = ?', [customerId]);
+        } catch (e) {
+          if (e.code !== 'ER_NO_SUCH_TABLE' && e.errno !== 1146) throw e;
+        }
+        await conn.execute('DELETE FROM `reservation` WHERE `customer_id` = ?', [customerId]);
+        await conn.execute('DELETE FROM `waiver` WHERE `customer_id` = ?', [customerId]);
+        await conn.execute('DELETE FROM `customer` WHERE `customer_id` = ?', [customerId]);
+        await conn.commit();
+      } catch (err) {
+        await conn.rollback();
+        throw err;
+      } finally {
+        conn.release();
+      }
       send(200, { success: true });
       return true;
     }
