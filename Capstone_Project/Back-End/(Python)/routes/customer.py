@@ -60,7 +60,8 @@ def add_customer():
     customer_id=sql_functions.execute_read(sql_connection,"Select customer_id from customer where email = %s;",(email,))
     if type(customer_id)==int:
         return make_response("Server is unable to fetch customer",503)
-    waiver_query=sql_functions.execute_query(sql_connection,"insert into waiver (customer_id,waiver_status) values(%s,%s);",(customer_id[0]['customer_id'],2))
+    # waiver_status: 1 = Available to book, 2 = Pending / hold (active reservation) — see reservation.py
+    waiver_query=sql_functions.execute_query(sql_connection,"insert into waiver (customer_id,waiver_status) values(%s,%s);",(customer_id[0]['customer_id'],1))
     if type(waiver_query)==int:
         return make_response("Server is unable to create waiver",503)
     emergency_execute=sql_functions.execute_query(sql_connection,emergency_query,emergency_tuple+(customer_id[0]['customer_id'],))
