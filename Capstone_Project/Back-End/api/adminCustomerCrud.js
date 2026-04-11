@@ -1,10 +1,9 @@
 /**
  * POST /api/admin/customer — admin-only update or delete customer row.
  * Body: { op: 'delete', customerId: number } | { op: 'update', customerId: number, ...fields }
+ * Password updates use the same PBKDF2 scheme as Flask (`routes/customer.py`) so customer login works.
  */
-const bcrypt = require('bcryptjs');
-
-const BCRYPT_ROUNDS = 10;
+const { hashPasswordLikePython } = require('../lib/customerPassword');
 
 const UPDATE_WHITELIST = [
   'customer_first_name',
@@ -108,9 +107,10 @@ module.exports = async function handleAdminCustomerCrud(req, res, ctx) {
           send(400, { success: false, message: 'New password must be at least 8 characters' });
           return true;
         }
-        const hash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+        const { passwordHex, saltHex } = hashPasswordLikePython(newPassword);
         sets.push('`password` = ?');
-        params.push(hash);
+        sets.push('`salt` = ?');
+        params.push(passwordHex, saltHex);
       }
 
       if (sets.length === 0) {

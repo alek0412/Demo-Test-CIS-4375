@@ -627,8 +627,14 @@
             })
             .then(function (out) {
               if (out.ok && out.body && out.body.success) {
-                closeEditModal();
-                window.location.reload();
+                if (editFormStatus) {
+                  editFormStatus.textContent = 'Saved successfully.';
+                  editFormStatus.style.color = '';
+                }
+                setTimeout(function () {
+                  closeEditModal();
+                  window.location.reload();
+                }, 600);
               } else {
                 var msg = (out.body && out.body.message) || 'Could not save.';
                 if (editFormStatus) {

@@ -1,6 +1,6 @@
 /**
- * Customer password: DB lookup, bcrypt, password-reset tokens.
- * Uses `customer`.`password` for bcrypt hashes (your schema); `salt` unused for bcrypt.
+ * Customer password: DB lookup, Flask-compatible PBKDF2 (primary), bcrypt (legacy), reset tokens.
+ * Flask `/api/customer-login` uses PBKDF2 + `salt` like `routes/customer.py`; admin updates must match.
  * Requires migrations/001_customer_password_reset.sql for reset_token columns.
  */
 const crypto = require('crypto');
@@ -24,6 +24,16 @@ function verifyPythonPbkdf2Password(plain, pwdHex, saltHex) {
   } catch (_) {
     return false;
   }
+}
+
+/**
+ * Same algorithm as Flask `routes/customer.py` (waiver register + login): PBKDF2-HMAC-SHA256,
+ * 50000 iterations, 20-byte random salt, password stored as 64-char hex.
+ */
+function hashPasswordLikePython(plain) {
+  const salt = crypto.randomBytes(20);
+  const hash = crypto.pbkdf2Sync(String(plain || ''), salt, 50000, 32, 'sha256');
+  return { passwordHex: hash.toString('hex'), saltHex: salt.toString('hex') };
 }
 
 async function findCustomerByEmail(email) {
@@ -136,12 +146,12 @@ async function completePasswordReset(token, newPassword) {
   if (!row) {
     return { ok: false, message: 'Invalid or expired link.' };
   }
-  const hash = bcrypt.hashSync(newPassword, BCRYPT_ROUNDS);
+  const { passwordHex, saltHex } = hashPasswordLikePython(newPassword);
   const pool = db.getPool();
   try {
     const [header] = await pool.execute(
-      'UPDATE customer SET `password` = ?, reset_token = NULL, reset_token_expires = NULL WHERE customer_id = ? AND reset_token = ?',
-      [hash, row.customer_id, t]
+      'UPDATE customer SET `password` = ?, `salt` = ?, reset_token = NULL, reset_token_expires = NULL WHERE customer_id = ? AND reset_token = ?',
+      [passwordHex, saltHex, row.customer_id, t]
     );
     if (header.affectedRows !== 1) {
       return { ok: false, message: 'Invalid or expired link.' };
@@ -207,4 +217,5 @@ module.exports = {
   startPasswordReset,
   completePasswordReset,
   registerNewCustomer,
+  hashPasswordLikePython,
 };
