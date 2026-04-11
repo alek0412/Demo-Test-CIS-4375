@@ -163,9 +163,71 @@
       renderDropdown(container);
       bindDropdown(container);
     }
+    initPendingReservationsNavBadge();
     if (!document.querySelector('.reservations-page')) {
       initBackToTop();
     }
+  }
+
+  function updateReservationsNavBadge(count) {
+    var link = document.querySelector('a.admin-nav-link[href="Admin_Reservations.html"]');
+    if (!link) return;
+    var badge = link.querySelector('.admin-nav-pending-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'admin-nav-pending-badge';
+      badge.setAttribute('aria-hidden', 'true');
+      link.appendChild(badge);
+    }
+    var n = typeof count === 'number' && count > 0 ? count : 0;
+    if (n > 0) {
+      badge.textContent = n > 99 ? '99+' : String(n);
+      badge.hidden = false;
+      link.setAttribute(
+        'title',
+        n + ' pending court booking request' + (n === 1 ? '' : 's')
+      );
+    } else {
+      badge.textContent = '';
+      badge.hidden = true;
+      link.removeAttribute('title');
+    }
+  }
+
+  function fetchPendingReservationNavCount() {
+    fetch('/api/admin/pending-reservations', { credentials: 'same-origin' })
+      .then(function (r) {
+        return r.json().then(function (d) {
+          return { ok: r.ok, d: d };
+        });
+      })
+      .then(function (out) {
+        if (!out.ok || !out.d || !out.d.success) {
+          updateReservationsNavBadge(0);
+          return;
+        }
+        var n =
+          typeof out.d.count === 'number'
+            ? out.d.count
+            : out.d.reservations
+              ? out.d.reservations.length
+              : 0;
+        updateReservationsNavBadge(n);
+      })
+      .catch(function () {
+        updateReservationsNavBadge(0);
+      });
+  }
+
+  function initPendingReservationsNavBadge() {
+    if (!document.querySelector('.admin-layout')) return;
+    fetchPendingReservationNavCount();
+    setInterval(fetchPendingReservationNavCount, 50000);
+    window.addEventListener('hbc-pending-reservations-count', function (ev) {
+      if (ev && ev.detail && typeof ev.detail.count === 'number') {
+        updateReservationsNavBadge(ev.detail.count);
+      }
+    });
   }
 
   function easeInOutQuad(t) {

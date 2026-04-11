@@ -64,8 +64,9 @@ module.exports = async function handleAdminAuth(req, res, ctx) {
       const adminCookie = 'admin_session=loggedin; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
       const managerCookie =
         'admin_manager_session=loggedin; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
+      const idCookie = `admin_employee_id=${encodeURIComponent(String(employee.employee_id))}; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax`;
       const isManager = Number(employee.employee_rank) === 1;
-      const cookies = isManager ? [adminCookie, managerCookie] : adminCookie;
+      const cookies = isManager ? [adminCookie, managerCookie, idCookie] : [adminCookie, idCookie];
       res.writeHead(200, {
         'Content-Type': 'application/json',
         'Set-Cookie': cookies,
@@ -84,6 +85,7 @@ module.exports = async function handleAdminAuth(req, res, ctx) {
       'Set-Cookie': [
         'admin_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
         'admin_manager_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
+        'admin_employee_id=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
       ],
     });
     res.end(JSON.stringify({ success: true }));

@@ -46,31 +46,15 @@
             </svg>
             <span>Courts</span>
           </a>
-          <a href="Admin_CheckIn.html" class="admin-nav-link">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>Check In</span>
-          </a>
           <a href="Admin_Customers.html" class="admin-nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             <span>Customers</span>
           </a>
-          <a href="Admin_PointOfSale.html" class="admin-nav-link">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-            <span>Point of Sale</span>
-          </a>
           <a href="Admin_Insights.html" class="admin-nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
             <span>Insights</span>
-          </a>
-          <a href="Admin_Services_Products.html" class="admin-nav-link">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" /></svg>
-            <span>Services & Products</span>
           </a>
           <a href="Admin_Employees.html" class="admin-nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -145,6 +129,16 @@
                 <button type="button" class="res-date-arrow" id="res-date-next" aria-label="Next day">›</button>
               </div>
               <div class="res-date-toolbar-actions">
+                <div class="res-pending-wrap">
+                  <button type="button" class="res-pending-btn" id="res-pending-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="res-pending-dropdown">
+                    <span class="res-pending-icon-wrap" aria-hidden="true">
+                      <svg class="res-pending-bell" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 00-3 0v.68C7.63 5.36 6 7.92 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                      <span class="res-pending-badge" id="res-page-pending-badge" hidden>0</span>
+                    </span>
+                    <span class="res-pending-label">Court requests</span>
+                  </button>
+                  <div class="res-pending-dropdown is-hidden" id="res-pending-dropdown" role="region" aria-label="Pending court booking requests" hidden></div>
+                </div>
                 <div class="res-calendar-dropdown">
                   <button type="button" class="res-calendar-toggle" id="res-calendar-toggle" aria-expanded="false" aria-haspopup="dialog" aria-controls="res-mini-calendar-root">Calendar</button>
                   <div class="res-mini-calendar-root is-hidden" id="res-mini-calendar-root" role="dialog" aria-label="Pick a date" aria-modal="true" hidden>
@@ -405,6 +399,9 @@
       const resCalPrevMonth = document.getElementById('res-cal-prev-month');
       const resCalNextMonth = document.getElementById('res-cal-next-month');
       const scheduleHeadersEl = document.getElementById('res-schedule-headers');
+      const resPendingToggle = document.getElementById('res-pending-toggle');
+      const resPendingDropdown = document.getElementById('res-pending-dropdown');
+      const resPagePendingBadge = document.getElementById('res-page-pending-badge');
 
       let recentClients = [];
       let selectedClient = null;
@@ -1197,6 +1194,11 @@
           closeMiniCalendar();
           return;
         }
+        if (typeof pendingDropdownOpen !== 'undefined' && pendingDropdownOpen) {
+          event.preventDefault();
+          setPendingDropdown(false);
+          return;
+        }
         if (overlay && !overlay.classList.contains('is-hidden')) {
           closeModal();
         }
@@ -1280,10 +1282,154 @@
         });
       }
  
+      function syncPendingBadges(count) {
+        var n = typeof count === 'number' ? count : 0;
+        try {
+          window.dispatchEvent(new CustomEvent('hbc-pending-reservations-count', { detail: { count: n } }));
+        } catch (e) {}
+        if (resPagePendingBadge) {
+          if (n > 0) {
+            resPagePendingBadge.textContent = n > 99 ? '99+' : String(n);
+            resPagePendingBadge.hidden = false;
+          } else {
+            resPagePendingBadge.textContent = '0';
+            resPagePendingBadge.hidden = true;
+          }
+        }
+      }
+
+      function escapeHtml(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function renderPendingList(rows) {
+        if (!resPendingDropdown) return;
+        if (!rows || !rows.length) {
+          resPendingDropdown.innerHTML =
+            '<p class="res-pending-empty">No pending court requests.</p>';
+          return;
+        }
+        var html = '<ul class="res-pending-list">';
+        rows.forEach(function (r) {
+          var name =
+            [r.customer_first_name, r.customer_last_name].filter(Boolean).join(' ').trim() || 'Customer';
+          var court = 'Court ' + (r.court_id != null ? r.court_id : '?');
+          var when = escapeHtml(r.reservation_date) + ' · ' + escapeHtml(r.reservation_start_time) + ' – ' + escapeHtml(r.reservation_end_time);
+          html +=
+            '<li class="res-pending-item" data-reservation-id="' +
+            escapeHtml(r.reservation_id) +
+            '">' +
+            '<div class="res-pending-item-main">' +
+            '<span class="res-pending-item-title">' +
+            escapeHtml(name) +
+            '</span>' +
+            '<span class="res-pending-item-meta">' +
+            escapeHtml(court) +
+            ' · ' +
+            when +
+            '</span>' +
+            '</div>' +
+            '<div class="res-pending-item-actions">' +
+            '<button type="button" class="res-pending-approve" data-id="' +
+            escapeHtml(r.reservation_id) +
+            '">Approve</button>' +
+            '<button type="button" class="res-pending-deny" data-id="' +
+            escapeHtml(r.reservation_id) +
+            '">Deny</button>' +
+            '</div>' +
+            '</li>';
+        });
+        html += '</ul>';
+        resPendingDropdown.innerHTML = html;
+      }
+
+      var pendingDropdownOpen = false;
+
+      function setPendingDropdown(open) {
+        pendingDropdownOpen = !!open;
+        if (!resPendingDropdown || !resPendingToggle) return;
+        resPendingDropdown.classList.toggle('is-hidden', !open);
+        resPendingDropdown.hidden = !open;
+        resPendingToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+
+      function loadPendingReservations() {
+        return fetch('/api/admin/pending-reservations', { credentials: 'same-origin' })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, data: data };
+            });
+          })
+          .then(function (out) {
+            if (!out.ok || !out.data || !out.data.success) {
+              syncPendingBadges(0);
+              renderPendingList([]);
+              return null;
+            }
+            var rows = out.data.reservations || [];
+            syncPendingBadges(out.data.count != null ? out.data.count : rows.length);
+            renderPendingList(rows);
+            return rows;
+          })
+          .catch(function () {
+            syncPendingBadges(0);
+            renderPendingList([]);
+          });
+      }
+
+      function initPendingCourtRequests() {
+        if (!resPendingToggle || !resPendingDropdown) return;
+        resPendingToggle.addEventListener('click', function (e) {
+          e.stopPropagation();
+          setPendingDropdown(!pendingDropdownOpen);
+        });
+        document.addEventListener('click', function () {
+          setPendingDropdown(false);
+        });
+        resPendingDropdown.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var approve = e.target.closest('.res-pending-approve');
+          var deny = e.target.closest('.res-pending-deny');
+          var id = approve ? approve.getAttribute('data-id') : deny ? deny.getAttribute('data-id') : null;
+          if (!id) return;
+          var action = approve ? 'approve' : 'deny';
+          var btn = approve || deny;
+          if (btn.disabled) return;
+          btn.disabled = true;
+          fetch('/api/admin/pending-reservations', {
+            method: 'PATCH',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reservation_id: parseInt(id, 10), action: action }),
+          })
+            .then(function (r) {
+              return r.json().then(function (data) {
+                return { ok: r.ok, data: data };
+              });
+            })
+            .then(function (out) {
+              if (!out.ok || !out.data || !out.data.success) {
+                window.alert((out.data && out.data.message) || 'Could not update request.');
+              }
+              return loadPendingReservations();
+            })
+            .finally(function () {
+              btn.disabled = false;
+            });
+        });
+        loadPendingReservations();
+        setInterval(loadPendingReservations, 45000);
+      }
+
       initBookAppointmentsPanel();
       initBookPanelCollapse();
       initScheduleDateControls();
       initFormTimeControls();
+      initPendingCourtRequests();
       buildTimeScale();
       syncModalCourtFields();
       if (calendar) {

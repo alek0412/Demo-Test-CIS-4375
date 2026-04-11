@@ -3355,6 +3355,194 @@ body:has(.reservations-page) #gh-back-top {
   gap: 0.45rem;
 }
 
+/* Pending court booking requests (customer-submitted, staff approve/deny) */
+.res-pending-wrap {
+  position: relative;
+}
+
+.res-pending-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.res-pending-btn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.res-pending-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.res-pending-bell {
+  display: block;
+}
+
+.res-pending-badge {
+  position: absolute;
+  top: -7px;
+  right: -9px;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.28rem;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1.15rem;
+  text-align: center;
+  box-shadow: 0 0 0 2px #f9fafb;
+}
+
+.res-pending-label {
+  white-space: nowrap;
+}
+
+.res-pending-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 50;
+  width: min(380px, calc(100vw - 2rem));
+  max-height: min(70vh, 420px);
+  overflow: auto;
+  padding: 0.65rem 0.75rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.18);
+}
+
+.res-pending-dropdown.is-hidden {
+  display: none !important;
+}
+
+.res-pending-empty {
+  margin: 0;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.res-pending-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.res-pending-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.res-pending-item:last-child {
+  border-bottom: none;
+}
+
+.res-pending-item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.res-pending-item-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #111827;
+}
+
+.res-pending-item-meta {
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.35;
+}
+
+.res-pending-item-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.35rem;
+}
+
+.res-pending-approve,
+.res-pending-deny {
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.3rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  background: #ffffff;
+  color: #111827;
+}
+
+.res-pending-approve {
+  border-color: #15803d;
+  background: #ecfdf5;
+  color: #14532d;
+}
+
+.res-pending-approve:hover {
+  background: #d1fae5;
+}
+
+.res-pending-deny {
+  border-color: #b91c1c;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.res-pending-deny:hover {
+  background: #fee2e2;
+}
+
+a.admin-nav-link[href='Admin_Reservations.html'] {
+  position: relative;
+}
+
+.admin-nav-pending-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 1rem;
+  height: 1rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1rem;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--admin-sidebar-bg, #f9fafb);
+}
+
+body[data-theme='dark'] .admin-nav-pending-badge {
+  box-shadow: 0 0 0 2px #111827;
+}
+
 .res-calendar-dropdown {
   position: relative;
 }
@@ -4347,6 +4535,43 @@ body[data-theme="dark"] .res-date-weekday {
 
 body[data-theme="dark"] .res-date-full {
   color: #f9fafb;
+}
+
+body[data-theme="dark"] .res-pending-btn {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #f9fafb;
+}
+
+body[data-theme="dark"] .res-pending-btn:hover {
+  background: #374151;
+  border-color: #60a5fa;
+}
+
+body[data-theme="dark"] .res-pending-badge {
+  box-shadow: 0 0 0 2px #0f172a;
+}
+
+body[data-theme="dark"] .res-pending-dropdown {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+body[data-theme="dark"] .res-pending-item {
+  border-bottom-color: #334155;
+}
+
+body[data-theme="dark"] .res-pending-item-title {
+  color: #f9fafb;
+}
+
+body[data-theme="dark"] .res-pending-item-meta {
+  color: #94a3b8;
+}
+
+body[data-theme="dark"] .res-pending-empty {
+  color: #94a3b8;
 }
 
 body[data-theme="dark"] .res-mini-calendar-root {

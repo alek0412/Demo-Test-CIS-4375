@@ -49,13 +49,10 @@ def login_employee():
     #Add employee details
     for attribute in employee_query[0]:
         if attribute not in ["employee_password","employee_salt"]:
-            session['attribute']=employee_query[0][attribute]
+            session[attribute]=employee_query[0][attribute]
     session["is_employee"]=True
     session["is_customer"]=False
-    if session['employee_rank']==1:
-        session["is_manager"]==True
-    else:
-        session.get("is_manager")==False
+    session["is_manager"]=session.get('employee_rank')==1
     return make_response("Login successful",200)
 @employee_blueprint.route("/api/logout",methods=['post'])
 def employee_signout():
