@@ -8,18 +8,40 @@ sql_connection=secure_connection
 @employee_blueprint.route("/api/employee-create",methods=["post"])
 def create_employee():
     request_json=request.get_json(silent=True) or {}
+    if not session.get("is_manager") or not session.get("is_employee") or session.get("is_customer"):
+        return make_response("You don't have the authorization to create employee",401)
+
+    raw_last = request_json.get("last_name")
+    raw_first = request_json.get("first_name")
+    raw_phone = request_json.get("phone")
+    raw_password = request_json.get("password")
+    missing = []
+    if raw_last is None or (isinstance(raw_last, str) and not raw_last.strip()):
+        missing.append("last_name")
+    if raw_first is None or (isinstance(raw_first, str) and not raw_first.strip()):
+        missing.append("first_name")
+    if raw_phone is None or (isinstance(raw_phone, str) and not str(raw_phone).strip()):
+        missing.append("phone")
+    if raw_password is None or (isinstance(raw_password, str) and not str(raw_password)):
+        missing.append("password")
+    if missing:
+        return make_response("Missing or empty fields: " + ", ".join(missing), 400)
+
     try:
-        if not session.get("is_manager") or not session.get("is_employee") or session.get("is_customer"):
-            return make_response("You don't have the authorization to create employee",401)
-        last_name:str=request_json['last_name'].capitalize()
-        first_name:str=request_json['first_name'].capitalize()
-        phone=request_json['phone']
-        password:str=request_json['password']
+        last_name = str(raw_last).strip().capitalize()
+        first_name = str(raw_first).strip().capitalize()
+        phone = str(raw_phone).strip()
+        password = str(raw_password)
         salt=os.urandom(20)
         hashed_password=hashlib.pbkdf2_hmac("sha256",password.encode(encoding='utf-8'),salt,50000).hex()
         hex_salt=salt.hex()
         stripped_first="".join(list(filter(lambda x:x.isalpha() and x.isascii()),first_name))
         stripped_last="".join(list(filter(lambda x:x.isalpha() and x.isascii()),last_name))
+        if not stripped_first or not stripped_last:
+            return make_response(
+                "Each name needs at least one A–Z letter to build the staff email (firstname.lastname@hbcstaff.com).",
+                400,
+            )
         email=f"{stripped_first}.{stripped_last}@hbcstaff.com".lower()
         query_tuple=(last_name,first_name,email,phone,2,hashed_password,hex_salt)
         employee_query=sql_functions.execute_query(
@@ -28,10 +50,10 @@ def create_employee():
             query_tuple,
         )
         if type(employee_query)==int:
-            return make_response("Server is unable to create employee")
+            return make_response("Server is unable to create employee",503)
         return make_response("Employee successfully created",201)
-    except (KeyError,TypeError):
-        return make_response("Invalid employee details or improper authorization",401)
+    except (TypeError, ValueError) as e:
+        return make_response("Invalid employee details: " + str(e), 400)
     
 
 @employee_blueprint.route("/api/login",methods=["post"])
@@ -62,7 +84,11 @@ def login_employee():
             session[attribute]=employee_query[0][attribute]
     session["is_employee"]=True
     session["is_customer"]=False
-    session["is_manager"]=session.get('employee_rank')==1
+    try:
+        rank = employee_query[0].get("employee_rank")
+        session["is_manager"] = int(rank) == 1
+    except (TypeError, ValueError):
+        session["is_manager"] = False
     return make_response("Login successful",200)
 @employee_blueprint.route("/api/logout",methods=['post'])
 def employee_signout():
