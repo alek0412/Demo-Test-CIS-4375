@@ -439,6 +439,20 @@ body.admin-sidebar-collapsed .admin-sidebar {
   box-sizing: border-box;
 }
 
+/* Separators between sidebar items (horizontal rules in a vertical list) */
+.admin-nav-section > .admin-nav-link:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 0;
+}
+
+body[data-theme="light"] .admin-nav-section > .admin-nav-link:not(:last-child) {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="dark"] .admin-nav-section > .admin-nav-link:not(:last-child) {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
 .admin-nav-link:hover {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
