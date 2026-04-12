@@ -4,6 +4,24 @@
 (function () {
   'use strict';
 
+  /**
+   * Remember which admin page the user came from so non-managers can return there after closing the gate.
+   */
+  function rememberAdminReferrerForEmployeesPage() {
+    try {
+      var ref = document.referrer;
+      if (!ref) return;
+      var u = new URL(ref);
+      if (u.origin !== window.location.origin) return;
+      var path = (u.pathname || '').toLowerCase();
+      if (path.indexOf('admin_employees') !== -1) return;
+      if (path.indexOf('admin_') === -1 && path.indexOf('/admin/') === -1) return;
+      var dest = u.pathname + (u.search || '') + (u.hash || '');
+      sessionStorage.setItem('hbc_admin_before_employees', dest);
+    } catch (e) {}
+  }
+  rememberAdminReferrerForEmployeesPage();
+
   var HIDDEN_EMPLOYEE_COLS = { employee_password: true, employee_salt: true };
 
   var selectedEmployee = null;
@@ -583,12 +601,13 @@
       showManagerGate(false);
       if (managerGateShownForNonManager) {
         managerGateShownForNonManager = false;
-        var dbEl = document.getElementById('db-content');
-        if (dbEl) {
-          dbEl.className = 'db-meta';
-          dbEl.innerHTML =
-            '<p>Employee directory is available to managers only. Use the sidebar to open Dashboard, Reservations, or other sections.</p>';
+        var back = sessionStorage.getItem('hbc_admin_before_employees');
+        sessionStorage.removeItem('hbc_admin_before_employees');
+        if (back) {
+          window.location.href = back;
+          return;
         }
+        window.location.href = 'Admin_Dashboard.html';
       }
     });
   }
