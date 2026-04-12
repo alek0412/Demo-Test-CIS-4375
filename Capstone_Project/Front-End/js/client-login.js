@@ -64,8 +64,6 @@
                 sessionStorage.removeItem('hbc_client_preview_mode');
                 if (data.firstName) {
                   sessionStorage.setItem('hbc_customer_first_name', String(data.firstName).trim());
-                } else {
-                  sessionStorage.removeItem('hbc_customer_first_name');
                 }
               } catch (e) {}
               window.location.href = '/client/Client_Availability.html?logged_in=1';

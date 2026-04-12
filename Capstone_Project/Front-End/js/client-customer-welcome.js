@@ -42,7 +42,11 @@
         hide();
         return;
       }
-      var fn = data.profile.firstName ? String(data.profile.firstName).trim() : '';
+      var p = data.profile;
+      var fn = p.firstName ? String(p.firstName).trim() : '';
+      if (!fn && p.lastName) {
+        fn = String(p.lastName).trim();
+      }
       showWithFirstName(fn);
     })
     .catch(function () {

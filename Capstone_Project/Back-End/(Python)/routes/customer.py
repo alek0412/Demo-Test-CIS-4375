@@ -158,10 +158,27 @@ def customer_me_get():
         except (TypeError, KeyError, IndexError):
             emergency_contact = None
 
+    fn = as_str(session.get("customer_first_name")).strip()
+    ln = as_str(session.get("customer_last_name")).strip()
+    if cid is not None:
+        name_rows = sql_functions.execute_read(
+            sql_connection,
+            "select customer_first_name, customer_last_name from customer where customer_id=%s limit 1",
+            (cid,),
+        )
+        if type(name_rows) != int and name_rows and len(name_rows) > 0:
+            nr = name_rows[0]
+            db_fn = as_str(nr.get("customer_first_name")).strip()
+            db_ln = as_str(nr.get("customer_last_name")).strip()
+            if db_fn:
+                fn = db_fn
+            if db_ln:
+                ln = db_ln
+
     profile = {
         "customerId": session.get("customer_id"),
-        "firstName": as_str(session.get("customer_first_name")),
-        "lastName": as_str(session.get("customer_last_name")),
+        "firstName": fn,
+        "lastName": ln,
         "email": as_str(session.get("email")),
         "phone": as_str(session.get("phone")),
         "streetAddress": as_str(session.get("street_address")),

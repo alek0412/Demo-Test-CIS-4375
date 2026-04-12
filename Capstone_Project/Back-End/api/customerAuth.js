@@ -364,8 +364,33 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
       try {
         const upstream = await proxyToFlask(base, 'GET', '/api/customer-me', { cookie });
         if (upstream.statusCode === 200 && upstream.body) {
+          let outBody = upstream.body;
+          try {
+            const parsed = JSON.parse(upstream.body);
+            const p = parsed && parsed.profile;
+            const firstEmpty = p && !String(p.firstName || '').trim();
+            let emailHint = '';
+            try {
+              const em = cookie.match(/hbc_customer_email=([^;]*)/);
+              emailHint = em ? decodeURIComponent(em[1].trim()) : '';
+            } catch (_) {}
+            if (firstEmpty && emailHint) {
+              const merged = await lookupCustomerProfile(emailHint);
+              if (merged) {
+                if (String(merged.firstName || '').trim()) {
+                  p.firstName = String(merged.firstName).trim();
+                }
+                if (String(merged.lastName || '').trim() && !String(p.lastName || '').trim()) {
+                  p.lastName = String(merged.lastName).trim();
+                }
+                outBody = JSON.stringify(parsed);
+              }
+            }
+          } catch (_) {
+            /* keep upstream body */
+          }
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(upstream.body);
+          res.end(outBody);
           return true;
         }
       } catch (err) {
