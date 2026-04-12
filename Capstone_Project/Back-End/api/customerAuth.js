@@ -3,6 +3,9 @@
  */
 const { proxyToFlask, writeFlaskResponse } = require('../lib/flaskHttp');
 
+/** Match Flask `permanent_session_lifetime` (7d) so Node login cookies do not expire first. */
+const CUSTOMER_COOKIE_MAX_AGE_SEC = 60 * 60 * 24 * 7;
+
 function flaskBase(config) {
   return (config && (config.flaskApiBaseUrl || config.flaskWaiverBaseUrl)) || '';
 }
@@ -26,7 +29,13 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
 
   function customerEmailCookieHeader(email) {
     const safe = encodeURIComponent(String(email || '').trim().toLowerCase());
-    return 'hbc_customer_email=' + safe + '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
+    return (
+      'hbc_customer_email=' +
+      safe +
+      '; Path=/; HttpOnly; Max-Age=' +
+      CUSTOMER_COOKIE_MAX_AGE_SEC +
+      '; SameSite=Lax'
+    );
   }
 
   function clearCustomerEmailCookieHeader() {
@@ -127,7 +136,9 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
           const nodeCustomerCookie =
             'customer_session=' +
             encodeURIComponent(CUSTOMER_SESSION_VALUE) +
-            '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
+            '; Path=/; HttpOnly; Max-Age=' +
+            CUSTOMER_COOKIE_MAX_AGE_SEC +
+            '; SameSite=Lax';
           const emailCookie = customerEmailCookieHeader(data.email);
           const cookies = [...upstream.setCookies, nodeCustomerCookie, emailCookie];
           res.writeHead(200, { 'Content-Type': 'application/json', 'Set-Cookie': cookies });
@@ -175,7 +186,9 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
         'Set-Cookie': [
           'customer_session=' +
             encodeURIComponent(CUSTOMER_SESSION_VALUE) +
-            '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
+            '; Path=/; HttpOnly; Max-Age=' +
+            CUSTOMER_COOKIE_MAX_AGE_SEC +
+            '; SameSite=Lax',
           customerEmailCookieHeader(email),
         ],
       });
@@ -269,7 +282,9 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
           ...upstream.setCookies,
           'customer_session=' +
             encodeURIComponent(CUSTOMER_SESSION_VALUE) +
-            '; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax',
+            '; Path=/; HttpOnly; Max-Age=' +
+            CUSTOMER_COOKIE_MAX_AGE_SEC +
+            '; SameSite=Lax',
           customerEmailCookieHeader(regEmail),
         ];
         res.writeHead(201, { 'Content-Type': 'application/json', 'Set-Cookie': cookies });
@@ -367,6 +382,21 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
           let outBody = upstream.body;
           try {
             const parsed = JSON.parse(upstream.body);
+            // Flask session cookie can be missing after idle/SSL/tunnel issues while Node login
+            // cookies (customer_session + hbc_customer_email) are still valid — hydrate from DB.
+            if (parsed && parsed.loggedIn === false && nodeLoggedIn) {
+              let emailHint = '';
+              try {
+                const em = cookie.match(/hbc_customer_email=([^;]*)/);
+                emailHint = em ? decodeURIComponent(em[1].trim()) : '';
+              } catch (_) {}
+              const merged = emailHint ? await lookupCustomerProfile(emailHint) : null;
+              if (merged) {
+                parsed.loggedIn = true;
+                parsed.profile = merged;
+                outBody = JSON.stringify(parsed);
+              }
+            }
             const p = parsed && parsed.profile;
             const firstEmpty = p && !String(p.firstName || '').trim();
             let emailHint = '';

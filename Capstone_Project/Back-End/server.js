@@ -40,8 +40,15 @@ const CUSTOMER_PREVIEW_LOGIN =
 const CUSTOMER_EMAIL = (process.env.CUSTOMER_EMAIL || 'alekespi0412@gmail.com').trim().toLowerCase();
 const CUSTOMER_PASSWORD = process.env.CUSTOMER_PASSWORD || 'Espi22735@';
 
-// Session secret so cookies from before this server started are invalid (shows "Log in" on fresh start)
-const CUSTOMER_SESSION_SECRET = process.env.CUSTOMER_SESSION_SECRET || require('crypto').randomBytes(16).toString('hex');
+// Customer cookie value must stay stable across PM2 restarts, or browsers keep an old cookie and
+// /api/customer-me treats the user as logged out. Set CUSTOMER_SESSION_SECRET in .env in production.
+const CUSTOMER_SESSION_SECRET =
+  process.env.CUSTOMER_SESSION_SECRET || 'hbc-dev-customer-session-not-for-production';
+if (!process.env.CUSTOMER_SESSION_SECRET) {
+  console.warn(
+    '[server.js] CUSTOMER_SESSION_SECRET is unset; using a built-in default. Set CUSTOMER_SESSION_SECRET in .env so customer cookies stay valid across deploys and restarts.'
+  );
+}
 const CUSTOMER_SESSION_VALUE = 'loggedin:' + CUSTOMER_SESSION_SECRET;
 
 // Front-End folder is one level up from Back-End

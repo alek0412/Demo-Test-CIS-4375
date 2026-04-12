@@ -128,31 +128,31 @@
     modal.setAttribute('aria-hidden', 'true');
   }
 
-  fetch('/api/customer-me', { credentials: 'same-origin' })
-    .then(function (r) {
+  Promise.all([
+    fetch('/api/customer-me', { credentials: 'same-origin' }).then(function (r) {
       return r.json().then(function (data) {
         return { ok: r.ok, data: data };
       });
-    })
-    .then(function (res) {
+    }),
+    fetch('/api/customer-activity', { credentials: 'same-origin' })
+      .then(function (r) {
+        return r.json();
+      })
+      .catch(function () {
+        return { success: false, activities: [] };
+      }),
+  ])
+    .then(function (results) {
+      var res = results[0];
+      var act = results[1];
       var data = res.data;
       if (!data || !data.loggedIn) {
         window.location.href = '/client/Client_Login.html';
-        return null;
+        return;
       }
       if (data.profile) {
         applyProfile(data.profile);
       }
-      return fetch('/api/customer-activity', { credentials: 'same-origin' })
-        .then(function (r) {
-          return r.json();
-        })
-        .catch(function () {
-          return { success: true, activities: [] };
-        });
-    })
-    .then(function (act) {
-      if (act == null) return;
       if (act && act.success && Array.isArray(act.activities)) {
         renderActivity(act.activities);
       } else {
