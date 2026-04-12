@@ -9,6 +9,16 @@ function flaskBaseUrl(config) {
   return (config && (config.flaskApiBaseUrl || config.flaskWaiverBaseUrl)) || '';
 }
 
+function getCookie(req, name) {
+  const c = req.headers.cookie || '';
+  const parts = c.split(';');
+  for (let i = 0; i < parts.length; i++) {
+    const p = parts[i].trim();
+    if (p.startsWith(name + '=')) return decodeURIComponent(p.slice(name.length + 1).trim());
+  }
+  return null;
+}
+
 function verifyPythonPbkdf2Password(plain, pwdHex, saltHex) {
   if (!plain || !pwdHex || !saltHex || String(pwdHex).length !== 64) return false;
   try {
@@ -118,6 +128,44 @@ module.exports = async function handleAdminAuth(req, res, ctx) {
     const loggedIn = hasAdminSessionCookie(req);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ loggedIn }));
+    return true;
+  }
+
+  /** First name (and login flags) for admin UI welcome line — uses HttpOnly admin_employee_id cookie. */
+  if (req.method === 'GET' && pathname === '/api/admin/me') {
+    if (!hasAdminSessionCookie(req)) {
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ loggedIn: false, firstName: null, lastName: null }));
+      return true;
+    }
+    const idRaw = getCookie(req, 'admin_employee_id');
+    const employeeId = idRaw != null && idRaw !== '' ? parseInt(idRaw, 10) : NaN;
+    if (!Number.isFinite(employeeId)) {
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ loggedIn: true, firstName: null, lastName: null }));
+      return true;
+    }
+    try {
+      const { rows } = await db.query(
+        'SELECT employee_first_name, employee_last_name FROM employee WHERE employee_id = ? LIMIT 1',
+        [employeeId]
+      );
+      const row = rows[0];
+      const firstName = row && row.employee_first_name != null ? String(row.employee_first_name).trim() : '';
+      const lastName = row && row.employee_last_name != null ? String(row.employee_last_name).trim() : '';
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(
+        JSON.stringify({
+          loggedIn: true,
+          firstName: firstName || null,
+          lastName: lastName || null,
+        })
+      );
+    } catch (e) {
+      console.error('[adminAuth] /api/admin/me', e.message);
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ loggedIn: true, firstName: null, lastName: null }));
+    }
     return true;
   }
 
