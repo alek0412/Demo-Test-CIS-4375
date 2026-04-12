@@ -4,6 +4,7 @@
 const handlers = [
   require('./publicScheduleReservations'),
   require('./customerActivity'),
+  require('./customerBookings'),
   require('./adminAuth'),
   require('./adminReservationsPending'),
   require('./adminScheduleReservations'),

@@ -6,11 +6,11 @@
   <title>My Bookings — Houston Badminton Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css">
-  <style>.hero { padding-top: 1.5rem; padding-bottom: 0.5rem; } section.features { padding-top: 0.5rem; }</style>
+  <link rel="stylesheet" href="../css/client-bookings.css">
 </head>
-<body>
+<body class="client-bookings-page">
   <header>
     <div class="container">
       <nav>
@@ -33,26 +33,52 @@
   </header>
 
   <main>
-    <section class="hero">
+    <section class="bookings-hero" aria-label="Bookings overview">
       <div class="container">
-        <h1>My Bookings</h1>
-        <p>View and manage your upcoming and past reservations</p>
+        <div class="bookings-hero__card">
+          <div>
+            <p class="bookings-hero__kicker">Your schedule</p>
+            <h1>My Bookings</h1>
+            <p class="bookings-hero__lead">Live list of your court reservations—upcoming, completed, canceled, and pending—synced from the same system staff use at the desk.</p>
+            <p class="bookings-live" id="bookings-live-wrap">Last updated: <strong id="bookings-last-sync">—</strong> · auto-refreshes every 45s</p>
+          </div>
+          <div class="bookings-hero__cta">
+            <a href="Client_Availability.html" class="btn btn-primary">Book a court</a>
+            <a href="Client_Profile.html" class="btn btn-ghost">Profile</a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="features">
+    <section class="bookings-shell" aria-labelledby="bookings-heading">
       <div class="container">
-        <h2>Your reservations</h2>
-        <p style="color: var(--text-muted); text-align: center;">Your booking history will appear here.</p>
+        <h2 id="bookings-heading" class="visually-hidden">Reservation list</h2>
+
+        <div class="bookings-toolbar" role="tablist" aria-label="Filter reservations">
+          <button type="button" class="bookings-filter is-active" data-bookings-filter="all" role="tab" aria-selected="true">All</button>
+          <button type="button" class="bookings-filter" data-bookings-filter="upcoming" role="tab" aria-selected="false">Upcoming</button>
+          <button type="button" class="bookings-filter" data-bookings-filter="past" role="tab" aria-selected="false">Past</button>
+          <button type="button" class="bookings-filter" data-bookings-filter="canceled" role="tab" aria-selected="false">Canceled &amp; declined</button>
+        </div>
+
+        <p class="bookings-loading" id="bookings-loading">Loading your reservations…</p>
+
+        <div class="bookings-empty" id="bookings-empty" hidden>
+          <h3>No reservations yet</h3>
+          <p>When you book a court from Availability, your requests and confirmations will show up here.</p>
+        </div>
+
+        <ul class="bookings-list" id="bookings-list" hidden></ul>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      <p>© 2026 Houston Badminton Center. All rights reserved.</p>
+      <p class="hbc-copyright">© 2026 HOUSTON BADMINTON CENTER. ALL RIGHTS RESERVED.</p>
     </div>
   </footer>
+  <script src="../js/client-bookings.js"></script>
   <script src="../js/client-nav.js"></script>
 </body>
 </html>
