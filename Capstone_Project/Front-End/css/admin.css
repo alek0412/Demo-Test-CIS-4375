@@ -446,11 +446,11 @@ body.admin-sidebar-collapsed .admin-sidebar {
 }
 
 body[data-theme="light"] .admin-nav-section > .admin-nav-link:not(:last-child) {
-  border-bottom-color: rgba(0, 0, 0, 0.08);
+  border-bottom-color: #000000;
 }
 
 body[data-theme="dark"] .admin-nav-section > .admin-nav-link:not(:last-child) {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
+  border-bottom-color: #ffffff;
 }
 
 .admin-nav-link:hover {
