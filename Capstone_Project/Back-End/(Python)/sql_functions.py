@@ -1,5 +1,14 @@
 import mysql.connector
 from mysql.connector import Error
+
+
+def _conn(connection):
+    """Always use a live DB connection (SSH tunnel + MySQL may drop after idle time)."""
+    import ssh_connection as sc
+
+    return sc.ensure_live_connection()
+
+
 def create_conn(user_name,pas,db_name,tunnel):
     connection = None
     try:
@@ -17,7 +26,10 @@ def create_conn(user_name,pas,db_name,tunnel):
     except Error as e:
         print(f"The error {e} occurred.")
         return e.errno
-def execute_query(connection,query,values=None):
+def execute_query(connection, query, values=None):
+    connection = _conn(connection)
+    if isinstance(connection, int):
+        return connection
     cursor = connection.cursor(prepared=True)
     try:
         cursor.execute(query,values)
@@ -26,8 +38,11 @@ def execute_query(connection,query,values=None):
     except Error as e:
         print(f"The error {e} occurred.")
         return e.errno
-def execute_read(connection,query,values=None):
-    cursor = connection.cursor(dictionary=True,prepared=True)
+def execute_read(connection, query, values=None):
+    connection = _conn(connection)
+    if isinstance(connection, int):
+        return connection
+    cursor = connection.cursor(dictionary=True, prepared=True)
     try:
         cursor.execute(query,values)
         result = cursor.fetchall()
