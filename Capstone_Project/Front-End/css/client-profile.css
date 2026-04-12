@@ -113,8 +113,7 @@
 }
 
 .profile-card--membership,
-.profile-card--activity-card,
-.profile-card--preferences {
+.profile-card--activity-card {
   grid-column: span 4;
 }
 
@@ -225,37 +224,6 @@
   background: rgba(59, 130, 246, 0.1);
   border-color: rgba(59, 130, 246, 0.24);
   color: #1d4ed8;
-}
-
-.profile-toggle-list {
-  display: grid;
-  gap: 0.48rem;
-  margin-bottom: 0.8rem;
-}
-
-.profile-toggle-list label {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  color: #334155;
-  font-size: 0.9rem;
-}
-
-.profile-quick-actions,
-.profile-danger-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.52rem;
-  margin-top: 0.9rem;
-}
-
-.profile-card--quick-actions .profile-quick-actions {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-.profile-card--quick-actions .profile-quick-actions .btn {
-  justify-content: flex-start;
 }
 
 .profile-inline-btn {
