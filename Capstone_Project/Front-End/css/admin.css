@@ -2457,6 +2457,23 @@ body[data-theme="dark"] .admin-membership-specials-toolbar {
   height: auto;
   object-fit: contain;
 }
+
+/* Layout → Availability “Popular times”: global preview uses overflow:hidden for corners; that clips tall images/PDFs */
+#popular-times-preview.admin-marketing-preview {
+  overflow: visible;
+  max-height: none;
+}
+
+#popular-times-preview .admin-marketing-preview-img {
+  max-height: none;
+  border-radius: inherit;
+}
+
+#popular-times-preview .admin-marketing-preview-pdf {
+  min-height: min(75vh, 900px);
+  width: 100%;
+}
+
 .admin-marketing-preview-empty {
   font-size: 0.875rem;
   color: var(--text-muted, #6b7280);
