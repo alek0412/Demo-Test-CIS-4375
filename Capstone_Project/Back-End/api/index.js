@@ -7,6 +7,7 @@ const handlers = [
   require('./customerBookings'),
   require('./adminAuth'),
   require('./adminReservationsPending'),
+  require('./adminCustomerSearch'),
   require('./adminScheduleReservations'),
   require('./flaskApiProxy'),
   require('./adminCustomerCrud'),

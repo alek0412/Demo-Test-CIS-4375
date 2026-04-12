@@ -169,13 +169,21 @@
                 <strong class="res-modal-booking-court-name" id="res-modal-court-display"></strong>
               </p>
               <article class="res-card res-card-client">
-                <div class="res-card-grid">
-                  <div class="res-label">Client</div>
-                  <div class="res-value"><span id="res-client-name">Jordan Blake</span> <span class="res-linkish">Change</span></div>
+                <div class="res-client-search">
+                  <label class="res-client-search-label" for="res-client-search-input">Find client</label>
+                  <div class="res-client-search-row">
+                    <input type="search" id="res-client-search-input" placeholder="Name or email…" autocomplete="off" aria-autocomplete="list" aria-controls="res-client-search-results" />
+                    <div id="res-client-search-results" class="res-client-search-dropdown is-hidden" role="listbox" hidden></div>
+                  </div>
+                  <p class="res-client-search-hint" id="res-client-search-hint">Type to search the customer database. Select a row to fill phone and email.</p>
+                </div>
+                <div class="res-card-grid res-client-summary" id="res-client-summary" hidden>
+                  <div class="res-label">Name</div>
+                  <div class="res-value"><span id="res-client-name"></span> <button type="button" class="res-client-clear" id="res-client-clear">Clear</button></div>
                   <div class="res-label">Phone</div>
-                  <div class="res-value"><span id="res-client-phone">(999) 999-9999</span> <span class="res-linkish">Change</span></div>
+                  <div class="res-value"><span id="res-client-phone"></span></div>
                   <div class="res-label">Email</div>
-                  <div class="res-value"><span id="res-client-email">client@example.com</span> <span class="res-linkish">Change</span></div>
+                  <div class="res-value"><span id="res-client-email"></span></div>
                 </div>
                 <label class="res-confirm" title="Confirmation email is always sent for this booking.">
                   <input type="checkbox" id="res-send-confirm" checked disabled aria-label="Send confirmation email (always on)">
@@ -302,51 +310,116 @@
       const resPendingDropdown = document.getElementById('res-pending-dropdown');
       const resPagePendingBadge = document.getElementById('res-page-pending-badge');
       const resClearDayBtn = document.getElementById('res-clear-day-btn');
+      const resClientSearchInput = document.getElementById('res-client-search-input');
+      const resClientSearchResults = document.getElementById('res-client-search-results');
+      const resClientSummary = document.getElementById('res-client-summary');
+      const resClientClear = document.getElementById('res-client-clear');
 
-      let recentClients = [];
       let selectedClient = null;
+      let clientSearchTimer = null;
       let scheduleDate = new Date();
       scheduleDate.setHours(12, 0, 0, 0);
       let calendarViewMonth = new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), 1);
       let miniCalendarOpen = false;
 
-      function randomPlaceholderPhone() {
-        return '(999) 999-9999';
-      }
- 
-      function randomEmailForName(displayName) {
-        const domains = ['example.net', 'mail.demo.org', 'inbox.placeholder.com', 'mailbox.test'];
-        const slug = String(displayName)
-          .toLowerCase()
-          .replace(/[^a-z]+/g, '.')
-          .replace(/^\.+|\.+$/g, '') || 'client';
-        const n = Math.floor(Math.random() * 90000) + 10000;
-        return slug + '.' + n + '@' + domains[Math.floor(Math.random() * domains.length)];
-      }
- 
-      function buildRandomClients() {
-        var names = [
-          'Jordan Blake', 'Morgan Ellis', 'Avery Stone', 'Parker Reid', 'Riley Brooks',
-          'Cameron Shaw', 'Taylor Quinn', 'Dakota Hayes', 'Rowan Pierce', 'Skyler James',
-          'Quinn Mercer', 'Reese Carter', 'Casey Jordan', 'Jamie Wells'
-        ];
-        names.sort(function () { return Math.random() - 0.5; });
-        recentClients = names.slice(0, 8).map(function (name) {
-          return { name: name, phone: randomPlaceholderPhone(), email: randomEmailForName(name) };
-        });
-        selectedClient = recentClients[0] || null;
-      }
- 
-      function applyClientToModal(client) {
-        if (!client) return;
-        if (resClientName) resClientName.textContent = client.name;
-        if (resClientPhone) resClientPhone.textContent = client.phone;
-        if (resClientEmail) resClientEmail.textContent = client.email;
+      function hideClientSearchResults() {
+        if (!resClientSearchResults) return;
+        resClientSearchResults.classList.add('is-hidden');
+        resClientSearchResults.hidden = true;
+        resClientSearchResults.textContent = '';
       }
 
-      function initModalDefaultClient() {
-        buildRandomClients();
-        applyClientToModal(selectedClient);
+      function renderClientSearchResults(customers) {
+        if (!resClientSearchResults) return;
+        resClientSearchResults.textContent = '';
+        if (!customers || !customers.length) {
+          var empty = document.createElement('p');
+          empty.className = 'res-client-search-empty';
+          empty.textContent = 'No matches. Try another name or email.';
+          resClientSearchResults.appendChild(empty);
+          resClientSearchResults.classList.remove('is-hidden');
+          resClientSearchResults.hidden = false;
+          return;
+        }
+        customers.forEach(function (c) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'res-client-search-item';
+          var name = (c.firstName + ' ' + c.lastName).trim();
+          var line1 = document.createElement('span');
+          line1.className = 'res-client-search-item-name';
+          line1.textContent = name;
+          var line2 = document.createElement('span');
+          line2.className = 'res-client-search-item-meta';
+          line2.textContent = [c.email, c.phone].filter(Boolean).join(' · ');
+          btn.appendChild(line1);
+          btn.appendChild(line2);
+          btn.addEventListener('click', function () {
+            selectCustomerRecord(c);
+          });
+          resClientSearchResults.appendChild(btn);
+        });
+        resClientSearchResults.classList.remove('is-hidden');
+        resClientSearchResults.hidden = false;
+      }
+
+      function selectCustomerRecord(c) {
+        selectedClient = {
+          customerId: c.customerId,
+          name: (c.firstName + ' ' + c.lastName).trim(),
+          phone: c.phone || '—',
+          email: c.email || '—'
+        };
+        if (resClientName) resClientName.textContent = selectedClient.name;
+        if (resClientPhone) resClientPhone.textContent = selectedClient.phone;
+        if (resClientEmail) resClientEmail.textContent = selectedClient.email;
+        if (resClientSummary) resClientSummary.hidden = false;
+        if (resClientSearchInput) resClientSearchInput.value = '';
+        hideClientSearchResults();
+      }
+
+      function clearClientSelection() {
+        selectedClient = null;
+        if (resClientSummary) resClientSummary.hidden = true;
+        if (resClientName) resClientName.textContent = '';
+        if (resClientPhone) resClientPhone.textContent = '';
+        if (resClientEmail) resClientEmail.textContent = '';
+        hideClientSearchResults();
+      }
+
+      function initClientSearch() {
+        if (!resClientSearchInput) return;
+        resClientSearchInput.addEventListener('input', function () {
+          if (clientSearchTimer) window.clearTimeout(clientSearchTimer);
+          var q = resClientSearchInput.value.trim();
+          if (q.length < 1) {
+            hideClientSearchResults();
+            return;
+          }
+          clientSearchTimer = window.setTimeout(function () {
+            fetch('/api/admin/customers-search?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
+              .then(function (r) {
+                return r.json();
+              })
+              .then(function (data) {
+                if (!data || !data.success) return;
+                renderClientSearchResults(data.customers || []);
+              })
+              .catch(function () {});
+          }, 320);
+        });
+        if (resClientClear) {
+          resClientClear.addEventListener('click', function () {
+            clearClientSelection();
+            if (resClientSearchInput) resClientSearchInput.focus();
+          });
+        }
+        document.addEventListener('click', function (e) {
+          if (!resClientSearchInput || !resClientSearchResults) return;
+          var inside = e.target.closest && e.target.closest('.res-client-search');
+          if (inside) return;
+          hideClientSearchResults();
+        });
       }
 
       function isSameCalendarDay(a, b) {
@@ -607,7 +680,8 @@
         }
         setStatus('');
         syncModalCourtFields();
-        applyClientToModal(selectedClient);
+        clearClientSelection();
+        if (resClientSearchInput) resClientSearchInput.value = '';
         updateEndTimeFromForm();
         overlay.classList.remove('is-hidden');
         overlay.setAttribute('aria-hidden', 'false');
@@ -878,6 +952,14 @@
         if (ap === 'AM' && h === 12) h = 0;
         return h * 60 + min;
       }
+
+      function minutesToHHMM(totalMins) {
+        let t = totalMins % (24 * 60);
+        if (t < 0) t += 24 * 60;
+        const h24 = Math.floor(t / 60);
+        const min = t % 60;
+        return String(h24).padStart(2, '0') + ':' + String(min).padStart(2, '0');
+      }
  
       function formatMinutesAsTime12(totalMins) {
         let t = totalMins % (24 * 60);
@@ -1120,60 +1202,62 @@
               return;
             }
           }
- 
-          var targetCol = Array.from(calendar.querySelectorAll('.cal-col')).find(function (col) {
-            return col.getAttribute('data-court') === resource;
-          });
- 
-          if (!targetCol) {
-            setStatus('Unable to find the selected court column.', true);
+
+          if (!selectedClient || !selectedClient.customerId) {
+            setStatus('Search and select a client before adding the reservation.', true);
+            if (resClientSearchInput) resClientSearchInput.focus();
             return;
           }
- 
-          const body = targetCol.querySelector('.cal-col-body');
-          if (!body) {
-            setStatus('Schedule column is missing.', true);
+
+          var start = startSelect ? startSelect.value : '';
+          var end = endInput ? endInput.value : '';
+          var startMin = parseTimeLabelToMinutes(start);
+          var endMin = parseTimeLabelToMinutes(end);
+          if (startMin === null || endMin === null) {
+            setStatus('Invalid start or end time.', true);
             return;
           }
- 
-          const service = serviceSelect ? serviceSelect.value : '1.00 hr';
-          const start = startSelect ? startSelect.value : '';
-          const end = endInput ? endInput.value : '';
- 
-          const newBlock = document.createElement('div');
-          newBlock.className = isPickleballCourtNumber(courtNum)
-            ? 'cal-block is-event'
-            : isTableTennisCourtNumber(courtNum)
-              ? 'cal-block is-table-tennis'
-              : 'cal-block is-blue';
-          if (courtNeedsCustomEventName(courtNum) && customEventName) {
-            if (start && end) {
-              newBlock.innerHTML = customEventName + '<br>' + start + ' – ' + end + ' · ' + service;
-            } else {
-              newBlock.innerHTML = customEventName + '<br>' + service;
-            }
-          } else if (start && end) {
-            newBlock.innerHTML = start + ' - ' + end + '<br>' + service;
-          } else {
-            newBlock.innerHTML = service;
+          if (endMin <= startMin) {
+            setStatus('End time must be after start time.', true);
+            return;
           }
-          decorateReservationBlock(newBlock);
- 
-          let slotStart = parseTimeToSlot(start);
-          let slotSpan = serviceToSlotSpan(service);
-          if (start && end) {
-            const endSlot = parseEndTimeToSlot(end);
-            slotSpan = Math.max(1, endSlot - slotStart);
-          }
-          newBlock.dataset.slotStart = String(slotStart);
-          newBlock.dataset.slotSpan = String(slotSpan);
-          applyBlockSlotLayout(newBlock);
- 
-          body.appendChild(newBlock);
-          newBlock.scrollIntoView({ block: 'nearest', inline: 'nearest' });
- 
-          setStatus('Reservation added to ' + resource + (start && end ? ' at ' + start + ' - ' + end + '.' : '.'), false);
-          closeModal();
+
+          var payload = {
+            customer_id: selectedClient.customerId,
+            court_id: courtNum,
+            reservation_date: formatScheduleDateIso(scheduleDate),
+            reservation_start_time: minutesToHHMM(startMin),
+            reservation_end_time: minutesToHHMM(endMin)
+          };
+
+          addBtn.disabled = true;
+          setStatus('Saving reservation…', false);
+          fetch('/api/admin/reservation-create', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
+            .then(function (r) {
+              return r.json().then(function (d) {
+                return { ok: r.ok, status: r.status, d: d };
+              });
+            })
+            .then(function (out) {
+              if (out.ok && out.d && out.d.success) {
+                setStatus(out.d.message || 'Reservation created.', false);
+                return refreshScheduleFromServer().then(function () {
+                  closeModal();
+                });
+              }
+              setStatus((out.d && out.d.message) || 'Could not create reservation.', true);
+            })
+            .catch(function () {
+              setStatus('Network error.', true);
+            })
+            .finally(function () {
+              addBtn.disabled = false;
+            });
         });
       }
  
@@ -1323,7 +1407,7 @@
         setInterval(loadPendingReservations, 45000);
       }
 
-      initModalDefaultClient();
+      initClientSearch();
       initScheduleDateControls();
       initFormTimeControls();
       initPendingCourtRequests();

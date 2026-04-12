@@ -1,12 +1,53 @@
 /**
- * Admin schedule: list / cancel / clear-day for court reservations (MySQL).
+ * Admin schedule: list / cancel / clear-day / create reservation for a customer (MySQL).
  * Active calendar: reservation_status 1 (pending) and 2 (approved).
  * Cancel sets reservation_status = 4 (canceled) — rows are kept for history.
  *
  * Waiver: 1 = Available to book, 2 = Pending/hold (active reservation). When the last active
  * reservation is canceled, set waiver back to 1.
+ *
+ * POST /api/admin/reservation-create — mirrors Flask routes/reservation.py add_reservation rules.
  */
 const db = require('../db/connection');
+
+const BUSINESS = {
+  weekday: { startMin: 10 * 60, closeMin: 23 * 60 + 30 },
+  weekend: { startMin: 8 * 60, closeMin: 23 * 60 + 30 },
+};
+const VALID_MINUTE_SUFFIXES = ['00', '15', '30', '45'];
+
+
+/** Monday=0 … Sunday=6 (matches Python weekday()). */
+function pythonWeekdayFromYMD(dateStr) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr);
+  if (!m) return 0;
+  const d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+  const js = d.getDay();
+  return js === 0 ? 6 : js - 1;
+}
+
+function advanceDaysFromToday(dateStr) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr);
+  if (!m) return null;
+  const req = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  req.setHours(0, 0, 0, 0);
+  return Math.round((req - today) / 864e5);
+}
+
+function parseHHMM(hhmm) {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(String(hhmm || '').trim());
+  if (!m) return null;
+  const h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  if (!Number.isFinite(h) || !Number.isFinite(min)) return null;
+  return h * 60 + min;
+}
+
+function timeOverlaps(aStart, aEnd, bStart, bEnd) {
+  return aStart < bEnd && aEnd > bStart;
+}
 
 /** After canceling a row, set waiver to 2 only if customer has no other reservation in (1,2). */
 async function restoreBookingEligibilityIfNoActiveReservations(conn, customerId) {
@@ -76,8 +117,11 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
     req.method === 'POST' &&
     (pathname === '/api/admin/schedule-reservations/clear-day' ||
       pathname === '/api/admin/schedule-reservations/clear-day/');
+  const isCreate =
+    req.method === 'POST' &&
+    (pathname === '/api/admin/reservation-create' || pathname === '/api/admin/reservation-create/');
 
-  if (!isGet && !isDelete && !isClearDay) {
+  if (!isGet && !isDelete && !isClearDay && !isCreate) {
     return false;
   }
 
@@ -233,6 +277,182 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
       } catch (_) {}
       console.error('[admin schedule-reservations clear-day]', e.message);
       sendJson(res, 503, { success: false, message: 'Unable to cancel reservations for this day' });
+    } finally {
+      conn.release();
+    }
+    return true;
+  }
+
+  if (isCreate) {
+    let body = {};
+    try {
+      body = await parseBody(req);
+    } catch (e) {
+      sendJson(res, 400, { success: false, message: 'Invalid request body' });
+      return true;
+    }
+
+    const court = parseInt(String(body.court_id ?? ''), 10);
+    const customer = parseInt(String(body.customer_id ?? ''), 10);
+    const reservationDate = String(body.reservation_date || '').trim();
+    const startTime = String(body.reservation_start_time || '').trim();
+    const endTime = String(body.reservation_end_time || '').trim();
+
+    if (!Number.isFinite(court) || court < 1 || court > 12) {
+      sendJson(res, 400, { success: false, message: 'Invalid court_id' });
+      return true;
+    }
+    if (!Number.isFinite(customer) || customer < 1) {
+      sendJson(res, 400, { success: false, message: 'Invalid customer_id' });
+      return true;
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(reservationDate)) {
+      sendJson(res, 400, { success: false, message: 'reservation_date must be YYYY-MM-DD' });
+      return true;
+    }
+
+    const startMin = parseHHMM(startTime);
+    const endMin = parseHHMM(endTime);
+    if (startMin == null || endMin == null) {
+      sendJson(res, 400, { success: false, message: 'Invalid date format' });
+      return true;
+    }
+
+    const adv = advanceDaysFromToday(reservationDate);
+    if (adv == null || adv < 0 || adv > 14) {
+      sendJson(res, 400, {
+        success: false,
+        message: 'Unable to reserve in past or reserve for more than 14 days.',
+      });
+      return true;
+    }
+
+    const pyDow = pythonWeekdayFromYMD(reservationDate);
+    const dayType = pyDow < 5 ? 'weekday' : 'weekend';
+    const { startMin: openMin, closeMin } = BUSINESS[dayType];
+
+    if (startMin < openMin || endMin > closeMin) {
+      sendJson(res, 400, { success: false, message: 'Cannot reserve outside of business hours' });
+      return true;
+    }
+    if (endMin - startMin > 270) {
+      sendJson(res, 400, { success: false, message: 'Cannot reserve for more than 4.5 hours' });
+      return true;
+    }
+    if (endMin - startMin < 15) {
+      sendJson(res, 400, { success: false, message: 'Cannot reserve for less than 15 minutes' });
+      return true;
+    }
+    const ss = startTime.slice(-2);
+    const es = endTime.slice(-2);
+    if (!VALID_MINUTE_SUFFIXES.includes(ss) || !VALID_MINUTE_SUFFIXES.includes(es)) {
+      sendJson(res, 400, {
+        success: false,
+        message: 'All times must end with a multiple of 15 minutes',
+      });
+      return true;
+    }
+
+    const conn = await db.getClient();
+    try {
+      await conn.beginTransaction();
+
+      const [courtRows] = await conn.execute(
+        `SELECT reservation_start_time, reservation_end_time FROM reservation
+         WHERE court_id = ? AND reservation_date = ? AND reservation_status IN (1, 2)`,
+        [court, reservationDate]
+      );
+      for (let i = 0; i < courtRows.length; i++) {
+        const row = courtRows[i];
+        const rs = parseHHMM(formatTime(row.reservation_start_time));
+        const re = parseHHMM(formatTime(row.reservation_end_time));
+        if (rs == null || re == null) continue;
+        if (timeOverlaps(startMin, endMin, rs, re)) {
+          await conn.rollback();
+          sendJson(res, 400, { success: false, message: 'Court is already booked' });
+          return true;
+        }
+      }
+
+      const [activeRows] = await conn.execute(
+        'SELECT COUNT(*) AS c FROM reservation WHERE customer_id = ? AND reservation_status IN (1, 2)',
+        [customer]
+      );
+      const nActive = Number(activeRows[0] && activeRows[0].c);
+      if (nActive > 0) {
+        await conn.rollback();
+        sendJson(res, 400, {
+          success: false,
+          message:
+            'This customer already has a pending or confirmed reservation. Cancel it first or wait until it completes.',
+        });
+        return true;
+      }
+
+      await conn.execute('UPDATE waiver SET waiver_status = 1 WHERE customer_id = ?', [customer]);
+
+      const [wRows] = await conn.execute(
+        'SELECT waiver_id FROM waiver WHERE customer_id = ? ORDER BY waiver_id ASC LIMIT 1',
+        [customer]
+      );
+      if (!wRows.length) {
+        await conn.rollback();
+        sendJson(res, 400, {
+          success: false,
+          message: 'Customer has no waiver on file. They must complete waiver registration first.',
+        });
+        return true;
+      }
+      const waiverId = wRows[0].waiver_id;
+
+      await conn.execute('UPDATE waiver SET waiver_status = 1 WHERE waiver_id = ? AND customer_id = ?', [
+        waiverId,
+        customer,
+      ]);
+
+      const [verify] = await conn.execute(
+        'SELECT waiver_id FROM waiver WHERE waiver_id = ? AND customer_id = ?',
+        [waiverId, customer]
+      );
+      if (!verify.length) {
+        await conn.rollback();
+        sendJson(res, 400, { success: false, message: 'Could not verify waiver for this customer.' });
+        return true;
+      }
+
+      const [ins] = await conn.execute(
+        `INSERT INTO reservation (court_id, customer_id, waiver_id, reservation_date,
+          reservation_start_time, reservation_end_time, reservation_status)
+         VALUES (?, ?, ?, ?, ?, ?, 1)`,
+        [court, customer, waiverId, reservationDate, startTime, endTime]
+      );
+
+      const newId = ins.insertId;
+      if (!newId) {
+        await conn.rollback();
+        sendJson(res, 503, { success: false, message: 'Server is unable to create reservation' });
+        return true;
+      }
+
+      const [updW] = await conn.execute('UPDATE waiver SET waiver_status = 2 WHERE waiver_id = ?', [waiverId]);
+      if (!updW.affectedRows) {
+        await conn.rollback();
+        sendJson(res, 503, { success: false, message: 'Server is unable to update waiver' });
+        return true;
+      }
+
+      await conn.commit();
+      sendJson(res, 201, {
+        success: true,
+        reservation_id: newId,
+        message: 'Reservation is now pending; approve or deny from Court requests.',
+      });
+    } catch (e) {
+      try {
+        await conn.rollback();
+      } catch (_) {}
+      console.error('[admin reservation-create]', e.message);
+      sendJson(res, 503, { success: false, message: 'Unable to create reservation' });
     } finally {
       conn.release();
     }
