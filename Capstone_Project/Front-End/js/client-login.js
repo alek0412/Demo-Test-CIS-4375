@@ -68,7 +68,7 @@
                   sessionStorage.removeItem('hbc_customer_first_name');
                 }
               } catch (e) {}
-              window.location.href = '/client/Client_Dashboard.html?logged_in=1';
+              window.location.href = '/client/Client_Availability.html?logged_in=1';
             } else {
               customerError.textContent = data.message || 'Invalid email or password';
               customerError.hidden = false;
