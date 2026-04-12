@@ -112,8 +112,11 @@
   grid-column: span 3;
 }
 
-.profile-card--membership,
 .profile-card--activity-card {
+  grid-column: span 4;
+}
+
+.profile-card--membership {
   grid-column: span 4;
 }
 
@@ -302,7 +305,9 @@
 
   .profile-card--summary,
   .profile-card--danger,
-  .profile-card--security {
+  .profile-card--security,
+  .profile-card--activity-card,
+  .profile-card--membership {
     grid-column: span 12;
   }
 }
