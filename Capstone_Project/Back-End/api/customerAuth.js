@@ -68,7 +68,7 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
             ? r.birthdate.toISOString().slice(0, 10)
             : String(r.birthdate);
       }
-      return {
+      const profile = {
         customerId: r.customer_id,
         firstName: String(r.customer_first_name || '').trim(),
         lastName: String(r.customer_last_name || '').trim(),
@@ -81,6 +81,25 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
         membershipStatus: r.membership_status,
         birthdate: birth,
       };
+      try {
+        const ecRes = await db.query(
+          'SELECT emergency_first, emergency_last, relationship, emergency_phone, emergency_email FROM emergency_contact WHERE customer_id = ? LIMIT 1',
+          [r.customer_id]
+        );
+        const ec = ecRes.rows && ecRes.rows[0];
+        if (ec) {
+          profile.emergencyContact = {
+            firstName: String(ec.emergency_first || '').trim(),
+            lastName: String(ec.emergency_last || '').trim(),
+            relationship: String(ec.relationship || '').trim(),
+            phone: String(ec.emergency_phone || '').trim(),
+            email: String(ec.emergency_email || '').trim(),
+          };
+        }
+      } catch (e) {
+        console.error('[customer-me] emergency lookup:', e.message);
+      }
+      return profile;
     } catch (err) {
       console.error('[customer-me] profile lookup:', err.message);
       return null;

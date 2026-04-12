@@ -26,6 +26,12 @@
     return n || '—';
   }
 
+  function emergencyFullName(ec) {
+    if (!ec) return '—';
+    var n = (esc(ec.firstName) + ' ' + esc(ec.lastName)).trim();
+    return n || '—';
+  }
+
   function initials(p) {
     var fn = esc(p && p.firstName)
       .charAt(0)
@@ -71,6 +77,13 @@
     if (emailEl) emailEl.textContent = p.email || '—';
     if (phoneEl) phoneEl.textContent = p.phone || '—';
     if (avatar) avatar.textContent = initials(p);
+    var ec = p.emergencyContact;
+    var ecNameEl = document.getElementById('profile-emergency-name');
+    var ecEmailEl = document.getElementById('profile-emergency-email');
+    var ecPhoneEl = document.getElementById('profile-emergency-phone');
+    if (ecNameEl) ecNameEl.textContent = emergencyFullName(ec);
+    if (ecEmailEl) ecEmailEl.textContent = ec && ec.email ? esc(ec.email) : '—';
+    if (ecPhoneEl) ecPhoneEl.textContent = ec && ec.phone ? esc(ec.phone) : '—';
     try {
       if (p.firstName) {
         sessionStorage.setItem('hbc_customer_first_name', String(p.firstName).trim());

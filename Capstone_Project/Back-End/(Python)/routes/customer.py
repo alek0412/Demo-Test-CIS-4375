@@ -137,24 +137,44 @@ def customer_me_get():
             return val.isoformat()
         return str(val)
 
-    return jsonify(
-        {
-            "loggedIn": True,
-            "profile": {
-                "customerId": session.get("customer_id"),
-                "firstName": as_str(session.get("customer_first_name")),
-                "lastName": as_str(session.get("customer_last_name")),
-                "email": as_str(session.get("email")),
-                "phone": as_str(session.get("phone")),
-                "streetAddress": as_str(session.get("street_address")),
-                "city": as_str(session.get("city")),
-                "state": as_str(session.get("state")),
-                "zipCode": as_str(session.get("zip_code")),
-                "membershipStatus": session.get("membership_status"),
-                "birthdate": as_str(session.get("birthdate")),
-            },
-        }
-    ), 200
+    emergency_contact = None
+    cid = session.get("customer_id")
+    if cid is not None:
+        try:
+            ec_rows = sql_functions.execute_read(
+                sql_connection,
+                "select emergency_first, emergency_last, relationship, emergency_phone, emergency_email from emergency_contact where customer_id=%s limit 1",
+                (cid,),
+            )
+            if type(ec_rows) != int and ec_rows and len(ec_rows) > 0:
+                er = ec_rows[0]
+                emergency_contact = {
+                    "firstName": as_str(er.get("emergency_first")),
+                    "lastName": as_str(er.get("emergency_last")),
+                    "relationship": as_str(er.get("relationship")),
+                    "phone": as_str(er.get("emergency_phone")),
+                    "email": as_str(er.get("emergency_email")),
+                }
+        except (TypeError, KeyError, IndexError):
+            emergency_contact = None
+
+    profile = {
+        "customerId": session.get("customer_id"),
+        "firstName": as_str(session.get("customer_first_name")),
+        "lastName": as_str(session.get("customer_last_name")),
+        "email": as_str(session.get("email")),
+        "phone": as_str(session.get("phone")),
+        "streetAddress": as_str(session.get("street_address")),
+        "city": as_str(session.get("city")),
+        "state": as_str(session.get("state")),
+        "zipCode": as_str(session.get("zip_code")),
+        "membershipStatus": session.get("membership_status"),
+        "birthdate": as_str(session.get("birthdate")),
+    }
+    if emergency_contact is not None:
+        profile["emergencyContact"] = emergency_contact
+
+    return jsonify({"loggedIn": True, "profile": profile}), 200
 
 @customer_blueprint.route("/api/customer",methods=['delete'])
 def customer_remove():
