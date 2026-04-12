@@ -14,6 +14,16 @@
   var maxWidth = 960;
   var dpr = Math.min(window.devicePixelRatio || 1, 2.5);
 
+  /** Cap PDF raster width to viewport on phones; keep 960 on wide screens (desktop unchanged). */
+  function getRenderWidthCap() {
+    try {
+      var w = document.documentElement ? document.documentElement.clientWidth : maxWidth;
+      return Math.min(maxWidth, Math.max(280, w - 32));
+    } catch (e) {
+      return maxWidth;
+    }
+  }
+
   function setBlockShown(show) {
     if (show) {
       root.removeAttribute('hidden');
@@ -24,8 +34,9 @@
 
   function renderPage(pdf, pageNum) {
     pdf.getPage(pageNum).then(function (page) {
+      var cap = getRenderWidthCap();
       var baseScale = page.getViewport({ scale: 1 });
-      var scale = (maxWidth / baseScale.width) * dpr;
+      var scale = (cap / baseScale.width) * dpr;
       var viewport = page.getViewport({ scale: scale });
       var canvas = document.createElement('canvas');
       var ctx = canvas.getContext('2d');
