@@ -416,6 +416,24 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
                 outBody = JSON.stringify(parsed);
               }
             }
+            // Flask reads emergency_contact via tunnel; if that query fails or returns nothing, the
+            // profile can omit emergency data while Node's DB pool still has the row — fill it in.
+            if (p && emailHint && parsed.loggedIn) {
+              const ec = p.emergencyContact;
+              const ecEmpty =
+                !ec ||
+                (!String(ec.firstName || '').trim() &&
+                  !String(ec.lastName || '').trim() &&
+                  !String(ec.phone || '').trim() &&
+                  !String(ec.email || '').trim());
+              if (ecEmpty) {
+                const merged = await lookupCustomerProfile(emailHint);
+                if (merged && merged.emergencyContact) {
+                  p.emergencyContact = merged.emergencyContact;
+                  outBody = JSON.stringify(parsed);
+                }
+              }
+            }
           } catch (_) {
             /* keep upstream body */
           }
