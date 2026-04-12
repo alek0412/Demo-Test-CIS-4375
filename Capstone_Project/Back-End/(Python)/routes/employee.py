@@ -32,7 +32,7 @@ def create_employee():
 
 @employee_blueprint.route("/api/login",methods=["post"])
 def login_employee():
-    request_json=request.get_json()
+    request_json=request.get_json(silent=True) or {}
     try:
         email:str=request_json['email']
         password:str=request_json['password']
@@ -41,7 +41,13 @@ def login_employee():
     employee_query=sql_functions.execute_read(sql_connection,"select * from employee where employee_email = %s",(email,))
     if type(employee_query)==int:
         return make_response("Unable to fetch employee details",503)
-    hashed_password=hashlib.pbkdf2_hmac("sha256",password.encode(encoding='utf-8'),bytes.fromhex(employee_query[0]['employee_salt']),50000).hex()
+    if not employee_query or len(employee_query)==0:
+        return make_response("Invalid email or password",401)
+    try:
+        salt_hex = employee_query[0].get("employee_salt") or ""
+        hashed_password=hashlib.pbkdf2_hmac("sha256",password.encode(encoding='utf-8'),bytes.fromhex(salt_hex),50000).hex()
+    except (ValueError, TypeError):
+        return make_response("Invalid email or password",401)
     if hashed_password != employee_query[0]['employee_password'] or email.lower() != employee_query[0]['employee_email']:
         return make_response("Invalid email or password",401)
     #Purge customer in session
