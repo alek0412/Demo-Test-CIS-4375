@@ -277,6 +277,10 @@
   box-shadow: 0 2px 12px -6px rgba(15, 23, 42, 0.12);
 }
 
+.bookings-pagination[hidden] {
+  display: none !important;
+}
+
 .bookings-pagination__status {
   margin: 0;
   font-size: 0.88rem;

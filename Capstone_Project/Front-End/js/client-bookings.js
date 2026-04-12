@@ -104,7 +104,8 @@
     var pageRows = rows.slice(start, start + PAGE_SIZE);
 
     if (paginationEl && pageStatusEl && pagePrevBtn && pageNextBtn) {
-      if (total > PAGE_SIZE) {
+      // Only show Previous/Next when there is more than one page (i.e. more than 30 rows for this filter).
+      if (totalPages > 1) {
         paginationEl.hidden = false;
         var from = start + 1;
         var to = start + pageRows.length;
