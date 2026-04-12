@@ -37,13 +37,6 @@
     return t || '?';
   }
 
-  function formatMemberSince(b) {
-    if (!b) return '—';
-    var d = new Date(b);
-    if (isNaN(d.getTime())) return '—';
-    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  }
-
   function membershipLabel(code) {
     if (code == null || code === '') return '—';
     var n = Number(code);
@@ -59,13 +52,11 @@
     var nameEl = document.getElementById('profile-name');
     var emailEl = document.getElementById('profile-email');
     var phoneEl = document.getElementById('profile-phone');
-    var memberSinceEl = document.getElementById('profile-member-since');
     var avatar = document.querySelector('.profile-avatar');
     var planEl = document.getElementById('profile-plan');
     if (nameEl) nameEl.textContent = fullName(p);
     if (emailEl) emailEl.textContent = p.email || '—';
     if (phoneEl) phoneEl.textContent = p.phone || '—';
-    if (memberSinceEl) memberSinceEl.textContent = formatMemberSince(p.birthdate);
     if (avatar) avatar.textContent = initials(p);
     if (planEl) planEl.textContent = membershipLabel(p.membershipStatus);
     try {
