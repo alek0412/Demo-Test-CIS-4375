@@ -144,6 +144,10 @@
   color: #0f172a;
 }
 
+.profile-card h2.profile-card-section-heading {
+  margin: 1rem 0 0.8rem;
+}
+
 .profile-subheading {
   margin: 0 0 0.5rem;
   font-size: 0.72rem;
