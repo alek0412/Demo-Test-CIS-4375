@@ -2691,6 +2691,7 @@ body.manager-gate-active .admin-layout {
   user-select: none;
 }
 .manager-gate-card {
+  position: relative;
   width: 100%;
   max-width: 420px;
   background: var(--surface, #ffffff);
@@ -2699,8 +2700,41 @@ body.manager-gate-active .admin-layout {
   padding: 2rem;
   border: 1px solid var(--border, #e5e7eb);
 }
+
+.manager-gate-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted, #6b7280);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.manager-gate-close:hover {
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--text, #111827);
+}
+
+.manager-gate-close:focus-visible {
+  outline: 2px solid var(--accent, #15803d);
+  outline-offset: 2px;
+}
+
 .manager-gate-header {
   margin-bottom: 1.5rem;
+  padding-right: 2.25rem;
 }
 .manager-gate-header h2 {
   margin: 0 0 0.5rem;
@@ -2768,6 +2802,15 @@ body.manager-gate-active .admin-layout {
 body[data-theme="dark"] .manager-gate-card {
   background: var(--surface, #1f2937);
   border-color: #374151;
+}
+
+body[data-theme="dark"] .manager-gate-close {
+  color: #9ca3af;
+}
+
+body[data-theme="dark"] .manager-gate-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f9fafb;
 }
 body[data-theme="dark"] .manager-gate-header h2 {
   color: #f9fafb;

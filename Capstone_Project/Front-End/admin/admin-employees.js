@@ -250,6 +250,9 @@
   var gateForm = document.getElementById('manager-gate-form');
   var gateError = document.getElementById('manager-gate-error');
   var gateSubmit = document.getElementById('manager-gate-submit');
+  var gateClose = document.getElementById('manager-gate-close');
+  /** True when the sign-in box was shown because the user is not a manager (regular employee). */
+  var managerGateShownForNonManager = false;
 
   function showManagerGate(show) {
     if (!overlay) return;
@@ -575,6 +578,21 @@
     });
   }
 
+  if (gateClose) {
+    gateClose.addEventListener('click', function () {
+      showManagerGate(false);
+      if (managerGateShownForNonManager) {
+        managerGateShownForNonManager = false;
+        var dbEl = document.getElementById('db-content');
+        if (dbEl) {
+          dbEl.className = 'db-meta';
+          dbEl.innerHTML =
+            '<p>Employee directory is available to managers only. Use the sidebar to open Dashboard, Reservations, or other sections.</p>';
+        }
+      }
+    });
+  }
+
   fetch('/api/me', { credentials: 'same-origin' })
     .then(function (r) {
       return r.json();
@@ -592,10 +610,12 @@
       if (mgr === null) return;
       if (!mgr || typeof mgr.managerLoggedIn === 'undefined') return;
       if (mgr.managerLoggedIn === true) {
+        managerGateShownForNonManager = false;
         showManagerGate(false);
         wireEmployeeCrudOnce();
         loadEmployeeTable();
       } else {
+        managerGateShownForNonManager = true;
         showManagerGate(true);
       }
     })
