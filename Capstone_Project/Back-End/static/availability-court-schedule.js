@@ -307,7 +307,7 @@
       var min = m % 60;
       var opt = document.createElement('option');
       opt.value = pad2(h) + ':' + pad2(min);
-      opt.textContent = opt.value;
+      opt.textContent = formatMinutesAsTime12(m);
       sel.appendChild(opt);
     }
   }
@@ -326,8 +326,14 @@
       '<p class="pub-res-modal-court" id="pub-res-modal-court-line"></p>' +
       '<p class="pub-res-modal-date" id="pub-res-modal-date-line"></p>' +
       '<div class="pub-res-modal-fields">' +
-      '<label class="pub-res-label">Start time <select id="pub-res-start"></select></label>' +
-      '<label class="pub-res-label">End time <select id="pub-res-end"></select></label>' +
+      '<div class="pub-res-field">' +
+      '<label class="pub-res-label" for="pub-res-start"><span class="pub-res-label-text">Start time</span></label>' +
+      '<div class="pub-res-select-wrap"><select id="pub-res-start" aria-label="Start time"></select></div>' +
+      '</div>' +
+      '<div class="pub-res-field">' +
+      '<label class="pub-res-label" for="pub-res-end"><span class="pub-res-label-text">End time</span></label>' +
+      '<div class="pub-res-select-wrap"><select id="pub-res-end" aria-label="End time"></select></div>' +
+      '</div>' +
       '</div>' +
       '<p class="pub-res-modal-msg" id="pub-res-modal-msg"></p>' +
       '<div class="pub-res-modal-actions">' +

@@ -368,11 +368,12 @@
 .pub-res-modal {
   position: relative;
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
-  max-width: 420px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  max-width: 440px;
   width: 100%;
-  padding: 1.25rem 1.35rem;
+  padding: 1.35rem 1.5rem 1.5rem;
   color: #111827;
 }
 
@@ -394,32 +395,97 @@
   font-weight: 600;
 }
 
-.pub-res-modal-court,
+.pub-res-modal-court {
+  margin: 0.35rem 0 0.15rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
 .pub-res-modal-date {
-  margin: 0.25rem 0;
-  font-size: 0.95rem;
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+  color: #64748b;
 }
 
 .pub-res-modal-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem 1rem;
+  margin: 1.1rem 0;
+}
+
+@media (max-width: 400px) {
+  .pub-res-modal-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pub-res-field {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin: 1rem 0;
+  gap: 0.4rem;
+  min-width: 0;
 }
 
 .pub-res-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  margin: 0;
 }
 
-.pub-res-label select {
-  padding: 0.45rem 0.5rem;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
+.pub-res-label-text {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.pub-res-select-wrap {
+  position: relative;
+}
+
+.pub-res-select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: -0.15rem;
+  border-right: 2px solid #64748b;
+  border-bottom: 2px solid #64748b;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.pub-res-select-wrap select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 2rem 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
   font: inherit;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  color: #0f172a;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.pub-res-select-wrap select:hover {
+  border-color: #cbd5e1;
+  background: #fff;
+}
+
+.pub-res-select-wrap select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .pub-res-modal-msg {
