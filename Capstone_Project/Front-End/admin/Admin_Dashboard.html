@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../css/admin.css">
   <script src="../admin-theme.js" defer></script>
 </head>
-<body>
+<body class="admin-dashboard-page">
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <div class="admin-sidebar-header">
@@ -69,9 +69,72 @@
     </aside>
     <div class="admin-main">
       <header class="admin-topbar"><div id="admin-theme-container"></div></header>
-      <div class="admin-content">
-        <div class="admin-title-wrap admin-title-wrap--left">
-          <h1 class="admin-page-title">Dashboard</h1>
+      <div class="admin-content admin-dashboard">
+        <div id="admin-dashboard-root" class="admin-dashboard-root" hidden>
+          <header class="admin-dashboard-hero">
+            <p class="admin-dashboard-kicker" aria-hidden="true">Rally control</p>
+            <h1 class="admin-page-title admin-dashboard-title" id="dashboard-hero-heading">Dashboard</h1>
+            <p class="admin-dashboard-lede" id="dashboard-hero-lede">Loading your snapshot…</p>
+          </header>
+
+          <div class="admin-dashboard-stat-grid" role="list">
+            <a href="Admin_Reservations.html" class="admin-dashboard-stat admin-dashboard-stat--accent" role="listitem">
+              <span class="admin-dashboard-stat-eyebrow">Inbox</span>
+              <span class="admin-dashboard-stat-label">Pending requests</span>
+              <span class="admin-dashboard-stat-value" id="dashboard-stat-pending">—</span>
+              <span class="admin-dashboard-stat-hint" id="dashboard-stat-pending-hint">…</span>
+            </a>
+            <a href="Admin_Layout.html#layout-section-home" class="admin-dashboard-stat admin-dashboard-stat--mint" role="listitem">
+              <span class="admin-dashboard-stat-eyebrow">Spotlight</span>
+              <span class="admin-dashboard-stat-label">Home hero tiles filled</span>
+              <span class="admin-dashboard-stat-value" id="dashboard-stat-events">—</span>
+              <span class="admin-dashboard-stat-hint" id="dashboard-stat-events-hint">…</span>
+            </a>
+            <a href="Admin_Reservations.html" class="admin-dashboard-stat admin-dashboard-stat--sky" role="listitem">
+              <span class="admin-dashboard-stat-eyebrow">Today</span>
+              <span class="admin-dashboard-stat-label">On the schedule</span>
+              <span class="admin-dashboard-stat-value" id="dashboard-stat-today">—</span>
+              <span class="admin-dashboard-stat-hint" id="dashboard-stat-today-hint">…</span>
+            </a>
+            <a href="Admin_Layout.html#layout-section-membership" class="admin-dashboard-stat admin-dashboard-stat--gold" role="listitem">
+              <span class="admin-dashboard-stat-eyebrow">Membership</span>
+              <span class="admin-dashboard-stat-label">Specials live</span>
+              <span class="admin-dashboard-stat-value" id="dashboard-stat-specials">—</span>
+              <span class="admin-dashboard-stat-hint" id="dashboard-stat-specials-hint">…</span>
+            </a>
+            <a href="Admin_Employees.html" class="admin-dashboard-stat admin-dashboard-stat--violet" role="listitem">
+              <span class="admin-dashboard-stat-eyebrow">Roster</span>
+              <span class="admin-dashboard-stat-label">Manager tools</span>
+              <span class="admin-dashboard-stat-value" id="dashboard-stat-manager">—</span>
+              <span class="admin-dashboard-stat-hint" id="dashboard-stat-manager-hint">…</span>
+            </a>
+          </div>
+
+          <div class="admin-dashboard-panels">
+            <section class="admin-dashboard-panel" aria-labelledby="dashboard-queue-title">
+              <h2 class="admin-dashboard-panel-title" id="dashboard-queue-title">Request queue</h2>
+              <p class="admin-dashboard-panel-sub">Same data as the badge on Reservations — newest work at the top of your list.</p>
+              <div id="dashboard-pending-list" class="admin-dashboard-panel-body">
+                <p class="admin-dashboard-loading">Fetching…</p>
+              </div>
+              <a class="admin-dashboard-panel-cta" href="Admin_Reservations.html">Open Reservations →</a>
+            </section>
+            <section class="admin-dashboard-panel admin-dashboard-panel--pulse" aria-labelledby="dashboard-pulse-title">
+              <h2 class="admin-dashboard-panel-title" id="dashboard-pulse-title">What’s on the site right now</h2>
+              <p class="admin-dashboard-panel-sub">Pulled from the same public JSON your customers’ browsers use — no duplicate database.</p>
+              <div id="dashboard-site-pulse" class="admin-dashboard-panel-body admin-dashboard-pulse-copy">
+                <p class="admin-dashboard-loading">Fetching…</p>
+              </div>
+              <a class="admin-dashboard-panel-cta" href="Admin_Layout.html">Edit in Layout →</a>
+            </section>
+          </div>
+
+          <nav class="admin-dashboard-quick" aria-label="Quick links">
+            <span class="admin-dashboard-quick-label">Jump in:</span>
+            <a href="Admin_CheckIn.html">Check-in</a>
+            <a href="Admin_PointOfSale.html">Point of sale</a>
+            <a href="Admin_Customers.html">Customers</a>
+          </nav>
         </div>
       </div>
     </div>

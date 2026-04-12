@@ -1,15 +1,277 @@
 /**
- * Admin Dashboard page: auth check.
- * Runs in the browser (front-end).
+ * Admin Dashboard — aggregates existing public + admin JSON APIs into one snapshot.
  */
 (function () {
   'use strict';
-  fetch('/api/me', { credentials: 'same-origin' })
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (data && data.loggedIn !== true) {
-        window.location.replace('/client/Client_Login.html');
+
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  function esc(s) {
+    if (s == null) return '';
+    var d = document.createElement('div');
+    d.textContent = String(s);
+    return d.innerHTML;
+  }
+
+  function todayYmd() {
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function fetchJson(url) {
+    return fetch(url, { credentials: 'same-origin' }).then(function (r) {
+      if (!r.ok) return null;
+      return r.json();
+    });
+  }
+
+  function checkAuth() {
+    return fetch('/api/me', { credentials: 'same-origin' })
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (data) {
+        if (!data || data.loggedIn !== true) {
+          window.location.replace('/client/Client_Login.html');
+          return false;
+        }
+        return true;
+      })
+      .catch(function () {
+        /* Offline or file:// — still try to paint dashboard from APIs */
+        return true;
+      });
+  }
+
+  function countEventImagesFilled(payload) {
+    if (!payload || !Array.isArray(payload.images)) return { filled: 0, total: 0 };
+    var total = payload.images.length;
+    var filled = 0;
+    for (var i = 0; i < payload.images.length; i++) {
+      if (payload.images[i] && payload.images[i].url) filled++;
+    }
+    return { filled: filled, total: total };
+  }
+
+  function truncate(s, max) {
+    var t = (s || '').trim();
+    if (t.length <= max) return t;
+    return t.slice(0, max - 1) + '…';
+  }
+
+  function renderPendingList(container, payload) {
+    if (!container) return;
+    var list = (payload && payload.reservations) || [];
+    if (!payload || !payload.success) {
+      container.innerHTML =
+        '<p class="admin-dashboard-empty">Could not load the queue. Open <a href="Admin_Reservations.html">Reservations</a> to review.</p>';
+      return;
+    }
+    if (list.length === 0) {
+      container.innerHTML =
+        '<p class="admin-dashboard-empty admin-dashboard-empty--good">All clear — no booking requests waiting for a reply. Time for a victory lap.</p>';
+      return;
+    }
+    var max = 6;
+    var rows = [];
+    for (var i = 0; i < list.length && i < max; i++) {
+      var r = list[i];
+      var name =
+        [r.customer_first_name, r.customer_last_name].filter(Boolean).join(' ').trim() || 'Guest';
+      var when = esc(r.reservation_date || '') + ' · ' + esc(r.reservation_start_time || '') + '–' + esc(r.reservation_end_time || '');
+      rows.push(
+        '<li class="admin-dashboard-queue-item">' +
+          '<span class="admin-dashboard-queue-name">' +
+          esc(name) +
+          '</span>' +
+          '<span class="admin-dashboard-queue-meta">' +
+          when +
+          '</span>' +
+          '</li>'
+      );
+    }
+    var more = list.length > max ? '<p class="admin-dashboard-queue-more">+' + (list.length - max) + ' more in Reservations</p>' : '';
+    container.innerHTML = '<ul class="admin-dashboard-queue">' + rows.join('') + '</ul>' + more;
+  }
+
+  function renderSitePulse(el, pricing, popular, specials) {
+    if (!el) return;
+    var parts = [];
+
+    var teaser = specials && specials.teaserText ? truncate(specials.teaserText, 72) : '';
+    if (teaser) {
+      parts.push(
+        '<p class="admin-dashboard-pulse-line"><strong>Membership teaser:</strong> ' + esc(teaser) + '</p>'
+      );
+    }
+
+    if (specials && Array.isArray(specials.items)) {
+      var names = specials.items
+        .slice(0, 3)
+        .map(function (it) {
+          return it && it.name ? it.name : '';
+        })
+        .filter(Boolean);
+      if (names.length) {
+        parts.push(
+          '<p class="admin-dashboard-pulse-line"><strong>Specials on the board:</strong> ' +
+            esc(names.join(' · ')) +
+            (specials.items.length > 3 ? ' …' : '') +
+            '</p>'
+        );
       }
-    })
-    .catch(function () { /* ignore: e.g. opening file directly */ });
+    }
+
+    if (pricing) {
+      var pr = pricing.hasCustom ? 'Custom file' : 'Default asset';
+      var pk = pricing.kind === 'pdf' ? 'PDF' : 'Image';
+      parts.push(
+        '<p class="admin-dashboard-pulse-line"><strong>Membership pricing sheet:</strong> ' +
+          pr +
+          ' · ' +
+          pk +
+          '</p>'
+      );
+    }
+
+    if (popular) {
+      var pt = popular.hasCustom ? 'Custom file' : 'Default asset';
+      var pk2 = popular.kind === 'pdf' ? 'PDF' : popular.kind === 'image' ? 'Image' : 'PDF';
+      parts.push(
+        '<p class="admin-dashboard-pulse-line"><strong>Popular times:</strong> ' + pt + ' · ' + pk2 + '</p>'
+      );
+    }
+
+    if (parts.length === 0) {
+      el.innerHTML = '<p class="admin-dashboard-empty">Site content APIs did not return detail.</p>';
+      return;
+    }
+    el.innerHTML = parts.join('');
+  }
+
+  function applySnapshot(bundle) {
+    var adminMe = bundle[0];
+    var pending = bundle[1];
+    var events = bundle[2];
+    var pricing = bundle[3];
+    var popular = bundle[4];
+    var specials = bundle[5];
+    var manager = bundle[6];
+    var schedule = bundle[7];
+
+    var first = adminMe && adminMe.loggedIn && adminMe.firstName ? String(adminMe.firstName).trim() : '';
+    var heading = $('dashboard-hero-heading');
+    var lede = $('dashboard-hero-lede');
+    if (heading) {
+      heading.textContent = first ? 'Hey, ' + first + ' — welcome back' : 'Houston Badminton HQ';
+    }
+    if (lede) {
+      lede.textContent =
+        'Your rally snapshot: live data from the same APIs that power the site and the front desk. Nothing new under the sun — just compiled for you.';
+    }
+
+    var pendingCount = 0;
+    if (pending && pending.success) {
+      pendingCount =
+        typeof pending.count === 'number'
+          ? pending.count
+          : pending.reservations
+            ? pending.reservations.length
+            : 0;
+    }
+    var pendingEl = $('dashboard-stat-pending');
+    if (pendingEl) pendingEl.textContent = String(pendingCount);
+    var pendingHint = $('dashboard-stat-pending-hint');
+    if (pendingHint) {
+      pendingHint.textContent =
+        pendingCount === 0 ? 'Inbox quiet — smooth sailing.' : 'Needs a reply from staff.';
+    }
+
+    var ev = countEventImagesFilled(events || {});
+    var evEl = $('dashboard-stat-events');
+    if (evEl) evEl.textContent = ev.filled + ' / ' + ev.total;
+    var evHint = $('dashboard-stat-events-hint');
+    if (evHint) {
+      evHint.textContent =
+        ev.total === 0
+          ? 'Home spotlight slots'
+          : ev.filled === ev.total
+            ? 'Home tiles are fully loaded'
+            : ev.filled === 0
+              ? 'Add hero images on Layout'
+              : 'Spotlight filling up';
+    }
+
+    var todayCount = 0;
+    if (schedule && schedule.success && Array.isArray(schedule.reservations)) {
+      todayCount = schedule.reservations.length;
+    }
+    var todayEl = $('dashboard-stat-today');
+    if (todayEl) todayEl.textContent = String(todayCount);
+    var todayHint = $('dashboard-stat-today-hint');
+    if (todayHint) {
+      todayHint.textContent =
+        todayCount === 0 ? 'Courts wide open today (on the schedule).' : 'Bookings on deck for today.';
+    }
+
+    var specCount = specials && Array.isArray(specials.items) ? specials.items.length : 0;
+    var specEl = $('dashboard-stat-specials');
+    if (specEl) specEl.textContent = String(specCount);
+    var specHint = $('dashboard-stat-specials-hint');
+    if (specHint) {
+      specHint.textContent =
+        specCount === 1 ? 'One special in the member box' : specCount + ' specials in the member box';
+    }
+
+    var mgrEl = $('dashboard-stat-manager');
+    var mgrHint = $('dashboard-stat-manager-hint');
+    if (mgrEl && mgrHint) {
+      if (manager && manager.managerLoggedIn) {
+        mgrEl.textContent = 'Unlocked';
+        mgrHint.textContent = 'Employee roster tools are ready.';
+      } else {
+        mgrEl.textContent = 'Locked';
+        mgrHint.textContent = 'Use manager sign-in on Employees for full access.';
+      }
+    }
+
+    renderPendingList($('dashboard-pending-list'), pending);
+    renderSitePulse($('dashboard-site-pulse'), pricing, popular, specials);
+
+    var root = $('admin-dashboard-root');
+    if (root) root.hidden = false;
+  }
+
+  function loadAll() {
+    var date = todayYmd();
+    Promise.all([
+      fetchJson('/api/admin/me'),
+      fetchJson('/api/admin/pending-reservations'),
+      fetchJson('/api/upcoming-events'),
+      fetchJson('/api/membership-pricing'),
+      fetchJson('/api/popular-times-pdf'),
+      fetchJson('/api/membership-specials-teaser'),
+      fetchJson('/api/admin/manager-me'),
+      fetchJson('/api/schedule-reservations?date=' + encodeURIComponent(date)),
+    ]).then(applySnapshot);
+  }
+
+  function init() {
+    checkAuth().then(function (ok) {
+      if (!ok) return;
+      loadAll();
+      setInterval(loadAll, 60000);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
