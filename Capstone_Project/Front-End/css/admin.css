@@ -2458,20 +2458,38 @@ body[data-theme="dark"] .admin-membership-specials-toolbar {
   object-fit: contain;
 }
 
-/* Layout → Availability “Popular times”: global preview uses overflow:hidden for corners; that clips tall images/PDFs */
+/* Layout → Availability “Popular times”: keep image/PDF fully inside the preview box (no overflow past edges) */
 #popular-times-preview.admin-marketing-preview {
-  overflow: visible;
-  max-height: none;
+  --popular-times-preview-max: min(72vh, 620px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  max-height: var(--popular-times-preview-max);
+  min-height: 0;
 }
 
 #popular-times-preview .admin-marketing-preview-img {
-  max-height: none;
-  border-radius: inherit;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: var(--popular-times-preview-max);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  vertical-align: middle;
 }
 
 #popular-times-preview .admin-marketing-preview-pdf {
-  min-height: min(75vh, 900px);
+  display: block;
   width: 100%;
+  height: var(--popular-times-preview-max);
+  max-height: var(--popular-times-preview-max);
+  min-height: 12rem;
+  box-sizing: border-box;
+  border: none;
 }
 
 .admin-marketing-preview-empty {
