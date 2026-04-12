@@ -176,7 +176,7 @@ module.exports = async function handleCustomerBookings(req, res, ctx) {
   var rows;
   try {
     var q2 = await db.query(
-      'SELECT reservation_id, court_id, reservation_date, reservation_start_time, reservation_end_time, reservation_status FROM reservation WHERE customer_id = ? ORDER BY reservation_date DESC, reservation_start_time DESC LIMIT 120',
+      'SELECT reservation_id, court_id, reservation_date, reservation_start_time, reservation_end_time, reservation_status FROM reservation WHERE customer_id = ? ORDER BY reservation_date DESC, reservation_start_time DESC',
       [customerId]
     );
     rows = q2.rows || [];

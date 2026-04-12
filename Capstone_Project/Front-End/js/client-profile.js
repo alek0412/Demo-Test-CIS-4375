@@ -1,5 +1,6 @@
 (function () {
   var state = { profile: null };
+  var MAX_RECENT_ACTIVITY = 3;
 
   var editModal = document.getElementById('profile-edit-modal');
   var deleteModal = document.getElementById('profile-delete-modal');
@@ -48,7 +49,7 @@
     var empty = document.getElementById('profile-activity-empty');
     if (!ul) return;
     ul.innerHTML = '';
-    var list = Array.isArray(activities) ? activities : [];
+    var list = Array.isArray(activities) ? activities.slice(0, MAX_RECENT_ACTIVITY) : [];
     if (!list.length) {
       if (empty) empty.hidden = false;
       return;

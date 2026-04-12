@@ -263,6 +263,33 @@
   font-size: 0.95rem;
 }
 
+.bookings-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px -6px rgba(15, 23, 42, 0.12);
+}
+
+.bookings-pagination__status {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #64748b;
+  text-align: center;
+  min-width: min(100%, 16rem);
+}
+
+.bookings-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 @media (max-width: 560px) {
   .bookings-card {
     grid-template-columns: 1fr;

@@ -1,9 +1,12 @@
 (function () {
   'use strict';
 
+  var PAGE_SIZE = 30;
+
   var state = {
     reservations: [],
     filter: 'all',
+    page: 0,
     pollTimer: null,
   };
 
@@ -11,6 +14,10 @@
   var emptyEl = document.getElementById('bookings-empty');
   var loadingEl = document.getElementById('bookings-loading');
   var liveEl = document.getElementById('bookings-last-sync');
+  var paginationEl = document.getElementById('bookings-pagination');
+  var pagePrevBtn = document.getElementById('bookings-page-prev');
+  var pageNextBtn = document.getElementById('bookings-page-next');
+  var pageStatusEl = document.getElementById('bookings-page-status');
   var filterBtns = Array.prototype.slice.call(document.querySelectorAll('[data-bookings-filter]'));
 
   function badgeClass(key) {
@@ -53,6 +60,10 @@
     });
 
     listEl.innerHTML = '';
+    if (paginationEl) {
+      paginationEl.hidden = true;
+    }
+
     if (!state.reservations.length) {
       emptyEl.hidden = false;
       emptyEl.querySelector('h3').textContent = 'No reservations yet';
@@ -80,7 +91,33 @@
     emptyEl.hidden = true;
     listEl.hidden = false;
 
-    rows.forEach(function (r) {
+    var total = rows.length;
+    var totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (state.page >= totalPages) {
+      state.page = totalPages - 1;
+    }
+    if (state.page < 0) {
+      state.page = 0;
+    }
+
+    var start = state.page * PAGE_SIZE;
+    var pageRows = rows.slice(start, start + PAGE_SIZE);
+
+    if (paginationEl && pageStatusEl && pagePrevBtn && pageNextBtn) {
+      if (total > PAGE_SIZE) {
+        paginationEl.hidden = false;
+        var from = start + 1;
+        var to = start + pageRows.length;
+        pageStatusEl.textContent =
+          'Showing ' + from + '–' + to + ' of ' + total + ' · Page ' + (state.page + 1) + ' of ' + totalPages;
+        pagePrevBtn.disabled = state.page <= 0;
+        pageNextBtn.disabled = state.page >= totalPages - 1;
+      } else {
+        paginationEl.hidden = true;
+      }
+    }
+
+    pageRows.forEach(function (r) {
       var li = document.createElement('li');
       li.className = 'bookings-card';
       li.setAttribute('data-status', r.statusKey || 'unknown');
@@ -105,6 +142,21 @@
       li.appendChild(badge);
       listEl.appendChild(li);
     });
+  }
+
+  function goToPage(delta) {
+    state.page += delta;
+    if (state.page < 0) {
+      state.page = 0;
+    }
+    render();
+    if (listEl && listEl.scrollIntoView) {
+      try {
+        listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (e) {
+        listEl.scrollIntoView(true);
+      }
+    }
   }
 
   function loadBookings() {
@@ -156,6 +208,7 @@
     btn.addEventListener('click', function () {
       var f = btn.getAttribute('data-bookings-filter') || 'all';
       state.filter = f;
+      state.page = 0;
       filterBtns.forEach(function (b) {
         var on = b === btn;
         b.classList.toggle('is-active', on);
@@ -164,6 +217,17 @@
       render();
     });
   });
+
+  if (pagePrevBtn) {
+    pagePrevBtn.addEventListener('click', function () {
+      goToPage(-1);
+    });
+  }
+  if (pageNextBtn) {
+    pageNextBtn.addEventListener('click', function () {
+      goToPage(1);
+    });
+  }
 
   ensureSessionThenLoad();
 

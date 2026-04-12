@@ -38,7 +38,7 @@
           <div>
             <p class="bookings-hero__kicker">Your schedule</p>
             <h1>My Bookings</h1>
-            <p class="bookings-hero__lead">Live list of your court reservations—upcoming, completed, canceled, and pending—synced from the same system staff use at the desk.</p>
+            <p class="bookings-hero__lead">Up to 30 reservations per screen—use Next for the next batch. All of your records stay in our system; we only paginate here so the list stays easy to scan.</p>
             <p class="bookings-live" id="bookings-live-wrap">Last updated: <strong id="bookings-last-sync">—</strong> · auto-refreshes every 45s</p>
           </div>
           <div class="bookings-hero__cta">
@@ -68,6 +68,12 @@
         </div>
 
         <ul class="bookings-list" id="bookings-list" hidden></ul>
+
+        <nav class="bookings-pagination" id="bookings-pagination" hidden aria-label="Reservation pages">
+          <button type="button" class="btn btn-ghost bookings-page-btn" id="bookings-page-prev">Previous</button>
+          <p class="bookings-pagination__status" id="bookings-page-status"></p>
+          <button type="button" class="btn btn-ghost bookings-page-btn" id="bookings-page-next">Next</button>
+        </nav>
       </div>
     </section>
   </main>
