@@ -75,20 +75,8 @@
 
         <article class="profile-card profile-card--activity-card">
           <h2>Recent Activity</h2>
-          <ul class="profile-timeline">
-            <li>
-              <p>Upcoming reservation: Court 4</p>
-              <small>Friday, 7:00 PM - 8:30 PM</small>
-            </li>
-            <li>
-              <p>Last completed booking</p>
-              <small>Tuesday, 6:00 PM - 7:30 PM</small>
-            </li>
-            <li>
-              <p>Membership renewed successfully</p>
-              <small>April 9, 2026</small>
-            </li>
-          </ul>
+          <p class="profile-activity-empty" id="profile-activity-empty" hidden>No reservations yet. Book a court from Availability.</p>
+          <ul class="profile-timeline" id="profile-activity-list" aria-live="polite"></ul>
         </article>
 
       </div>
