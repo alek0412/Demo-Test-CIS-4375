@@ -66,10 +66,10 @@ def delete_court():
     except KeyError:
         return make_response("Invalid court",400)
 
-    delete_reservations=sql_functions.execute_query(secure_connection,"delete from reservation where court_id=%s",(court_id,))
+    delete_reservations=sql_functions.execute_query(sql_functions,"delete from reservation where court_id=%s",(court_id,))
     if type(delete_reservations)==int:
         return make_response("Unable to delete court from reservations",503)
-    delete_court=sql_functions.execute_query(secure_connection,"delete from court where court_id=%s",(court_id,))
+    delete_court=sql_functions.execute_query(sql_functions,"delete from court where court_id=%s",(court_id,))
     if type(delete_court)==int:
         return make_response("Unable to delete court",503)
     return make_response("Court successfully deleted",200)

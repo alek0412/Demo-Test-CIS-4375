@@ -25,41 +25,23 @@ def ssh_hell():
     return sql_connection
 
 
-def _teardown_tunnel_and_db():
+def ensure_live_connection():
+    """Recreate SSH tunnel + MySQL connection if the pool died (idle timeout, network blip)."""
     global tunnel, sql_connection, secure_connection
-    try:
-        if sql_connection is not None and not isinstance(sql_connection, int):
-            try:
-                sql_connection.close()
-            except Exception:
-                pass
-    except Exception:
-        pass
-    sql_connection = None
-    secure_connection = None
+    if sql_connection is not None and not isinstance(sql_connection, int):
+        try:
+            if sql_connection.is_connected():
+                return sql_connection
+        except Exception:
+            pass
     try:
         if tunnel is not None:
             tunnel.stop()
     except Exception:
         pass
     tunnel = None
-
-
-def ensure_live_connection():
-    """Recreate SSH tunnel + MySQL if the link died (idle, SSL on tunneled port, network blip).
-
-    `is_connected()` alone is not enough — the server can drop the socket while the
-    client still looks \"up\". `ping()` validates the session before use.
-    """
-    global tunnel, sql_connection, secure_connection
-    if sql_connection is not None and not isinstance(sql_connection, int):
-        try:
-            sql_connection.ping(reconnect=False)
-            return sql_connection
-        except Exception:
-            _teardown_tunnel_and_db()
-    elif sql_connection is None or isinstance(sql_connection, int):
-        _teardown_tunnel_and_db()
+    sql_connection = None
+    secure_connection = None
     res = ssh_hell()
     return res
 
