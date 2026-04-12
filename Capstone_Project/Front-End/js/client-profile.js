@@ -74,10 +74,14 @@
     var emailEl = document.getElementById('profile-email');
     var phoneEl = document.getElementById('profile-phone');
     var avatar = document.querySelector('.profile-avatar');
+    var badge = document.querySelector('.profile-card--account > h3.profile-subheading');
     if (nameEl) nameEl.textContent = fullName(p);
     if (emailEl) emailEl.textContent = p.email || '—';
     if (phoneEl) phoneEl.textContent = p.phone || '—';
     if (avatar) avatar.textContent = initials(p);
+    if (badge && p.membershipStatus != null && String(p.membershipStatus).trim() !== '') {
+      badge.textContent = String(p.membershipStatus).trim();
+    }
     var ec = p.emergencyContact;
     var ecNameEl = document.getElementById('profile-emergency-name');
     var ecEmailEl = document.getElementById('profile-emergency-email');
@@ -128,40 +132,92 @@
     modal.setAttribute('aria-hidden', 'true');
   }
 
-  Promise.all([
-    fetch('/api/customer-me', { credentials: 'same-origin' }).then(function (r) {
-      return r.json().then(function (data) {
-        return { ok: r.ok, data: data };
-      });
-    }),
+  function showProfileLoadError(message) {
+    var main = document.querySelector('main');
+    if (!main) return;
+    var el = document.getElementById('profile-load-error');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'profile-load-error';
+      el.className = 'profile-load-error-banner';
+      el.setAttribute('role', 'alert');
+      main.insertBefore(el, main.firstChild);
+    }
+    el.textContent =
+      message ||
+      'We could not load your profile. Check your connection and refresh the page.';
+    el.hidden = false;
+  }
+
+  function parseJsonResponse(r) {
+    return r.text().then(function (text) {
+      var data = null;
+      try {
+        data = text && text.length ? JSON.parse(text) : {};
+      } catch (e) {
+        data = null;
+      }
+      return { ok: r.ok, status: r.status, data: data };
+    });
+  }
+
+  function fetchCustomerMeOnce() {
+    return fetch('/api/customer-me', { credentials: 'same-origin' }).then(parseJsonResponse);
+  }
+
+  function fetchCustomerMeWithRetries(attempt, maxAttempts) {
+    attempt = attempt || 0;
+    maxAttempts = maxAttempts || 4;
+    return fetchCustomerMeOnce().then(function (res) {
+      if (res.ok && res.data && res.data.loggedIn === true) {
+        return res;
+      }
+      if (res.ok && res.data && res.data.loggedIn === false) {
+        return res;
+      }
+      if (attempt + 1 < maxAttempts) {
+        var delay = 280 + attempt * 220;
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            resolve(fetchCustomerMeWithRetries(attempt + 1, maxAttempts));
+          }, delay);
+        });
+      }
+      return res;
+    });
+  }
+
+  fetchCustomerMeWithRetries(0, 4).then(function (res) {
+    if (res.ok && res.data && res.data.loggedIn === false) {
+      window.location.href = '/client/Client_Login.html';
+      return;
+    }
+    if (!res.ok || !res.data || res.data.loggedIn !== true) {
+      showProfileLoadError();
+      return;
+    }
+    if (res.data.profile) {
+      applyProfile(res.data.profile);
+    }
     fetch('/api/customer-activity', { credentials: 'same-origin' })
       .then(function (r) {
-        return r.json();
+        return r.json().catch(function () {
+          return {};
+        });
+      })
+      .then(function (act) {
+        if (act && act.success && Array.isArray(act.activities)) {
+          renderActivity(act.activities);
+        } else {
+          renderActivity([]);
+        }
       })
       .catch(function () {
-        return { success: false, activities: [] };
-      }),
-  ])
-    .then(function (results) {
-      var res = results[0];
-      var act = results[1];
-      var data = res.data;
-      if (!data || !data.loggedIn) {
-        window.location.href = '/client/Client_Login.html';
-        return;
-      }
-      if (data.profile) {
-        applyProfile(data.profile);
-      }
-      if (act && act.success && Array.isArray(act.activities)) {
-        renderActivity(act.activities);
-      } else {
         renderActivity([]);
-      }
-    })
-    .catch(function () {
-      window.location.href = '/client/Client_Login.html';
-    });
+      });
+  }).catch(function () {
+    showProfileLoadError();
+  });
 
   editTriggers.forEach(function (btn) {
     btn.addEventListener('click', function () {

@@ -1,4 +1,15 @@
 /* Client_Profile.html */
+.profile-load-error-banner {
+  margin: 0 auto 1.25rem;
+  max-width: 72rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.5rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 0.92rem;
+}
+
 .client-profile-page main {
   background:
     radial-gradient(90% 60% at 100% -5%, rgba(37, 99, 235, 0.08), transparent 55%),
