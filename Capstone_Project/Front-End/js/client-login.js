@@ -42,7 +42,6 @@
       var customerForm = document.getElementById('customer-login-form');
       var customerError = document.getElementById('customer-login-error');
       var customerBtn = document.getElementById('customer-login-btn');
-      var customerPreviewBtn = document.getElementById('customer-preview-entry-btn');
       customerForm.addEventListener('submit', function (e) {
         e.preventDefault();
         customerError.hidden = true;
@@ -84,16 +83,6 @@
             customerBtn.textContent = 'Sign in';
           });
       });
-
-      if (customerPreviewBtn) {
-        customerPreviewBtn.addEventListener('click', function () {
-          try {
-            sessionStorage.setItem('hbc_customer_logged_in', '1');
-            sessionStorage.setItem('hbc_client_preview_mode', '1');
-          } catch (e) {}
-          window.location.href = '/client/Client_Dashboard.html?logged_in=1';
-        });
-      }
 
       // Admin form
       var adminForm = document.getElementById('admin-login-form');
