@@ -158,13 +158,18 @@
       .then(function (data) {
         if (!data || !data.loggedIn) return;
         var fn = data.firstName ? String(data.firstName).trim() : '';
-        if (fn) {
+        var ln = data.lastName ? String(data.lastName).trim() : '';
+        var displayName = [fn, ln].filter(Boolean).join(' ');
+        if (displayName) {
           welcome.innerHTML =
-            '<span class="admin-welcome-text">Welcome <span class="admin-welcome-name">' +
-            escapeHtml(fn) +
-            '</span>!</span>';
+            '<span class="admin-welcome-text">' +
+            '<span class="admin-welcome-lead">Logged in as </span>' +
+            '<span class="admin-welcome-name">' +
+            escapeHtml(displayName) +
+            '</span></span>';
         } else {
-          welcome.innerHTML = '<span class="admin-welcome-text">Welcome!</span>';
+          welcome.innerHTML =
+            '<span class="admin-welcome-text"><span class="admin-welcome-lead">Logged in</span></span>';
         }
         welcome.hidden = false;
       })

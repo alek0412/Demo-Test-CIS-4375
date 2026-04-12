@@ -549,6 +549,11 @@ body.admin-sidebar-collapsed .admin-main {
   color: rgba(255, 255, 255, 0.94);
 }
 
+.admin-topbar-welcome .admin-welcome-lead {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+}
+
 .admin-topbar-welcome .admin-welcome-name {
   font-weight: 800;
   letter-spacing: -0.035em;
@@ -1785,6 +1790,10 @@ body[data-theme="light"] .admin-topbar h1 {
 
 body[data-theme="light"] .admin-topbar-welcome .admin-welcome-text {
   color: #0f172a;
+}
+
+body[data-theme="light"] .admin-topbar-welcome .admin-welcome-lead {
+  color: #334155;
 }
 
 body[data-theme="light"] .admin-topbar-welcome .admin-welcome-name {
