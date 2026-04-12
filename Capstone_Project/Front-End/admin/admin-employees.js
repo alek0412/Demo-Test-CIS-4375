@@ -6,6 +6,219 @@
 
   var HIDDEN_EMPLOYEE_COLS = { employee_password: true, employee_salt: true };
 
+  var selectedEmployee = null;
+  var crudButtonsWired = false;
+
+  function showEmployeeModal(overlayEl, show) {
+    if (!overlayEl) return;
+    if (show) {
+      overlayEl.classList.remove('is-hidden');
+      overlayEl.setAttribute('aria-hidden', 'false');
+    } else {
+      overlayEl.classList.add('is-hidden');
+      overlayEl.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function wireEmployeeCrudOnce() {
+    if (crudButtonsWired) return;
+    crudButtonsWired = true;
+
+    var createModal = document.getElementById('employee-create-modal');
+    var editModal = document.getElementById('employee-edit-modal');
+    var createBtn = document.getElementById('employee-create-btn');
+    var editBtn = document.getElementById('employee-edit-btn');
+    var deleteBtn = document.getElementById('employee-delete-btn');
+
+    document.getElementById('employee-create-cancel') &&
+      document.getElementById('employee-create-cancel').addEventListener('click', function () {
+        showEmployeeModal(createModal, false);
+      });
+    document.getElementById('employee-edit-cancel') &&
+      document.getElementById('employee-edit-cancel').addEventListener('click', function () {
+        showEmployeeModal(editModal, false);
+      });
+
+    if (createBtn) {
+      createBtn.addEventListener('click', function () {
+        var st = document.getElementById('employee-create-status');
+        if (st) {
+          st.textContent = '';
+        }
+        document.getElementById('emp-create-first').value = '';
+        document.getElementById('emp-create-last').value = '';
+        document.getElementById('emp-create-phone').value = '';
+        document.getElementById('emp-create-password').value = '';
+        showEmployeeModal(createModal, true);
+      });
+    }
+
+    document.getElementById('employee-create-save') &&
+      document.getElementById('employee-create-save').addEventListener('click', function () {
+        var st = document.getElementById('employee-create-status');
+        var first = (document.getElementById('emp-create-first') && document.getElementById('emp-create-first').value.trim()) || '';
+        var last = (document.getElementById('emp-create-last') && document.getElementById('emp-create-last').value.trim()) || '';
+        var phone = (document.getElementById('emp-create-phone') && document.getElementById('emp-create-phone').value.trim()) || '';
+        var password = (document.getElementById('emp-create-password') && document.getElementById('emp-create-password').value) || '';
+        if (!first || !last || !phone || !password) {
+          if (st) st.textContent = 'Please fill all fields.';
+          return;
+        }
+        if (st) st.textContent = 'Creating…';
+        fetch('/api/employee-create', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            first_name: first,
+            last_name: last,
+            phone: phone,
+            password: password
+          })
+        })
+          .then(function (r) {
+            return r.text().then(function (text) {
+              return { ok: r.ok, status: r.status, text: text };
+            });
+          })
+          .then(function (out) {
+            if (out.ok) {
+              showEmployeeModal(createModal, false);
+              window.location.reload();
+              return;
+            }
+            if (st) st.textContent = out.text || 'Could not create employee (' + out.status + ').';
+          })
+          .catch(function () {
+            if (st) st.textContent = 'Network error.';
+          });
+      });
+
+    if (editBtn) {
+      editBtn.addEventListener('click', function () {
+        if (!selectedEmployee || selectedEmployee.employee_id == null) {
+          alert('Select an employee in the table first (click a row).');
+          return;
+        }
+        var st = document.getElementById('employee-edit-status');
+        if (st) st.textContent = '';
+        document.getElementById('emp-edit-id-display').textContent = String(selectedEmployee.employee_id);
+        document.getElementById('emp-edit-first').value =
+          String(selectedEmployee.employee_first_name != null ? selectedEmployee.employee_first_name : '').trim();
+        document.getElementById('emp-edit-last').value =
+          String(selectedEmployee.employee_last_name != null ? selectedEmployee.employee_last_name : '').trim();
+        document.getElementById('emp-edit-phone').value =
+          String(selectedEmployee.employee_phone != null ? selectedEmployee.employee_phone : '').trim();
+        document.getElementById('emp-edit-password').value = '';
+        showEmployeeModal(editModal, true);
+      });
+    }
+
+    document.getElementById('employee-edit-save') &&
+      document.getElementById('employee-edit-save').addEventListener('click', function () {
+        var st = document.getElementById('employee-edit-status');
+        if (!selectedEmployee || selectedEmployee.employee_id == null) {
+          if (st) st.textContent = 'No employee selected.';
+          return;
+        }
+        var id = parseInt(String(selectedEmployee.employee_id), 10);
+        var body = {
+          employee_id: id,
+          employee_first_name: (document.getElementById('emp-edit-first') && document.getElementById('emp-edit-first').value.trim()) || '',
+          employee_last_name: (document.getElementById('emp-edit-last') && document.getElementById('emp-edit-last').value.trim()) || '',
+          employee_phone: (document.getElementById('emp-edit-phone') && document.getElementById('emp-edit-phone').value.trim()) || ''
+        };
+        var newPw = document.getElementById('emp-edit-password') && document.getElementById('emp-edit-password').value;
+        if (newPw && newPw.length) {
+          body.employee_password = newPw;
+        }
+        if (st) st.textContent = 'Saving…';
+        fetch('/api/change-employee', {
+          method: 'PATCH',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        })
+          .then(function (r) {
+            return r.text().then(function (text) {
+              return { ok: r.ok, status: r.status, text: text };
+            });
+          })
+          .then(function (out) {
+            if (out.ok) {
+              showEmployeeModal(editModal, false);
+              window.location.reload();
+              return;
+            }
+            if (st) st.textContent = out.text || 'Could not save (' + out.status + ').';
+          })
+          .catch(function () {
+            if (st) st.textContent = 'Network error.';
+          });
+      });
+
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', function () {
+        if (!selectedEmployee || selectedEmployee.employee_id == null) {
+          alert('Select an employee in the table first (click a row).');
+          return;
+        }
+        var id = parseInt(String(selectedEmployee.employee_id), 10);
+        if (!window.confirm('Delete this employee? Reservations for this employee are removed first. This cannot be undone.')) {
+          return;
+        }
+        fetch('/api/delete', {
+          method: 'DELETE',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ employee_id: id })
+        })
+          .then(function (r) {
+            return r.text().then(function (text) {
+              return { ok: r.ok, text: text };
+            });
+          })
+          .then(function (out) {
+            if (out.ok) {
+              window.location.reload();
+              return;
+            }
+            alert(out.text || 'Could not delete employee.');
+          })
+          .catch(function () {
+            alert('Network error.');
+          });
+      });
+    }
+  }
+
+  function bindEmployeeTableSelection(dbContentEl, table, cols, rows) {
+    if (!dbContentEl || !table || !cols.length || !rows || !rows.length || rows[0]._error) return;
+    dbContentEl._empCols = cols;
+    dbContentEl._empRows = rows;
+    if (dbContentEl.dataset.empRowBound) return;
+    dbContentEl.dataset.empRowBound = '1';
+    dbContentEl.addEventListener('click', function (ev) {
+      var tr = ev.target.closest && ev.target.closest('tr[data-employee-id]');
+      if (!tr || tr.id === 'employee-no-results') return;
+      var id = tr.getAttribute('data-employee-id');
+      var allRows = dbContentEl._empRows || [];
+      var c = dbContentEl._empCols || [];
+      var match = allRows.find(function (row) {
+        return String(row.employee_id) === String(id);
+      });
+      if (!match) return;
+      table.querySelectorAll('tbody tr.is-selected').forEach(function (x) {
+        x.classList.remove('is-selected');
+      });
+      tr.classList.add('is-selected');
+      selectedEmployee = {};
+      c.forEach(function (col) {
+        selectedEmployee[col] = match[col];
+      });
+    });
+  }
+
   function isHiddenEmployeeColumn(name) {
     var k = String(name || '')
       .toLowerCase()
@@ -134,7 +347,9 @@
               cols.length +
               '">No employee found with that search.</td></tr>';
             rows.forEach(function (row) {
-              html += '<tr>';
+              var eid = row.employee_id != null ? String(row.employee_id) : '';
+              var safeId = eid.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+              html += '<tr class="employee-table-row" data-employee-id="' + safeId + '">';
               cols.forEach(function (c) {
                 var display = formatEmployeeCell(c, row[c]);
                 html += '<td>' + display + '</td>';
@@ -235,6 +450,7 @@
           var tableRows = tbody ? tbody.querySelectorAll('tr') : [];
           tableRows.forEach(function (tr) {
             if (tr.id === 'employee-no-results') return;
+            if (!tr.getAttribute('data-employee-id')) return;
             var rowText = tr.textContent || '';
             var searchMatch = q === '' || rowText.toLowerCase().indexOf(q) !== -1;
             var emailCell = getCellText(tr, emailCol);
@@ -294,6 +510,8 @@
 
         if (table && rows && rows.length && !rows[0]._error) {
           applyFilters();
+          bindEmployeeTableSelection(el, table, cols, rows);
+          wireEmployeeCrudOnce();
         } else {
           var countEl0 = document.getElementById('employee-count-num');
           if (countEl0) countEl0.textContent = '0';
@@ -375,6 +593,7 @@
       if (!mgr || typeof mgr.managerLoggedIn === 'undefined') return;
       if (mgr.managerLoggedIn === true) {
         showManagerGate(false);
+        wireEmployeeCrudOnce();
         loadEmployeeTable();
       } else {
         showManagerGate(true);

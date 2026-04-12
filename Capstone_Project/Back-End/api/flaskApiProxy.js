@@ -122,6 +122,54 @@ module.exports = async function flaskApiProxy(req, res, ctx) {
     return true;
   }
 
+  if (req.method === 'DELETE' && pathname === '/api/delete') {
+    let data = {};
+    try {
+      data = await parseBody(req);
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
+      return true;
+    }
+    try {
+      const upstream = await proxyToFlask(base, 'DELETE', '/api/delete', {
+        body: JSON.stringify(data),
+        cookie,
+        contentType: 'application/json',
+      });
+      writeFlaskResponse(res, upstream);
+    } catch (err) {
+      console.error('[flask proxy] /api/delete', err.message);
+      res.writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('Unable to reach Flask.');
+    }
+    return true;
+  }
+
+  if (req.method === 'PATCH' && pathname === '/api/change-employee') {
+    let data = {};
+    try {
+      data = await parseBody(req);
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, message: 'Invalid request' }));
+      return true;
+    }
+    try {
+      const upstream = await proxyToFlask(base, 'PATCH', '/api/change-employee', {
+        body: JSON.stringify(data),
+        cookie,
+        contentType: 'application/json',
+      });
+      writeFlaskResponse(res, upstream);
+    } catch (err) {
+      console.error('[flask proxy] /api/change-employee', err.message);
+      res.writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('Unable to reach Flask.');
+    }
+    return true;
+  }
+
   if (pathname === '/api/reservation') {
     const m = req.method;
     if (!['GET', 'POST', 'PATCH'].includes(m)) {

@@ -7,7 +7,7 @@ employee_blueprint=Blueprint("employee",__name__,template_folder="templates")
 sql_connection=secure_connection
 @employee_blueprint.route("/api/employee-create",methods=["post"])
 def create_employee():
-    request_json=request.get_json()
+    request_json=request.get_json(silent=True) or {}
     try:
         if not session.get("is_manager") or not session.get("is_employee") or session.get("is_customer"):
             return make_response("You don't have the authorization to create employee",401)
@@ -22,7 +22,11 @@ def create_employee():
         stripped_last="".join(list(filter(lambda x:x.isalpha() and x.isascii()),last_name))
         email=f"{stripped_first}.{stripped_last}@hbcstaff.com".lower()
         query_tuple=(last_name,first_name,email,phone,2,hashed_password,hex_salt)
-        employee_query=sql_functions.execute_query(sql_connection,"insert into employee (employee_last_name,employee_first_name,employee_email,employee_phone,employee_rank,employee_password,employee_salt)",query_tuple)
+        employee_query=sql_functions.execute_query(
+            sql_connection,
+            "insert into employee (employee_last_name,employee_first_name,employee_email,employee_phone,employee_rank,employee_password,employee_salt) values (%s,%s,%s,%s,%s,%s,%s)",
+            query_tuple,
+        )
         if type(employee_query)==int:
             return make_response("Server is unable to create employee")
         return make_response("Employee successfully created",201)
@@ -68,10 +72,11 @@ def employee_signout():
 @employee_blueprint.route("/api/delete",methods=['delete'])
 def employee_fire():
     try:
-        request_json=request.json()
-        employee_id=request_json['employee_id']
-        if type(employee_id)!=int:
-            raise TypeError("Invalid employee")
+        request_json=request.get_json(force=True, silent=True) or {}
+        employee_id=request_json.get('employee_id')
+        if employee_id is None:
+            raise KeyError("employee_id")
+        employee_id=int(employee_id)
         if not session.get("is_manager"):
             return make_response("Invalid authorization",401)
     except (KeyError,TypeError):
@@ -86,12 +91,16 @@ def employee_fire():
 
 @employee_blueprint.route("/api/change-employee",methods=['patch'])
 def employee_change():
-    valid_attributes=["employee_last_name,employee_first_name,employee_phone,employee_password"]
-    request_json=request.json()
+    valid_attributes=["employee_last_name","employee_first_name","employee_phone","employee_password"]
+    request_json=request.get_json(force=True, silent=True) or {}
     last_name=request_json.get("employee_last_name")
     first_name=request_json.get("employee_first_name")
     employee_id=request_json.get("employee_id")
-    if not employee_id:
+    if employee_id is None:
+        return make_response("Invalid employee",400)
+    try:
+        employee_id=int(employee_id)
+    except (TypeError, ValueError):
         return make_response("Invalid employee",400)
     if not session.get("is_manager"):
         return make_response("Invalid permissions",401)
@@ -104,7 +113,7 @@ def employee_change():
     new_email=f"{last_name.lower() if last_name and type(last_name)==str else database_last}.{first_name.lower() if first_name and type(first_name)==str else database_first}@hbcstaff.com"
     for attribute in valid_attributes:
         attribute_value=request_json.get(attribute)
-        database_attribute=employee_retrieve[0][attribute]
+        database_attribute=employee_retrieve[0].get(attribute)
         if attribute_value and attribute_value!=database_attribute:
             if attribute in ["employee_last_name","employee_first_name"] and type(attribute_value)==str:
                 attribute_value=attribute_value.capitalize()

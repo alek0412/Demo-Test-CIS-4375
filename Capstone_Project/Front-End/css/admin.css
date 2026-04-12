@@ -2583,6 +2583,16 @@ body[data-theme="dark"] .customer-row-selected {
   background: rgba(37, 99, 235, 0.18);
 }
 
+#employee-table tbody tr.employee-table-row.is-selected {
+  background: rgba(37, 99, 235, 0.14);
+  outline: 1px solid rgba(37, 99, 235, 0.35);
+}
+
+body[data-theme="dark"] #employee-table tbody tr.employee-table-row.is-selected {
+  background: rgba(96, 165, 250, 0.12);
+  outline-color: rgba(96, 165, 250, 0.4);
+}
+
 .admin-modal-overlay {
   position: fixed;
   inset: 0;

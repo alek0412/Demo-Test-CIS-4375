@@ -3,6 +3,11 @@
  */
 const crypto = require('crypto');
 const db = require('../db/connection');
+const { proxyToFlask } = require('../lib/flaskHttp');
+
+function flaskBaseUrl(config) {
+  return (config && (config.flaskApiBaseUrl || config.flaskWaiverBaseUrl)) || '';
+}
 
 function verifyPythonPbkdf2Password(plain, pwdHex, saltHex) {
   if (!plain || !pwdHex || !saltHex || String(pwdHex).length !== 64) return false;
@@ -24,6 +29,7 @@ module.exports = async function handleAdminAuth(req, res, ctx) {
     parseBody,
     hasAdminSessionCookie,
     hasManagerSessionCookie,
+    config,
   } = ctx;
 
   if (req.method === 'POST' && pathname === '/api/admin/login') {
@@ -66,7 +72,23 @@ module.exports = async function handleAdminAuth(req, res, ctx) {
         'admin_manager_session=loggedin; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax';
       const idCookie = `admin_employee_id=${encodeURIComponent(String(employee.employee_id))}; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax`;
       const isManager = Number(employee.employee_rank) === 1;
-      const cookies = isManager ? [adminCookie, managerCookie, idCookie] : [adminCookie, idCookie];
+      let cookies = isManager ? [adminCookie, managerCookie, idCookie] : [adminCookie, idCookie];
+
+      const base = flaskBaseUrl(config);
+      if (isManager && base) {
+        try {
+          const upstream = await proxyToFlask(base, 'POST', '/api/login', {
+            body: JSON.stringify({ email, password }),
+            contentType: 'application/json',
+          });
+          if (upstream.setCookies && upstream.setCookies.length) {
+            cookies = cookies.concat(upstream.setCookies);
+          }
+        } catch (err) {
+          console.error('[adminAuth] Flask /api/login sync:', err.message);
+        }
+      }
+
       res.writeHead(200, {
         'Content-Type': 'application/json',
         'Set-Cookie': cookies,

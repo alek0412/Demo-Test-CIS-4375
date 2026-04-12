@@ -119,6 +119,51 @@
       </div>
     </div>
   </div>
+
+  <div id="employee-create-modal" class="admin-modal-overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="employee-create-title">
+    <div class="admin-modal admin-modal--customer-edit">
+      <h2 id="employee-create-title" class="admin-modal-title">Create employee</h2>
+      <p class="admin-modal-hint">Staff email will be <strong>firstname.lastname@hbcstaff.com</strong> (from names below).</p>
+      <div class="admin-modal-fields">
+        <label class="admin-modal-label" for="emp-create-first">First name</label>
+        <input type="text" id="emp-create-first" class="admin-modal-input" autocomplete="off" required />
+        <label class="admin-modal-label" for="emp-create-last">Last name</label>
+        <input type="text" id="emp-create-last" class="admin-modal-input" autocomplete="off" required />
+        <label class="admin-modal-label" for="emp-create-phone">Phone</label>
+        <input type="text" id="emp-create-phone" class="admin-modal-input" autocomplete="off" required />
+        <label class="admin-modal-label" for="emp-create-password">Initial password</label>
+        <input type="password" id="emp-create-password" class="admin-modal-input" autocomplete="new-password" required />
+      </div>
+      <p id="employee-create-status" class="admin-modal-status" role="status"></p>
+      <div class="admin-modal-actions">
+        <button type="button" id="employee-create-cancel" class="btn btn-ghost">Cancel</button>
+        <button type="button" id="employee-create-save" class="btn admin-customer-btn-edit">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="employee-edit-modal" class="admin-modal-overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="employee-edit-title">
+    <div class="admin-modal admin-modal--customer-edit">
+      <h2 id="employee-edit-title" class="admin-modal-title">Edit employee</h2>
+      <p class="admin-modal-hint">Employee ID <strong id="emp-edit-id-display"></strong></p>
+      <div class="admin-modal-fields">
+        <label class="admin-modal-label" for="emp-edit-first">First name</label>
+        <input type="text" id="emp-edit-first" class="admin-modal-input" autocomplete="off" />
+        <label class="admin-modal-label" for="emp-edit-last">Last name</label>
+        <input type="text" id="emp-edit-last" class="admin-modal-input" autocomplete="off" />
+        <label class="admin-modal-label" for="emp-edit-phone">Phone</label>
+        <input type="text" id="emp-edit-phone" class="admin-modal-input" autocomplete="off" />
+        <label class="admin-modal-label" for="emp-edit-password">New password (optional)</label>
+        <input type="password" id="emp-edit-password" class="admin-modal-input" autocomplete="new-password" placeholder="Leave blank to keep current" />
+      </div>
+      <p id="employee-edit-status" class="admin-modal-status" role="status"></p>
+      <div class="admin-modal-actions">
+        <button type="button" id="employee-edit-cancel" class="btn btn-ghost">Cancel</button>
+        <button type="button" id="employee-edit-save" class="btn admin-customer-btn-edit">Save</button>
+      </div>
+    </div>
+  </div>
+
   <script src="admin-employees.js"></script>
 </body>
 </html>
