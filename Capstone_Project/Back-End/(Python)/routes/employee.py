@@ -35,8 +35,10 @@ def create_employee():
         salt=os.urandom(20)
         hashed_password=hashlib.pbkdf2_hmac("sha256",password.encode(encoding='utf-8'),salt,50000).hex()
         hex_salt=salt.hex()
-        stripped_first="".join(list(filter(lambda x:x.isalpha() and x.isascii()),first_name))
-        stripped_last="".join(list(filter(lambda x:x.isalpha() and x.isascii()),last_name))
+        stripped_first="".join(
+            [c for c in first_name if c.isalpha() and c.isascii()]
+        )
+        stripped_last="".join([c for c in last_name if c.isalpha() and c.isascii()])
         if not stripped_first or not stripped_last:
             return make_response(
                 "Each name needs at least one A–Z letter to build the staff email (firstname.lastname@hbcstaff.com).",
