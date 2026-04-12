@@ -375,6 +375,22 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
     } catch (_) {}
     const nodeLoggedIn = sessionValue === CUSTOMER_SESSION_VALUE;
 
+    let emailHint = '';
+    try {
+      const em = cookie.match(/hbc_customer_email=([^;]*)/);
+      emailHint = em ? decodeURIComponent(em[1].trim()) : '';
+    } catch (_) {}
+
+    // Fast path: valid Node login cookies — profile from RDS only (skip Flask round-trip).
+    if (nodeLoggedIn && emailHint) {
+      const profileFast = await lookupCustomerProfile(emailHint);
+      if (profileFast) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ loggedIn: true, profile: profileFast }));
+        return true;
+      }
+    }
+
     if (base) {
       try {
         const upstream = await proxyToFlask(base, 'GET', '/api/customer-me', { cookie });
@@ -385,11 +401,6 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
             // Flask session cookie can be missing after idle/SSL/tunnel issues while Node login
             // cookies (customer_session + hbc_customer_email) are still valid — hydrate from DB.
             if (parsed && parsed.loggedIn === false && nodeLoggedIn) {
-              let emailHint = '';
-              try {
-                const em = cookie.match(/hbc_customer_email=([^;]*)/);
-                emailHint = em ? decodeURIComponent(em[1].trim()) : '';
-              } catch (_) {}
               const merged = emailHint ? await lookupCustomerProfile(emailHint) : null;
               if (merged) {
                 parsed.loggedIn = true;
@@ -399,11 +410,6 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
             }
             const p = parsed && parsed.profile;
             const firstEmpty = p && !String(p.firstName || '').trim();
-            let emailHint = '';
-            try {
-              const em = cookie.match(/hbc_customer_email=([^;]*)/);
-              emailHint = em ? decodeURIComponent(em[1].trim()) : '';
-            } catch (_) {}
             if (firstEmpty && emailHint) {
               const merged = await lookupCustomerProfile(emailHint);
               if (merged) {
@@ -451,12 +457,6 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
       res.end(JSON.stringify({ loggedIn: false }));
       return true;
     }
-
-    let emailHint = '';
-    try {
-      const em = cookie.match(/hbc_customer_email=([^;]*)/);
-      emailHint = em ? decodeURIComponent(em[1].trim()) : '';
-    } catch (_) {}
 
     const profile = emailHint ? await lookupCustomerProfile(emailHint) : null;
     res.writeHead(200, { 'Content-Type': 'application/json' });
