@@ -37,15 +37,6 @@
     return t || '?';
   }
 
-  function membershipLabel(code) {
-    if (code == null || code === '') return '—';
-    var n = Number(code);
-    if (n === 1) return 'Junior (under 23)';
-    if (n === 2) return 'Standard (23–54)';
-    if (n === 3) return 'Senior (55+)';
-    return 'Category ' + esc(code);
-  }
-
   function applyProfile(p) {
     state.profile = p || null;
     if (!p) return;
@@ -53,12 +44,10 @@
     var emailEl = document.getElementById('profile-email');
     var phoneEl = document.getElementById('profile-phone');
     var avatar = document.querySelector('.profile-avatar');
-    var planEl = document.getElementById('profile-plan');
     if (nameEl) nameEl.textContent = fullName(p);
     if (emailEl) emailEl.textContent = p.email || '—';
     if (phoneEl) phoneEl.textContent = p.phone || '—';
     if (avatar) avatar.textContent = initials(p);
-    if (planEl) planEl.textContent = membershipLabel(p.membershipStatus);
     try {
       if (p.firstName) {
         sessionStorage.setItem('hbc_customer_first_name', String(p.firstName).trim());

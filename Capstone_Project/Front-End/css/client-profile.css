@@ -116,10 +116,6 @@
   grid-column: span 4;
 }
 
-.profile-card--membership {
-  grid-column: span 4;
-}
-
 .profile-card--danger {
   grid-column: span 7;
   border-color: rgba(220, 38, 38, 0.2);
@@ -204,31 +200,6 @@
   background: #22c55e;
 }
 
-.profile-pill-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.8rem;
-}
-
-.profile-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.24rem 0.58rem;
-  border-radius: 999px;
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.28);
-  color: #166534;
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.profile-pill--muted {
-  background: rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.24);
-  color: #1d4ed8;
-}
-
 .profile-inline-btn {
   margin-top: 0.75rem;
 }
@@ -306,8 +277,7 @@
   .profile-card--summary,
   .profile-card--danger,
   .profile-card--security,
-  .profile-card--activity-card,
-  .profile-card--membership {
+  .profile-card--activity-card {
     grid-column: span 12;
   }
 }
