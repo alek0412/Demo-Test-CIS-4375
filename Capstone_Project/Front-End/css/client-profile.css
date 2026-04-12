@@ -114,11 +114,6 @@
     grid-column: 1 / span 5;
   }
 
-  .client-profile-page .profile-card--emergency {
-    grid-row: 3;
-    grid-column: 1 / span 5;
-  }
-
   .client-profile-page .profile-card--security {
     grid-row: 2;
     grid-column: 6 / span 3;
@@ -147,6 +142,23 @@
   margin: 0 0 0.8rem;
   font-size: 1.04rem;
   color: #0f172a;
+}
+
+.profile-subheading {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.profile-card .profile-subheading:not(:first-of-type) {
+  margin-top: 1rem;
+}
+
+.profile-meta--tight-top {
+  margin-top: 0;
 }
 
 .profile-card p {
@@ -310,7 +322,6 @@
   }
 
   .client-profile-page .profile-card--account,
-  .client-profile-page .profile-card--emergency,
   .client-profile-page .profile-card--security,
   .client-profile-page .profile-card--activity-card {
     grid-row: auto;
