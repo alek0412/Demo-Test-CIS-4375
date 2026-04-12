@@ -6,7 +6,8 @@
  * Waiver: 1 = Available to book, 2 = Pending/hold (active reservation). When the last active
  * reservation is canceled, set waiver back to 1.
  *
- * POST /api/admin/reservation-create — mirrors Flask routes/reservation.py add_reservation rules.
+ * POST /api/admin/reservation-create — same booking rules as Flask customer POST, but inserts
+ * reservation_status = 2 (confirmed). Customer self-service POST uses status 1 (pending).
  */
 const db = require('../db/connection');
 
@@ -423,7 +424,7 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
       const [ins] = await conn.execute(
         `INSERT INTO reservation (court_id, customer_id, waiver_id, reservation_date,
           reservation_start_time, reservation_end_time, reservation_status)
-         VALUES (?, ?, ?, ?, ?, ?, 1)`,
+         VALUES (?, ?, ?, ?, ?, ?, 2)`,
         [court, customer, waiverId, reservationDate, startTime, endTime]
       );
 
@@ -445,7 +446,8 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
       sendJson(res, 201, {
         success: true,
         reservation_id: newId,
-        message: 'Reservation is now pending; approve or deny from Court requests.',
+        reservation_status: 2,
+        message: 'Reservation confirmed.',
       });
     } catch (e) {
       try {
