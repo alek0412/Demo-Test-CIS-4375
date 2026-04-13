@@ -119,3 +119,7 @@
           });
       });
     })();
+
+function validateLoginLength(username) {
+    return username.length > 3;
+}
