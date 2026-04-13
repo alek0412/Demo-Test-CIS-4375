@@ -20,5 +20,6 @@ if __name__ =="__main__":
     waitress.serve(flask_server,port=3001)
     
 
-    
+def get_server_status():
+    return "Running"    
     
