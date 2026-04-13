@@ -30,6 +30,10 @@ function getPool() {
   return pool;
 }
 
+function checkConnectionStatus(isConnected) {
+    return isConnected ? "Connected" : "Disconnected";
+}
+
 async function query(text, params) {
   const client = getPool();
   const [rows] = await client.execute(text, params);
