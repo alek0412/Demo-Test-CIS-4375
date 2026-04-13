@@ -1988,6 +1988,88 @@ body[data-theme="dark"] .db-table-wrap td {
 body[data-theme="dark"] .db-table-wrap tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.05);
 }
+
+/* Admin DB tables: sortable headers + pills (Customers, Waiver, Employees) */
+.db-table-wrap thead th {
+  padding: 0;
+  vertical-align: bottom;
+}
+.db-table-wrap thead th .db-sort-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.db-table-wrap thead th .db-sort-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+body[data-theme="dark"] .db-table-wrap thead th .db-sort-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.db-sort-indicator::before {
+  content: "↕";
+  opacity: 0.35;
+  font-size: 0.75em;
+}
+.db-table-wrap thead th.is-sorted .db-sort-indicator::before {
+  opacity: 0.85;
+}
+.db-table-wrap thead th.is-sorted:not(.is-sorted-desc) .db-sort-indicator::before {
+  content: "↑";
+}
+.db-table-wrap thead th.is-sorted-desc .db-sort-indicator::before {
+  content: "↓";
+}
+
+.db-cell-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+}
+
+.db-pill {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.db-pill--ok {
+  background: rgba(22, 163, 74, 0.15);
+  color: #15803d;
+}
+.db-pill--neutral {
+  background: rgba(107, 114, 128, 0.2);
+  color: #374151;
+}
+.db-pill--muted {
+  background: rgba(107, 114, 128, 0.15);
+  color: #6b7280;
+}
+body[data-theme="dark"] .db-pill--ok {
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+body[data-theme="dark"] .db-pill--neutral {
+  background: rgba(156, 163, 175, 0.18);
+  color: #e5e7eb;
+}
+body[data-theme="dark"] .db-pill--muted {
+  background: rgba(107, 114, 128, 0.35);
+  color: #d1d5db;
+}
+
 .db-loading {
   color: var(--text-muted);
   padding: 1rem;
@@ -2284,6 +2366,15 @@ body[data-theme="dark"] .admin-marketing-layout-hint {
 body[data-theme="dark"] .admin-marketing-slot {
   background: #111827;
   border-color: #374151;
+}
+.admin-marketing-slot--dragover {
+  outline: 2px solid var(--accent, #2563eb);
+  outline-offset: 2px;
+  border-color: var(--accent, #2563eb);
+  background: rgba(37, 99, 235, 0.06);
+}
+body[data-theme="dark"] .admin-marketing-slot--dragover {
+  background: rgba(37, 99, 235, 0.12);
 }
 .admin-marketing-slot-title {
   font-size: 1rem;
@@ -2668,6 +2759,9 @@ body[data-theme="dark"] .admin-customer-btn-delete:hover {
   border-color: #f87171;
 }
 .customer-data-row {
+  cursor: pointer;
+}
+#employee-table tbody tr.employee-table-row {
   cursor: pointer;
 }
 .customer-row-selected {

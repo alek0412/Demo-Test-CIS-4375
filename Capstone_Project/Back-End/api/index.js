@@ -16,6 +16,7 @@ const handlers = [
   require('./popularTimesRoutes'),
   require('./membershipPricingRoutes'),
   require('./membershipSpecialsRoutes'),
+  require('./aboutGalleryRoutes'),
   require('./dbDump'),
 ];
 

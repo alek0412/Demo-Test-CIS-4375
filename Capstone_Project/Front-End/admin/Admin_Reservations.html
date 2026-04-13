@@ -1394,7 +1394,6 @@
             });
         });
         loadPendingReservations();
-        setInterval(loadPendingReservations, 45000);
       }
 
       initClientSearch();
@@ -1404,7 +1403,7 @@
       buildTimeScale();
       syncModalCourtFields();
       refreshScheduleFromServer();
-      window.setInterval(refreshScheduleFromServer, 45000);
+      window.setInterval(refreshScheduleFromServer, 5000);
     })();
   </script>
 </body>

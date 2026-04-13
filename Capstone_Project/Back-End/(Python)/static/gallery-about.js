@@ -106,6 +106,12 @@
     return out;
   }
 
+  function isPdfItem(item) {
+    if (!item || !item.src) return false;
+    if (item.kind === 'pdf') return true;
+    return /\.pdf(\?|$)/i.test(item.src);
+  }
+
   function buildSlideInner(pageItems) {
     var inner = document.createElement('div');
     inner.className = 'about-gallery-slide-inner';
@@ -115,6 +121,27 @@
     for (var i = 0; i < pageItems.length; i++) {
       (function (item) {
         var fig = document.createElement('figure');
+        if (isPdfItem(item)) {
+          fig.className = 'about-gallery-item about-gallery-item--pdf';
+          var frame = document.createElement('div');
+          frame.className = 'about-gallery-item__pdf-frame';
+          var obj = document.createElement('object');
+          obj.className = 'about-gallery-item__pdf-obj';
+          obj.type = 'application/pdf';
+          obj.data = item.src;
+          obj.setAttribute('aria-label', item.alt || 'PDF document');
+          var fallback = document.createElement('a');
+          fallback.href = item.src;
+          fallback.target = '_blank';
+          fallback.rel = 'noopener noreferrer';
+          fallback.className = 'about-gallery-item__pdf-fallback';
+          fallback.textContent = 'Open PDF';
+          obj.appendChild(fallback);
+          frame.appendChild(obj);
+          fig.appendChild(frame);
+          inner.appendChild(fig);
+          return;
+        }
         fig.className = 'about-gallery-item';
         var btn = document.createElement('button');
         btn.type = 'button';
@@ -171,6 +198,11 @@
       for (var si = 0; si < slideImgs.length; si++) {
         slideImgs[si].addEventListener('load', scheduleViewportHeight);
         slideImgs[si].addEventListener('error', scheduleViewportHeight);
+      }
+      var slideObjs = slide.querySelectorAll('object.about-gallery-item__pdf-obj');
+      for (var so = 0; so < slideObjs.length; so++) {
+        slideObjs[so].addEventListener('load', scheduleViewportHeight);
+        slideObjs[so].addEventListener('error', scheduleViewportHeight);
       }
     }
     viewport.appendChild(track);
@@ -315,17 +347,53 @@
     applyTransform();
   }
 
-  var pages = chunkImages(GALLERY_IMAGES, PER_PAGE);
-  root.className = 'event-cards event-cards--carousel about-gallery-carousel-mount';
-  root.setAttribute('data-count', String(pages.length));
+  function runGalleryWithImages(items) {
+    var pages = chunkImages(items, PER_PAGE);
+    root.className = 'event-cards event-cards--carousel about-gallery-carousel-mount';
+    root.setAttribute('data-count', String(pages.length));
 
-  if (pages.length <= 1) {
-    var single = document.createElement('div');
-    single.className = 'about-gallery-single';
-    single.appendChild(buildSlideInner(pages[0]));
-    root.appendChild(single);
-    return;
+    if (pages.length <= 1) {
+      var single = document.createElement('div');
+      single.className = 'about-gallery-single';
+      single.appendChild(buildSlideInner(pages[0]));
+      root.appendChild(single);
+      return;
+    }
+
+    buildCarousel(pages);
   }
 
-  buildCarousel(pages);
+  function initDefaultCarousel() {
+    runGalleryWithImages(GALLERY_IMAGES);
+  }
+
+  fetch('/api/about-gallery-asset', { credentials: 'same-origin' })
+    .then(function (r) {
+      return r.json();
+    })
+    .then(function (d) {
+      var custom = [];
+      if (d && d.images && d.images.length) {
+        for (var i = 0; i < d.images.length; i++) {
+          var row = d.images[i];
+          if (row && row.url) {
+            var rk =
+              row.kind === 'pdf' || row.kind === 'image'
+                ? row.kind
+                : /\.pdf(\?|$)/i.test(row.url)
+                  ? 'pdf'
+                  : 'image';
+            custom.push({ src: row.url, alt: row.alt || '', kind: rk });
+          }
+        }
+      }
+      if (custom.length > 0) {
+        runGalleryWithImages(custom);
+        return;
+      }
+      initDefaultCarousel();
+    })
+    .catch(function () {
+      initDefaultCarousel();
+    });
 })();

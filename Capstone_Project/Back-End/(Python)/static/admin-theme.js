@@ -130,52 +130,6 @@
     document.addEventListener('click', function () { close(); });
   }
 
-  function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  function initAdminWelcome() {
-    var container = document.getElementById('admin-theme-container');
-    if (!container || !document.querySelector('.admin-layout')) return;
-    var topbar = container.closest('.admin-topbar');
-    if (!topbar) return;
-
-    var welcome = document.createElement('div');
-    welcome.className = 'admin-topbar-welcome';
-    welcome.id = 'admin-welcome-message';
-    welcome.setAttribute('aria-live', 'polite');
-    welcome.hidden = true;
-    topbar.insertBefore(welcome, topbar.firstChild);
-
-    fetch('/api/admin/me', { credentials: 'same-origin' })
-      .then(function (r) {
-        return r.json();
-      })
-      .then(function (data) {
-        if (!data || !data.loggedIn) return;
-        var fn = data.firstName ? String(data.firstName).trim() : '';
-        var ln = data.lastName ? String(data.lastName).trim() : '';
-        var displayName = [fn, ln].filter(Boolean).join(' ');
-        if (displayName) {
-          welcome.innerHTML =
-            '<span class="admin-welcome-text">' +
-            '<span class="admin-welcome-lead">Logged in as </span>' +
-            '<span class="admin-welcome-name">' +
-            escapeHtml(displayName) +
-            '</span></span>';
-        } else {
-          welcome.innerHTML =
-            '<span class="admin-welcome-text"><span class="admin-welcome-lead">Logged in</span></span>';
-        }
-        welcome.hidden = false;
-      })
-      .catch(function () {});
-  }
-
   function init() {
     applyThemeOnLoad();
     applySidebarOnLoad();
@@ -208,7 +162,6 @@
       topbarRight.appendChild(logoutBtn);
       renderDropdown(container);
       bindDropdown(container);
-      initAdminWelcome();
     }
     initPendingReservationsNavBadge();
     if (!document.querySelector('.reservations-page')) {

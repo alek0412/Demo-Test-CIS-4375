@@ -22,6 +22,7 @@ const upcomingEvents = require('./lib/upcomingEvents');
 const popularTimesPdf = require('./lib/popularTimesPdf');
 const membershipPricing = require('./lib/membershipPricing');
 const membershipSpecials = require('./lib/membershipSpecials');
+const aboutGallery = require('./lib/aboutGallery');
 const { parseBody, readBodyWithLimit } = require('./lib/httpBody');
 const { handleApi } = require('./api');
 
@@ -120,6 +121,7 @@ const server = http.createServer(async (req, res) => {
     popularTimesPdf,
     membershipPricing,
     membershipSpecials,
+    aboutGallery,
     db,
     config,
   };
@@ -157,6 +159,8 @@ const server = http.createServer(async (req, res) => {
     urlPath === '/Client_Alternative.js' ||
     urlPath === '/membership-page-pricing.js' ||
     urlPath === '/admin-membership-pricing.js' ||
+    urlPath === '/admin-about-gallery.js' ||
+    urlPath === '/admin-file-dropzones.js' ||
     urlPath === '/upcoming-events-home.js' ||
     urlPath === '/gallery-about.js' ||
     urlPath === '/admin-marketing.js' ||

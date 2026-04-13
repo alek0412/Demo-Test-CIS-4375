@@ -244,10 +244,50 @@
     return HIDDEN_EMPLOYEE_COLS[k] === true;
   }
 
+  /** Table column order: first name column always before last name (UI). */
+  var PREFERRED_EMPLOYEE_COL_ORDER = [
+    'employee_id',
+    'employee_first_name',
+    'employee_last_name',
+    'employee_email',
+    'employee_phone',
+    'employee_rank'
+  ];
+
+  function normalizeColumnKey(name) {
+    return String(name || '')
+      .toLowerCase()
+      .replace(/\s+/g, '_');
+  }
+
   function visibleEmployeeColumns(keys) {
-    return keys.filter(function (c) {
+    var filtered = keys.filter(function (c) {
       return !isHiddenEmployeeColumn(c);
     });
+    var used = {};
+    var ordered = [];
+    PREFERRED_EMPLOYEE_COL_ORDER.forEach(function (pref) {
+      var found = filtered.find(function (k) {
+        return !used[k] && normalizeColumnKey(k) === pref;
+      });
+      if (found !== undefined) {
+        ordered.push(found);
+        used[found] = true;
+      }
+    });
+    var rest = filtered.filter(function (k) {
+      return !used[k];
+    });
+    rest.sort(function (a, b) {
+      return String(a).localeCompare(String(b));
+    });
+    return ordered.concat(rest);
+  }
+
+  function escapeHtmlText(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;');
   }
 
   /** DB: employee_rank 1 = manager, 2 = regular (matches Flask session checks). */
@@ -360,7 +400,20 @@
             }
             html += '<table id="employee-table"><thead><tr>';
             cols.forEach(function (c) {
-              html += '<th>' + columnHeaderLabel(c) + '</th>';
+              var label = columnHeaderLabel(c);
+              html +=
+                '<th scope="col" data-col="' +
+                String(c).replace(/"/g, '&quot;') +
+                '" aria-sort="none">' +
+                '<button type="button" class="db-sort-btn" data-col="' +
+                String(c).replace(/"/g, '&quot;') +
+                '" aria-label="Sort by ' +
+                String(label).replace(/"/g, '&quot;') +
+                '">' +
+                label +
+                '<span class="db-sort-indicator" aria-hidden="true"></span>' +
+                '</button>' +
+                '</th>';
             });
             html += '</tr></thead><tbody>';
             html +=
@@ -372,8 +425,32 @@
               var safeId = eid.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
               html += '<tr class="employee-table-row" data-employee-id="' + safeId + '">';
               cols.forEach(function (c) {
+                var lower = String(c || '').toLowerCase();
+                var keyNorm = normalizeColumnKey(c);
+                if (keyNorm === 'employee_rank' || lower === 'employee_rank') {
+                  var n = parseInt(row[c], 10);
+                  var rankLabel =
+                    n === 1
+                      ? 'Manager'
+                      : n === 2
+                        ? 'Regular Employee'
+                        : row[c] != null && row[c] !== ''
+                          ? String(row[c])
+                          : '';
+                  var tone = n === 1 ? 'ok' : n === 2 ? 'muted' : 'neutral';
+                  html +=
+                    '<td>' +
+                    (rankLabel
+                      ? '<span class="db-pill db-pill--' + tone + '">' + escapeHtmlText(rankLabel) + '</span>'
+                      : '') +
+                    '</td>';
+                  return;
+                }
                 var display = formatEmployeeCell(c, row[c]);
-                html += '<td>' + display + '</td>';
+                var safe = display != null && display !== '' ? String(display) : '';
+                var cellClass = '';
+                if (lower === 'employee_email' || lower === 'email') cellClass = ' class="db-cell-mono"';
+                html += '<td' + cellClass + '>' + escapeHtmlText(safe) + '</td>';
               });
               html += '</tr>';
             });
@@ -398,6 +475,7 @@
         });
 
         var filterDomain = '';
+        var sortState = { col: null, dir: 'asc' };
 
         function getFilteredRows() {
           if (!rows || !rows.length || rows[0]._error) return [];
@@ -498,8 +576,90 @@
           }
         }
 
+        function isProbablyNumber(s) {
+          if (s == null) return false;
+          var t = String(s).trim();
+          if (!t) return false;
+          return /^-?\d[\d,]*([.]\d+)?$/.test(t);
+        }
+
+        function compareCellText(a, b) {
+          if (a == null) a = '';
+          if (b == null) b = '';
+          var A = String(a).trim();
+          var B = String(b).trim();
+          if (A === B) return 0;
+          var numA = isProbablyNumber(A);
+          var numB = isProbablyNumber(B);
+          if (numA && numB) {
+            var na = Number(A.replace(/,/g, ''));
+            var nb = Number(B.replace(/,/g, ''));
+            if (Number.isFinite(na) && Number.isFinite(nb)) return na - nb;
+          }
+          return A.localeCompare(B, undefined, { numeric: true, sensitivity: 'base' });
+        }
+
+        function setSortUi(col, dir) {
+          if (!table) return;
+          var ths = table.querySelectorAll('thead th');
+          ths.forEach(function (th) {
+            var isActive = th.getAttribute('data-col') === col;
+            th.setAttribute('aria-sort', isActive ? (dir === 'desc' ? 'descending' : 'ascending') : 'none');
+            th.classList.toggle('is-sorted', isActive);
+            th.classList.toggle('is-sorted-desc', isActive && dir === 'desc');
+          });
+        }
+
+        function sortTableByColumn(colKey, dir) {
+          if (!table || !cols.length) return;
+          var idx = cols.indexOf(colKey);
+          if (idx === -1) return;
+          var tbody = table.querySelector('tbody');
+          if (!tbody) return;
+          var trs = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+          var noRes = trs.find(function (tr) {
+            return tr.id === 'employee-no-results';
+          });
+          var dataRows = trs.filter(function (tr) {
+            return tr.id !== 'employee-no-results';
+          });
+
+          dataRows.sort(function (ra, rb) {
+            var a = ra.cells[idx] && ra.cells[idx].textContent ? ra.cells[idx].textContent : '';
+            var b = rb.cells[idx] && rb.cells[idx].textContent ? rb.cells[idx].textContent : '';
+            var cmp = compareCellText(a, b);
+            return dir === 'desc' ? -cmp : cmp;
+          });
+
+          dataRows.forEach(function (tr) {
+            tbody.appendChild(tr);
+          });
+          if (noRes) tbody.insertBefore(noRes, tbody.firstChild);
+          setSortUi(colKey, dir);
+          applyFilters();
+        }
+
         if (searchInput && table) {
           searchInput.addEventListener('input', applyFilters);
+        }
+
+        if (table) {
+          var thead = table.querySelector('thead');
+          if (thead) {
+            thead.addEventListener('click', function (e) {
+              var btn = e.target && e.target.closest && e.target.closest('.db-sort-btn');
+              if (!btn) return;
+              var col = btn.getAttribute('data-col');
+              if (!col) return;
+              if (sortState.col === col) {
+                sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+              } else {
+                sortState.col = col;
+                sortState.dir = 'asc';
+              }
+              sortTableByColumn(sortState.col, sortState.dir);
+            });
+          }
         }
 
         if (filterBtn && filterDropdown) {

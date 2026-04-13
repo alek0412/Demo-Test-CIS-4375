@@ -562,6 +562,56 @@ header .nav-tab:hover {
   margin: 0 auto;
 }
 
+.about-gallery-custom-asset {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.about-gallery-custom-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+}
+
+.about-gallery-custom-pdf {
+  width: 100%;
+  min-height: 28rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.about-gallery-custom-fallback {
+  padding: 1rem;
+}
+
+.about-gallery-item--pdf {
+  width: 100%;
+  max-width: 100%;
+}
+
+.about-gallery-item__pdf-frame {
+  width: 100%;
+  min-height: 12rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.about-gallery-item__pdf-obj {
+  width: 100%;
+  min-height: 12rem;
+  display: block;
+}
+
+.about-gallery-item__pdf-fallback {
+  display: block;
+  padding: 1rem;
+  font-size: 0.875rem;
+}
+
 @media (max-width: 640px) {
   .about-gallery-slide-inner {
     grid-template-columns: 1fr;

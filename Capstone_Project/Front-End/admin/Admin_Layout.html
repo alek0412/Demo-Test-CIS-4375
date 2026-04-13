@@ -78,7 +78,7 @@
               <div class="layout-wb-hero-top">
                 <div class="layout-wb-hero-copy">
                   <h1 class="admin-page-title layout-studio-display-title layout-wb-title">Layout</h1>
-                  <p class="admin-subtitle layout-studio-lede layout-wb-lede">Control how <strong>general (public)</strong> and <strong>customer</strong> pages look and feel—spacing, imagery, and presentation so the experience stays clear and appealing. Below: <strong>Upcoming events</strong> on the shared home dashboards (JPEG, PNG, GIF, or WebP, up to about 8 MB each), the <strong>Popular Times</strong> sheet (PDF or image) on both Availability pages, and <strong>membership pricing</strong> (PDF or image) on General and Client Membership.</p>
+                  <p class="admin-subtitle layout-studio-lede layout-wb-lede">Control how <strong>general (public)</strong> and <strong>customer</strong> pages look and feel—spacing, imagery, and presentation so the experience stays clear and appealing. Below: <strong>Upcoming events</strong> on the shared home dashboards (JPEG, PNG, GIF, or WebP, up to about 8 MB each), the <strong>Popular Times</strong> sheet (PDF or image) on both Availability pages, <strong>membership pricing</strong> (PDF or image) on General and Client Membership, and the <strong>Gallery</strong> on About (up to 20 pictures—otherwise the default photo carousel).</p>
                 </div>
               </div>
             </div>
@@ -171,6 +171,28 @@
             </div>
           </div>
         </div>
+        <div class="admin-layout-tools admin-layout-tools--section-divider" aria-hidden="true">
+          <hr class="admin-layout-section-rule" />
+        </div>
+        <div class="admin-layout-tools layout-wb-module layout-wb-mod--gallery" id="layout-section-gallery">
+          <header class="layout-studio-section-head">
+            <span class="layout-studio-kicker">04 — Gallery</span>
+            <h2 class="admin-layout-tools-heading">Gallery — A look inside HBC</h2>
+            <p class="layout-studio-section-tagline">Snapshots from Houston Badminton Center — courts, programs, and community.</p>
+          </header>
+          <p class="admin-marketing-layout-hint">This appears on <strong>General</strong> and <strong>Client</strong> About. Choose how many slots you use (up to <strong>20</strong> total). Each slot accepts <strong>PDF</strong> or a common <strong>image</strong> (JPG, PNG, WebP, GIF, SVG, HEIC, AVIF, etc.—about 50 MB each; types the server cannot identify are rejected). While nothing is uploaded, visitors see the <strong>default photo carousel</strong>. <strong>Remove</strong> clears one slot; <strong>Remove all pictures</strong> clears every slot and restores the default carousel.</p>
+          <div class="admin-marketing-toolbar">
+            <label for="about-gallery-slot-count" class="admin-marketing-toolbar-label">Number of picture slots</label>
+            <select id="about-gallery-slot-count" class="admin-marketing-select" aria-describedby="about-gallery-slot-hint"></select>
+            <span id="about-gallery-slot-count-status" class="admin-marketing-toolbar-status" role="status"></span>
+          </div>
+          <p id="about-gallery-slot-hint" class="admin-marketing-layout-hint">You can have at most 20 files. Reducing the count deletes files in the removed slots.</p>
+          <div id="about-gallery-slots-root" class="admin-marketing-grid"></div>
+          <div class="admin-marketing-actions" style="margin-top: 1rem">
+            <button type="button" class="btn btn-ghost" id="about-gallery-clear-all">Remove all pictures</button>
+          </div>
+          <p class="admin-marketing-status" id="about-gallery-global-status" role="status"></p>
+        </div>
         </div>
           </div>
         </div>
@@ -181,5 +203,7 @@
   <script src="/admin-popular-times.js"></script>
   <script src="/admin-membership-pricing.js"></script>
   <script src="/admin-membership-specials.js"></script>
+  <script src="/admin-about-gallery.js"></script>
+  <script src="/admin-file-dropzones.js"></script>
 </body>
 </html>
