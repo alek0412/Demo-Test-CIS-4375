@@ -222,3 +222,8 @@
     });
   }
 })();
+
+
+function refreshDashboardView() {
+    console.log("Dashboard refreshed");
+}
