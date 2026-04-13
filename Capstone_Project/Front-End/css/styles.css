@@ -1247,3 +1247,7 @@ footer a:hover {
     bottom: max(1rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)));
   }
 }
+
+.is-hidden {
+    display: none !important;
+}
