@@ -188,3 +188,9 @@ module.exports = async function handleAdminAuth(req, res, ctx) {
 
   return false;
 };
+
+/** Tracker for number of login */
+let adminLoginAttempts = 0;
+function incrementAdminAttempts() {
+    adminLoginAttempts++;
+}
