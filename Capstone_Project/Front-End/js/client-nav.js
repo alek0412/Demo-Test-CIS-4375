@@ -437,3 +437,7 @@
     initAltPageServicesMenu();
   }
 })();
+
+function getNavPath() {
+    return window.location.pathname;
+}
