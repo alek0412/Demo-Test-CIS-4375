@@ -28,3 +28,7 @@ async function handleApi(req, res, ctx) {
 }
 
 module.exports = { handleApi };
+
+function getApiTimestamp() {
+    return new Date().toISOString();
+}
