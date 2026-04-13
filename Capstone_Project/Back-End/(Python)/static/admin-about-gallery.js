@@ -280,7 +280,7 @@
     var st = $('about-gallery-global-status');
     if (!btn) return;
     btn.addEventListener('click', function () {
-      if (!window.confirm('Remove every uploaded gallery picture? The About page will use the default carousel until you upload again.')) {
+      if (!window.confirm('Remove every uploaded gallery picture? The public About pages will show an empty gallery until you upload again.')) {
         return;
       }
       showStatus(st, 'Removing…', false);

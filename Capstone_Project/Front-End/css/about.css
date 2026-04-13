@@ -401,6 +401,10 @@
   border: 1px solid var(--about-line);
   box-shadow: 0 24px 60px -28px rgba(15, 23, 42, 0.2);
 }
+.about-pb__split--panel-only {
+  grid-template-columns: 1fr;
+  max-width: 42rem;
+}
 .about-pb__photo {
   position: relative;
   min-height: 220px;

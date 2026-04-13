@@ -6,16 +6,6 @@
 
   var PER_PAGE = 3;
 
-  /* Root-relative paths: work with `node server.js` (serves Front-End at /). */
-  var GALLERY_IMAGES = [
-    { src: '/images/HBC-Facility.png', alt: 'Houston Badminton Center facility exterior' },
-    { src: '/images/pickleball-court.png', alt: 'Pickleball play at Houston Badminton Center' },
-    { src: '/images/table-tennis-coach-katherine-wang.png', alt: 'Table tennis at Houston Badminton Center' },
-    { src: '/images/Badminton-training.png', alt: 'Badminton training at Houston Badminton Center' },
-    { src: '/images/hbc-facility-exterior.png', alt: 'Houston Badminton Center building' },
-    { src: '/images/PB-IMG.jpg', alt: 'Pickleball at the center' },
-  ];
-
   var root = document.getElementById('about-gallery-root');
   if (!root) return;
 
@@ -363,8 +353,11 @@
     buildCarousel(pages);
   }
 
-  function initDefaultCarousel() {
-    runGalleryWithImages(GALLERY_IMAGES);
+  function showGalleryEmptyState() {
+    root.className = 'about-gallery-empty-mount';
+    root.removeAttribute('data-count');
+    root.innerHTML =
+      '<p class="about-gallery-empty" role="status">Gallery photos are added here by Houston Badminton Center. Check back soon.</p>';
   }
 
   fetch('/api/about-gallery-asset', { credentials: 'same-origin' })
@@ -391,9 +384,9 @@
         runGalleryWithImages(custom);
         return;
       }
-      initDefaultCarousel();
+      showGalleryEmptyState();
     })
     .catch(function () {
-      initDefaultCarousel();
+      showGalleryEmptyState();
     });
 })();
