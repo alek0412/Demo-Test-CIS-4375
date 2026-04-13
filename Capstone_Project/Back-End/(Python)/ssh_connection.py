@@ -47,3 +47,6 @@ def ensure_live_connection():
 
 
 secure_connection = ssh_hell()
+
+def build_query_string(table):
+    return "SELECT * FROM " + table
