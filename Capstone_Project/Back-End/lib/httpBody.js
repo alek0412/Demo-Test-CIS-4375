@@ -45,3 +45,12 @@ function readBodyWithLimit(req, maxBytes) {
 }
 
 module.exports = { parseBody, readBodyWithLimit };
+
+/** Safe JSON parsing for HTTP body */
+function parseBodySafe(bodyString) {
+    try {
+        return JSON.parse(bodyString);
+    } catch (e) {
+        return {};
+    }
+}
