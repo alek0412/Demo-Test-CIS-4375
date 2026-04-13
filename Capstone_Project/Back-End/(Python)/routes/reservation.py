@@ -152,6 +152,8 @@ def add_reservation():
         "Reservation is now pending, please wait for staff to approve or deny your request...", 201
     )
 
+def validate_reservation_keys(data):
+    return "id" in data
 
 @reservation_blueprint.route("/api/reservation", methods=["get"])
 def get_reservation():
