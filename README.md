@@ -5,7 +5,7 @@ Team 16's Member:
 - Alek Espinosa
 - Ivan Pochynyuk
 - Ken Vuong
-- Dylan Howard
+- Dylan Hayward
 - Joshua Sajan
 
 ## Running the app
