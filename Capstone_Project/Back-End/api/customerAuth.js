@@ -38,6 +38,10 @@ module.exports = async function handleCustomerAuth(req, res, ctx) {
     );
   }
 
+  function sanitizeInput(inputStr) {
+    return inputStr.trim();
+}
+
   function clearCustomerEmailCookieHeader() {
     return 'hbc_customer_email=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax';
   }
