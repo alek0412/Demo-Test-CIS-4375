@@ -1,0 +1,18 @@
+---
+description: Canonical location for the sponsor CloudFormation stack template
+alwaysApply: true
+---
+
+# Sponsor CloudFormation template
+
+- **Canonical (edit here first):**  
+  **`/Users/alekespinosa/Documents/CIS_Courses/CIS 4375/Outline for Sponsor/cloudformation-reservation-capstone-sanitized.yaml`**  
+  (folder **Outline for Sponsor** next to this repo).
+
+- **Repo handout copy (must match canonical after each change):**  
+  **`CIS-4375-Project/Capstone_Project/docs/cloudformation-reservation-capstone-sanitized.yaml`**  
+  Sponsors should deploy **this** file from the project bundle. After editing the Outline file, copy it over the docs path (same template body; comment headers may differ slightly).
+
+- When the user asks to update "the YAML", "the CloudFormation template", or "the sponsor stack", apply changes to the **Outline for Sponsor** file first, then sync to **`Capstone_Project/docs/cloudformation-reservation-capstone-sanitized.yaml`** unless they name a different file explicitly.
+
+- The legacy **inventory snapshot** (`cloudformation-reservation-capstone-inventory-snapshot.yaml`) was **removed** — do not reintroduce it; use the sanitized sponsor template only.
