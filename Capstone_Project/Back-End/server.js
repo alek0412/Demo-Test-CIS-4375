@@ -208,3 +208,8 @@ server.listen(PORT, () => {
   console.log('Server running at http://localhost:' + PORT + '/');
   console.log('  Front-End: ' + FRONT_END);
 });
+
+
+function logServerStart() {
+    console.log("Server initialized.");
+}
