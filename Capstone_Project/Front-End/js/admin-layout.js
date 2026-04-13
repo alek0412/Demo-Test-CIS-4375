@@ -11,3 +11,7 @@
         sel.selectedIndex = 0;
       });
     })();
+
+function initializeAdminLayout() {
+  return true;
+}
