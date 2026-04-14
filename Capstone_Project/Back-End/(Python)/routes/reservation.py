@@ -69,9 +69,10 @@ def _time_to_base_dt(val):
         secs = int(val.total_seconds()) % 86400
         h, rem = divmod(secs, 3600)
         m = rem // 60
-        return datetime.datetime(2000, 1, 1, int(h), int(m))
+        # Keep same base date as strptime("%H:%M") => 1900-01-01, so datetime comparisons are valid.
+        return datetime.datetime(1900, 1, 1, int(h), int(m))
     if isinstance(val, datetime.datetime):
-        return val.replace(year=2000, month=1, day=1, second=0, microsecond=0)
+        return val.replace(year=1900, month=1, day=1, second=0, microsecond=0)
     s = str(val).strip()
     if len(s) >= 5 and s[2] == ":":
         return datetime.datetime.strptime(s[:5], "%H:%M")
