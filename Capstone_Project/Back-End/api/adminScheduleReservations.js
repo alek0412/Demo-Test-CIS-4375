@@ -180,7 +180,7 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
     try {
       const { rows } = await db.query(
         `SELECT r.reservation_id, r.court_id, r.customer_id, r.waiver_id, r.reservation_date,
-                r.reservation_start_time, r.reservation_end_time, r.reservation_status,
+                r.reservation_start_time, r.reservation_end_time, r.reservation_status, r.employee_id,
                 c.customer_first_name, c.customer_last_name, c.phone AS customer_phone
          FROM reservation r
          LEFT JOIN customer c ON c.customer_id = r.customer_id
@@ -201,6 +201,9 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
         customer_first_name: row.customer_first_name,
         customer_last_name: row.customer_last_name,
         phone: row.customer_phone != null ? String(row.customer_phone).trim() : '',
+        // Admin-created reservations are inserted as confirmed (2) without employee_id.
+        // Customer-created reservations (approved later) have employee_id set by approval flow.
+        can_edit: Number(row.reservation_status) === 2 && row.employee_id == null,
       }));
       sendJson(res, 200, { success: true, reservations });
     } catch (e) {

@@ -738,6 +738,7 @@
         block.dataset.slotStart = String(ss);
         block.dataset.slotSpan = String(span);
         block.dataset.reservationId = String(row.reservation_id);
+        block.dataset.canEdit = row.can_edit ? '1' : '0';
         block.setAttribute('data-reservation-id', String(row.reservation_id));
         if (row.phone != null && String(row.phone).trim() !== '') {
           block.dataset.customerPhone = String(row.phone).trim();
@@ -773,7 +774,9 @@
         delBtn.className = 'cal-block-action-btn cal-block-action-delete';
         delBtn.setAttribute('aria-label', 'Delete reservation');
         delBtn.innerHTML = ICON_DELETE;
-        actions.appendChild(editBtn);
+        if (row.can_edit) {
+          actions.appendChild(editBtn);
+        }
         actions.appendChild(delBtn);
         block.appendChild(actions);
 
@@ -826,11 +829,14 @@
         const titleEl = block.querySelector('.cal-block-title');
         const label = titleEl ? titleEl.textContent.trim() : 'Reservation';
 
-        toolbar.querySelector('.cal-block-action-edit').addEventListener('click', function (e) {
-          e.stopPropagation();
-          hideHoverCard();
-          setStatus('Edit "' + label + '"' + (courtName ? ' on ' + courtName : '') + ' — connect to API later.', false);
-        });
+        const editAction = toolbar.querySelector('.cal-block-action-edit');
+        if (editAction) {
+          editAction.addEventListener('click', function (e) {
+            e.stopPropagation();
+            hideHoverCard();
+            setStatus('Edit "' + label + '"' + (courtName ? ' on ' + courtName : '') + ' — connect to API later.', false);
+          });
+        }
         toolbar.querySelector('.cal-block-action-delete').addEventListener('click', function (e) {
           e.stopPropagation();
           hideHoverCard();
@@ -897,17 +903,19 @@
         actions.className = 'cal-block-actions';
         actions.setAttribute('role', 'toolbar');
         actions.setAttribute('aria-label', 'Reservation actions');
-        const editBtn = document.createElement('button');
-        editBtn.type = 'button';
-        editBtn.className = 'cal-block-action-btn cal-block-action-edit';
-        editBtn.setAttribute('aria-label', 'Edit reservation');
-        editBtn.innerHTML = ICON_EDIT;
         const delBtn = document.createElement('button');
         delBtn.type = 'button';
         delBtn.className = 'cal-block-action-btn cal-block-action-delete';
         delBtn.setAttribute('aria-label', 'Delete reservation');
         delBtn.innerHTML = ICON_DELETE;
-        actions.appendChild(editBtn);
+        if (block.dataset.canEdit === '1') {
+          const editBtn = document.createElement('button');
+          editBtn.type = 'button';
+          editBtn.className = 'cal-block-action-btn cal-block-action-edit';
+          editBtn.setAttribute('aria-label', 'Edit reservation');
+          editBtn.innerHTML = ICON_EDIT;
+          actions.appendChild(editBtn);
+        }
         actions.appendChild(delBtn);
         block.appendChild(actions);
  

@@ -4798,12 +4798,12 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
 .res-hover-card {
   position: fixed;
   z-index: 3500;
-  width: 590px;
+  width: 440px;
   max-width: calc(100vw - 16px);
   background: #f3f3f3;
   border: 2px solid #d9d9d9;
-  border-radius: 12px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.22);
   overflow: hidden;
 }
 
@@ -4814,26 +4814,26 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
 .res-hover-head {
   background: #3e7fc9;
   color: #ffffff;
-  padding: 0.95rem 1.35rem;
+  padding: 0.65rem 0.95rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.05rem;
 }
 
 .res-hover-head span:first-child {
-  font-size: 2.1rem;
+  font-size: 1.35rem;
 }
 
 .res-hover-head span:last-child {
-  font-size: 1.7rem;
+  font-size: 1rem;
   opacity: 0.95;
 }
 
 .res-hover-body {
   position: relative;
-  padding: 1.05rem 1.35rem 1.2rem;
+  padding: 0.8rem 0.95rem 0.9rem;
   background: #f3f3f3;
 }
 
@@ -4854,14 +4854,14 @@ body[data-theme="light"] .res-schedule-headers .cal-col-head {
 }
 
 #res-hover-time {
-  font-size: 1.65rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: #575757;
 }
 
 #res-hover-service {
   margin-top: 0.28rem;
-  font-size: 1.55rem;
+  font-size: 1.05rem;
 }
 
 .res-hover-dots {
