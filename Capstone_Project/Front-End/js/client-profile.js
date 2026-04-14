@@ -101,15 +101,21 @@
     var name = document.getElementById('edit-name');
     var mail = document.getElementById('edit-email');
     var phone = document.getElementById('edit-phone');
+    var password = document.getElementById('edit-password');
+    var confirm = document.getElementById('edit-password-confirm');
     if (!p) {
       if (name) name.value = '';
       if (mail) mail.value = '';
       if (phone) phone.value = '';
+      if (password) password.value = '';
+      if (confirm) confirm.value = '';
       return;
     }
     if (name) name.value = fullName(p) === '—' ? '' : fullName(p);
     if (mail) mail.value = p.email || '';
     if (phone) phone.value = p.phone || '';
+    if (password) password.value = '';
+    if (confirm) confirm.value = '';
   }
 
   function splitName(full) {
@@ -263,6 +269,16 @@
       var nameInput = document.getElementById('edit-name');
       var emailInput = document.getElementById('edit-email');
       var phoneInput = document.getElementById('edit-phone');
+      var passwordInput = document.getElementById('edit-password');
+      var confirmInput = document.getElementById('edit-password-confirm');
+      var newPassword = passwordInput ? passwordInput.value : '';
+      var confirmPassword = confirmInput ? confirmInput.value : '';
+      if (newPassword || confirmPassword) {
+        if (newPassword !== confirmPassword) {
+          alert('New password and confirm password must match.');
+          return;
+        }
+      }
       var parts = splitName(nameInput ? nameInput.value : '');
       var body = {
         first_name: parts.first_name,
@@ -270,6 +286,9 @@
         email: emailInput ? emailInput.value.trim() : '',
         phone: phoneInput ? phoneInput.value.trim() : '',
       };
+      if (newPassword && newPassword.trim()) {
+        body.password = newPassword;
+      }
       fetch('/api/customer', {
         method: 'PATCH',
         credentials: 'same-origin',
