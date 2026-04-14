@@ -17,6 +17,7 @@ const handlers = [
   require('./membershipPricingRoutes'),
   require('./membershipSpecialsRoutes'),
   require('./aboutGalleryRoutes'),
+  require('./adminDataExport'),
   require('./dbDump'),
 ];
 

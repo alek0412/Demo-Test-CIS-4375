@@ -3,6 +3,8 @@
  */
 (function () {
   'use strict';
+  var exportUiInitialized = false;
+  var exportTablesLoaded = false;
 
   function $(id) {
     return document.getElementById(id);
@@ -28,6 +30,144 @@
       if (!r.ok) return null;
       return r.json();
     });
+  }
+
+  function fetchBlob(url, opts) {
+    return fetch(url, opts || { credentials: 'same-origin' }).then(function (r) {
+      return r.blob().then(function (blob) {
+        return { ok: r.ok, status: r.status, blob: blob, headers: r.headers };
+      });
+    });
+  }
+
+  function filenameFromContentDisposition(headerVal, fallback) {
+    if (!headerVal) return fallback;
+    var m = /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i.exec(String(headerVal));
+    var raw = (m && (m[1] || m[2])) || '';
+    if (!raw) return fallback;
+    try {
+      return decodeURIComponent(raw);
+    } catch (e) {
+      return raw;
+    }
+  }
+
+  function setExportStatus(msg, kind) {
+    var el = $('dashboard-export-status');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.className = 'admin-dashboard-export-status' + (kind ? ' is-' + kind : '');
+  }
+
+  function selectedTableNames() {
+    var sel = $('dashboard-export-tables');
+    if (!sel) return [];
+    var out = [];
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].selected) out.push(sel.options[i].value);
+    }
+    return out;
+  }
+
+  function populateExportTableOptions(tables) {
+    var sel = $('dashboard-export-tables');
+    if (!sel) return;
+    sel.innerHTML = '';
+    for (var i = 0; i < tables.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = tables[i];
+      opt.textContent = tables[i];
+      sel.appendChild(opt);
+    }
+  }
+
+  function loadExportTables() {
+    if (exportTablesLoaded) return Promise.resolve();
+    setExportStatus('Loading table list…');
+    return fetchJson('/api/admin/export/tables')
+      .then(function (data) {
+        if (!data || !data.success || !Array.isArray(data.tables)) {
+          setExportStatus('Could not load table list.', 'error');
+          return;
+        }
+        populateExportTableOptions(data.tables);
+        exportTablesLoaded = true;
+        setExportStatus('Select tables and click Export.', 'ok');
+      })
+      .catch(function () {
+        setExportStatus('Could not load table list.', 'error');
+      });
+  }
+
+  function bindExportEvents() {
+    if (exportUiInitialized) return;
+    exportUiInitialized = true;
+    var btn = $('dashboard-export-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var formatSel = $('dashboard-export-format');
+      var format = formatSel ? formatSel.value : 'xlsx';
+      var tables = selectedTableNames();
+      if (!tables.length) {
+        setExportStatus('Select at least one table.', 'error');
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = 'Exporting…';
+      setExportStatus('Preparing export…');
+      fetchBlob('/api/admin/export', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tables: tables, format: format }),
+      })
+        .then(function (out) {
+          if (!out.ok) throw new Error('Export failed');
+          var cd = out.headers.get('Content-Disposition') || '';
+          var fallback = 'hbc-export.' + (format === 'pdf' ? 'pdf' : 'xlsx');
+          var fileName = filenameFromContentDisposition(cd, fallback);
+          var url = URL.createObjectURL(out.blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+          setExportStatus('Export downloaded: ' + fileName, 'ok');
+        })
+        .catch(function () {
+          setExportStatus('Export failed. Please try again.', 'error');
+        })
+        .finally(function () {
+          btn.disabled = false;
+          btn.textContent = 'Export selected tables';
+        });
+    });
+  }
+
+  function initExportPanel(manager) {
+    var panel = $('dashboard-export-panel');
+    if (!panel) return;
+    panel.hidden = false;
+    bindExportEvents();
+    if (!manager || !manager.managerLoggedIn) {
+      setExportStatus('Manager sign-in required to export database tables.', 'error');
+      var btn = $('dashboard-export-btn');
+      var sel = $('dashboard-export-tables');
+      var fmt = $('dashboard-export-format');
+      if (btn) btn.disabled = true;
+      if (sel) sel.disabled = true;
+      if (fmt) fmt.disabled = true;
+      return;
+    }
+    var btn2 = $('dashboard-export-btn');
+    var sel2 = $('dashboard-export-tables');
+    var fmt2 = $('dashboard-export-format');
+    if (btn2) btn2.disabled = false;
+    if (sel2) sel2.disabled = false;
+    if (fmt2) fmt2.disabled = false;
+    loadExportTables();
   }
 
   function checkAuth() {
@@ -242,6 +382,7 @@
 
     renderPendingList($('dashboard-pending-list'), pending);
     renderSitePulse($('dashboard-site-pulse'), pricing, popular, specials);
+    initExportPanel(manager);
 
     var root = $('admin-dashboard-root');
     if (root) root.hidden = false;

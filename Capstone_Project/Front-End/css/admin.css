@@ -6035,3 +6035,115 @@ body[data-theme='light'] .admin-dashboard-quick {
 body[data-theme='light'] .admin-dashboard-quick a {
   color: #1d4ed8;
 }
+
+.admin-dashboard-panel--export {
+  grid-column: 1 / -1;
+}
+
+.admin-dashboard-export-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 1rem;
+}
+
+.admin-dashboard-export-field {
+  min-width: 0;
+}
+
+.admin-dashboard-export-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+  color: #e2e8f0;
+}
+
+body[data-theme='light'] .admin-dashboard-export-label {
+  color: #0f172a;
+}
+
+.admin-dashboard-export-select,
+.admin-dashboard-export-format {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.35);
+  color: #e2e8f0;
+  padding: 0.55rem 0.65rem;
+}
+
+.admin-dashboard-export-select {
+  min-height: 12.5rem;
+}
+
+body[data-theme='light'] .admin-dashboard-export-select,
+body[data-theme='light'] .admin-dashboard-export-format {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, 0.18);
+}
+
+.admin-dashboard-export-help {
+  margin: 0.45rem 0 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+body[data-theme='light'] .admin-dashboard-export-help {
+  color: #64748b;
+}
+
+.admin-dashboard-export-field--side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.admin-dashboard-export-btn {
+  margin-top: 0.2rem;
+  border: none;
+  border-radius: 10px;
+  padding: 0.68rem 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(145deg, #16a34a 0%, #15803d 100%);
+  cursor: pointer;
+}
+
+.admin-dashboard-export-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.admin-dashboard-export-status {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  min-height: 1.2rem;
+}
+
+.admin-dashboard-export-status.is-ok {
+  color: #86efac;
+}
+
+.admin-dashboard-export-status.is-error {
+  color: #fda4af;
+}
+
+body[data-theme='light'] .admin-dashboard-export-status {
+  color: #64748b;
+}
+
+body[data-theme='light'] .admin-dashboard-export-status.is-ok {
+  color: #166534;
+}
+
+body[data-theme='light'] .admin-dashboard-export-status.is-error {
+  color: #b91c1c;
+}
+
+@media (max-width: 900px) {
+  .admin-dashboard-export-grid {
+    grid-template-columns: 1fr;
+  }
+}

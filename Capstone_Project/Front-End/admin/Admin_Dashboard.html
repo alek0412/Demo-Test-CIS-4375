@@ -99,6 +99,28 @@
           </div>
 
           <div class="admin-dashboard-panels">
+            <section class="admin-dashboard-panel admin-dashboard-panel--export" id="dashboard-export-panel" hidden>
+              <h2 class="admin-dashboard-panel-title">Export database data</h2>
+              <p class="admin-dashboard-panel-sub">Choose one or more tables and export to Excel or PDF.</p>
+              <div class="admin-dashboard-panel-body">
+                <div class="admin-dashboard-export-grid">
+                  <div class="admin-dashboard-export-field">
+                    <label for="dashboard-export-tables" class="admin-dashboard-export-label">Tables</label>
+                    <select id="dashboard-export-tables" class="admin-dashboard-export-select" multiple size="10" aria-describedby="dashboard-export-help"></select>
+                    <p id="dashboard-export-help" class="admin-dashboard-export-help">Hold Ctrl (Windows) or Command (Mac) to select multiple tables.</p>
+                  </div>
+                  <div class="admin-dashboard-export-field admin-dashboard-export-field--side">
+                    <label for="dashboard-export-format" class="admin-dashboard-export-label">Format</label>
+                    <select id="dashboard-export-format" class="admin-dashboard-export-format">
+                      <option value="xlsx">Excel (.xlsx)</option>
+                      <option value="pdf">PDF (.pdf)</option>
+                    </select>
+                    <button type="button" id="dashboard-export-btn" class="admin-dashboard-export-btn">Export selected tables</button>
+                    <p id="dashboard-export-status" class="admin-dashboard-export-status" role="status" aria-live="polite"></p>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>
