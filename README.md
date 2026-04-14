@@ -39,7 +39,7 @@ This project uses a scalable, three-tier architecture:
 
 ### 1. Backend API (Flask) Setup
 1. Navigate to the Python backend directory: `cd Capstone_Project/Back-End/(Python)`
-2. Install required Python packages (e.g., flask, waitress, python-dotenv).
+2. Install required Python packages (e.g., flask, waitress, python-dotenv) using `pip install requirements.txt`.
 3. Create a `backend_access.env` file in this directory with your `SECRET_KEY` and database credentials.
 4. Run the server: `python flask_server.py` (Runs on port 3001).
 
