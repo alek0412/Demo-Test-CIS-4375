@@ -140,11 +140,19 @@
             html += '<tr class="customer-data-row"' + (cid ? ' data-customer-id="' + cid + '"' : '') + '>';
             cols.forEach(function (c) {
               var display = row[c];
-              if (c === statusColName && (display === 1 || display === 2 || display === '1' || display === '2')) {
+              var cLower = String(c || '').toLowerCase();
+              if (
+                c === statusColName &&
+                (display === 1 || display === 2 || display === 3 || display === '1' || display === '2' || display === '3')
+              ) {
                 display = display === 1 || display === '1' ? 'Junior' : (display === 2 || display === '2' ? 'Adult' : 'Senior');
               }
+              if ((cLower === 'birthdate' || cLower === 'birth_date') && display != null && display !== '') {
+                var birthRaw = String(display).trim();
+                display = birthRaw.length >= 10 ? birthRaw.slice(0, 10) : birthRaw;
+              }
               var safe = display != null && display !== '' ? String(display) : '';
-              var lower = String(c || '').toLowerCase();
+              var lower = cLower;
               var cellClass = '';
               if (lower === 'email') cellClass = ' class="db-cell-mono"';
               if (c === statusColName) {
