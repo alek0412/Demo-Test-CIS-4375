@@ -61,6 +61,8 @@ module.exports = async function handleAdminCustomerCrud(req, res, ctx) {
           if (e.code !== 'ER_NO_SUCH_TABLE' && e.errno !== 1146) throw e;
         }
         await conn.execute('DELETE FROM `reservation` WHERE `customer_id` = ?', [customerId]);
+        // Break FK from customer -> waiver before deleting waiver rows.
+        await conn.execute('UPDATE `customer` SET `waiver_id` = NULL WHERE `customer_id` = ?', [customerId]);
         await conn.execute('DELETE FROM `waiver` WHERE `customer_id` = ?', [customerId]);
         await conn.execute('DELETE FROM `customer` WHERE `customer_id` = ?', [customerId]);
         await conn.commit();
@@ -82,8 +84,11 @@ module.exports = async function handleAdminCustomerCrud(req, res, ctx) {
           let v = body[key];
           if (key === 'membership_status') {
             const n = parseInt(v, 10);
-            if (n !== 1 && n !== 2) {
-              send(400, { success: false, message: 'membership_status must be 1 (Active) or 2 (Inactive)' });
+            if (n !== 1 && n !== 2 && n !== 3) {
+              send(400, {
+                success: false,
+                message: 'membership_status must be 1 (Junior), 2 (Adult), or 3 (Senior)',
+              });
               return true;
             }
             v = n;

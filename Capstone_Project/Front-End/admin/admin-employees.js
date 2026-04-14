@@ -198,7 +198,20 @@
           })
           .then(function (out) {
             if (out.ok) {
-              window.location.reload();
+              var tr = document.querySelector('tr[data-employee-id="' + String(id) + '"]');
+              if (tr) tr.remove();
+              selectedEmployee = null;
+              var noResults = document.getElementById('employee-no-results');
+              var bodyRows = document.querySelectorAll('#employee-table tbody tr[data-employee-id]');
+              var visible = 0;
+              bodyRows.forEach(function (row) {
+                if (row.style.display !== 'none') visible++;
+              });
+              if (noResults) {
+                noResults.classList.toggle('is-hidden', visible !== 0);
+              }
+              var countEl = document.getElementById('employee-count-num');
+              if (countEl) countEl.textContent = String(visible);
               return;
             }
             alert(out.text || 'Could not delete employee.');

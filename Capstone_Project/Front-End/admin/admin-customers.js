@@ -4,7 +4,17 @@
  */
 (function () {
   'use strict';
-  var HIDDEN_CUSTOMER_COLUMNS = { password: true, salt: true };
+  var HIDDEN_CUSTOMER_COLUMNS = {
+    password: true,
+    salt: true,
+    suspend_date: true,
+    unsuspend_date: true,
+    suspension_date: true,
+    unsuspension_date: true,
+    suspended_until: true,
+    suspended_at: true,
+    unsuspended_at: true,
+  };
 
   function isVisibleCustomerColumn(colName) {
     return !HIDDEN_CUSTOMER_COLUMNS[String(colName || '').toLowerCase()];
@@ -131,7 +141,7 @@
             cols.forEach(function (c) {
               var display = row[c];
               if (c === statusColName && (display === 1 || display === 2 || display === '1' || display === '2')) {
-                display = display === 1 || display === '1' ? 'Active' : 'Inactive';
+                display = display === 1 || display === '1' ? 'Junior' : (display === 2 || display === '2' ? 'Adult' : 'Senior');
               }
               var safe = display != null && display !== '' ? String(display) : '';
               var lower = String(c || '').toLowerCase();
@@ -140,11 +150,13 @@
               if (c === statusColName) {
                 var statusText = safe;
                 var tone =
-                  String(statusText).toLowerCase() === 'active'
+                  String(statusText).toLowerCase() === 'adult'
                     ? 'ok'
-                    : String(statusText).toLowerCase() === 'inactive'
-                      ? 'muted'
-                      : 'neutral';
+                    : String(statusText).toLowerCase() === 'junior'
+                      ? 'neutral'
+                      : String(statusText).toLowerCase() === 'senior'
+                        ? 'muted'
+                        : 'neutral';
                 html +=
                   '<td>' +
                   (safe
@@ -185,8 +197,9 @@
       function membershipStatusLabel(val) {
         if (val == null || val === '') return '';
         var n = Number(val);
-        if (n === 1) return 'Active';
-        if (n === 2) return 'Inactive';
+        if (n === 1) return 'Junior';
+        if (n === 2) return 'Adult';
+        if (n === 3) return 'Senior';
         return String(val);
       }
       var zipCol = cols.find(function (c) {
@@ -524,7 +537,7 @@
         var sel = document.getElementById('edit-customer-status');
         if (sel && stK) {
           var n = parseInt(row[stK], 10);
-          sel.value = n === 2 ? '2' : '1';
+          sel.value = n === 3 ? '3' : (n === 2 ? '2' : '1');
         }
         var pw = document.getElementById('edit-customer-new-password');
         if (pw) pw.value = '';
@@ -693,7 +706,10 @@
             })
             .then(function (out) {
               if (out.ok && out.body && out.body.success) {
-                window.location.reload();
+                var tr = document.querySelector('.customer-data-row[data-customer-id="' + selectedCustomerId + '"]');
+                if (tr) tr.remove();
+                selectedCustomerId = null;
+                applyFilters();
               } else {
                 var msg =
                   (out.body && out.body.message) ||

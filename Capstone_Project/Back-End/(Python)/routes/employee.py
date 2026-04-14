@@ -107,6 +107,8 @@ def employee_fire():
         employee_id=int(employee_id)
         if not session.get("is_manager"):
             return make_response("Invalid authorization",401)
+        if employee_id == session.get("employee_id"):
+            return make_response("You cannot delete the account currently signed in.", 400)
     except (KeyError,TypeError):
         return make_response("Invalid employee",400)
     delete_reservations=sql_functions.execute_query(sql_connection,"delete from reservation where employee_id=%s",(employee_id,))

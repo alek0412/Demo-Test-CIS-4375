@@ -71,7 +71,7 @@
           <div class="db-search-filter-row">
             <input type="text" id="customer-search" placeholder="Search customers..." aria-label="Search customer table">
             <div class="db-filter-wrap">
-              <button type="button" id="customer-filter-btn" class="db-filter-btn" aria-haspopup="true" aria-expanded="false">Filter by email, status, zip ▾</button>
+              <button type="button" id="customer-filter-btn" class="db-filter-btn" aria-haspopup="true" aria-expanded="false">Filter by email, membership, zip ▾</button>
               <div id="customer-filter-dropdown" class="db-filter-dropdown is-hidden" role="menu"></div>
             </div>
             <div class="admin-customer-toolbar" role="group" aria-label="Customer actions">
@@ -79,7 +79,7 @@
               <button type="button" id="customer-delete-btn" class="btn admin-customer-btn-delete">Delete customer</button>
             </div>
           </div>
-          <p class="db-search-hint">Search by name, email, or address. Use the filter for email domain (gmail.com, icloud.com, etc.), membership status (Active/Inactive), or zip code.</p>
+          <p class="db-search-hint">Search by name, email, or address. Use the filter for email domain (gmail.com, icloud.com, etc.), membership status (Junior/Adult/Senior), or zip code.</p>
           <p class="db-result-count is-hidden" id="customer-result-count" aria-live="polite">Showing <span id="customer-count-num">—</span> customers</p>
         </div>
         <div id="db-content" class="db-loading"></div>
@@ -109,8 +109,9 @@
         <input type="text" id="edit-customer-zip" class="admin-modal-input" autocomplete="off" />
         <label class="admin-modal-label" for="edit-customer-status">Membership status</label>
         <select id="edit-customer-status" class="admin-modal-input">
-          <option value="1">Active</option>
-          <option value="2">Inactive</option>
+          <option value="1">Junior</option>
+          <option value="2">Adult</option>
+          <option value="3">Senior</option>
         </select>
         <label class="admin-modal-label" for="edit-customer-new-password">New password (optional)</label>
         <input type="password" id="edit-customer-new-password" class="admin-modal-input" autocomplete="new-password" placeholder="Leave blank to keep current password" />
