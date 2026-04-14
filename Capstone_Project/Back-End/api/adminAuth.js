@@ -54,6 +54,7 @@ module.exports = async function handleAdminAuth(req, res, ctx) {
     const email = (data.email || '').trim().toLowerCase();
     const password = data.password || '';
     if (!email || !password) {
+      incrementAdminAttempts();
       res.writeHead(401, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, message: 'Invalid email or password' }));
       return true;
