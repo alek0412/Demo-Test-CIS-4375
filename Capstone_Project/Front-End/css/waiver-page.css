@@ -364,6 +364,7 @@
 .waiver-form-area input[type="text"],
 .waiver-form-area input[type="email"],
 .waiver-form-area input[type="tel"],
+.waiver-form-area input[type="password"],
 .waiver-form-area select {
   width: 100%;
   padding: 0.7rem 0.9rem;
