@@ -596,8 +596,6 @@
       var BADMINTON_ONLY_COURTS = [1, 3, 5, 7, 9, 12];
       var PICKLEBALL_COURT_NUMBERS = [2, 4, 6, 8, 10];
       var TABLE_TENNIS_COURT_NUMBER = 11;
-      var COURT_11_USAGE_HINT =
-        'Court 11: badminton or table tennis. Table tennis lessons are usually scheduled 10:00 AM–5:00 PM.';
       var CUSTOM_EVENT_NAME_COURTS = [1, 3, 5, 7, 9, 12];
       var modalCourtName = '';
 
@@ -619,6 +617,35 @@
         return courtNum === TABLE_TENNIS_COURT_NUMBER;
       }
 
+      function courtRuleDetails(courtNum) {
+        if (courtNum === null) return '';
+        if (isTableTennisCourtNumber(courtNum)) {
+          return (
+            'Court 11 details: badminton or table tennis. ' +
+            'Badminton coaching can be scheduled when the court is set for badminton. ' +
+            'Walk-ins are usually directed to Courts 1, 3, and 5.'
+          );
+        }
+        if (isPickleballCourtNumber(courtNum)) {
+          return (
+            'Court ' +
+            courtNum +
+            ' details: pickleball is allowed on weekdays from 10:00 AM to 5:00 PM. ' +
+            'Outside that window, use this court for badminton. ' +
+            'Badminton coaching can be scheduled when the court is set for badminton.'
+          );
+        }
+        if (BADMINTON_ONLY_COURTS.indexOf(courtNum) !== -1) {
+          return (
+            'Court ' +
+            courtNum +
+            ' details: badminton only. ' +
+            'Badminton coaching is allowed. Walk-ins are usually prioritized on Courts 1, 3, and 5.'
+          );
+        }
+        return 'Court ' + courtNum + ' details: badminton rules apply.';
+      }
+
       function syncModalCourtFields() {
         var v = modalCourtName;
         var n = parseCourtNumberFromName(v);
@@ -626,8 +653,9 @@
         var wrap = document.getElementById('res-event-name-wrap');
         var input = document.getElementById('res-event-name');
         if (courtHint) {
-          if (n === TABLE_TENNIS_COURT_NUMBER) {
-            courtHint.textContent = COURT_11_USAGE_HINT;
+          var details = courtRuleDetails(n);
+          if (details) {
+            courtHint.textContent = details;
             courtHint.classList.remove('is-hidden');
           } else {
             courtHint.textContent = '';

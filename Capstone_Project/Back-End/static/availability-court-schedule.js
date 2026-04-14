@@ -314,6 +314,31 @@
     }
   }
 
+  function syncEndTimesAfterStart(startSel, endSel) {
+    if (!startSel || !endSel) return;
+    var startMin = hhmm24ToMinutes(startSel.value);
+    var previousEnd = endSel.value;
+    endSel.innerHTML = '';
+    for (var m = 10 * 60; m <= 23 * 60 + 45; m += 15) {
+      if (m <= startMin) continue;
+      var h = Math.floor(m / 60);
+      var min = m % 60;
+      var opt = document.createElement('option');
+      opt.value = pad2(h) + ':' + pad2(min);
+      opt.textContent = formatMinutesAsTime12(m);
+      endSel.appendChild(opt);
+    }
+    if (!endSel.options.length) return;
+    var wanted = hhmm24ToMinutes(previousEnd);
+    if (wanted > startMin) {
+      endSel.value = previousEnd;
+    } else if (startMin + 60 <= 23 * 60 + 45) {
+      endSel.value = pad2(Math.floor((startMin + 60) / 60)) + ':' + pad2((startMin + 60) % 60);
+    } else {
+      endSel.selectedIndex = 0;
+    }
+  }
+
   function ensureModal() {
     var existing = document.getElementById('pub-res-modal-overlay');
     if (existing) return existing;
@@ -348,7 +373,12 @@
     fillTimeSelect(startSel);
     fillTimeSelect(endSel);
     if (startSel && startSel.options[16]) startSel.selectedIndex = 16;
-    if (endSel && endSel.options[20]) endSel.selectedIndex = 20;
+    if (startSel && endSel) {
+      syncEndTimesAfterStart(startSel, endSel);
+      startSel.addEventListener('change', function () {
+        syncEndTimesAfterStart(startSel, endSel);
+      });
+    }
     document.getElementById('pub-res-modal-close').addEventListener('click', function () {
       wrap.classList.add('is-hidden');
       wrap.setAttribute('aria-hidden', 'true');
