@@ -440,16 +440,16 @@ body.admin-sidebar-collapsed .admin-sidebar {
 }
 
 /* Separators between sidebar items (horizontal rules in a vertical list) */
-.admin-nav-section > .admin-nav-link:not(:last-child) {
+.admin-nav-section > .admin-nav-link {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   margin-bottom: 0;
 }
 
-body[data-theme="light"] .admin-nav-section > .admin-nav-link:not(:last-child) {
+body[data-theme="light"] .admin-nav-section > .admin-nav-link {
   border-bottom-color: #000000;
 }
 
-body[data-theme="dark"] .admin-nav-section > .admin-nav-link:not(:last-child) {
+body[data-theme="dark"] .admin-nav-section > .admin-nav-link {
   border-bottom-color: #ffffff;
 }
 
