@@ -172,7 +172,7 @@
     }
     if (lede) {
       lede.textContent =
-        'Your rally snapshot: live data from the same APIs that power the site and the front desk. Nothing new under the sun — just compiled for you.';
+        'Keep the courts lively and the energy high—everything you need to help players enjoy a smooth, fun day of badminton is right here.';
     }
 
     var pendingCount = 0;
