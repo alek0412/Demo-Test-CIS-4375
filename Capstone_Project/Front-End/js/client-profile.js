@@ -16,6 +16,7 @@
   var editForm = document.getElementById('profile-edit-form');
   var deleteInput = document.getElementById('delete-confirm-input');
   var confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+  var passwordLastChangedEl = document.getElementById('profile-password-last-changed');
 
   function esc(s) {
     return String(s == null ? '' : s);
@@ -42,6 +43,46 @@
       .toUpperCase();
     var t = (fn + ln).trim();
     return t || '?';
+  }
+
+  function passwordChangedStorageKey(email) {
+    return 'hbc_password_changed_at:' + String(email || '').trim().toLowerCase();
+  }
+
+  function passwordLastChangedLabel(iso) {
+    if (!iso) return 'Last changed recently';
+    var when = new Date(iso);
+    if (!when || isNaN(when.getTime())) return 'Last changed recently';
+    var now = new Date();
+    var dayMs = 24 * 60 * 60 * 1000;
+    var d0 = new Date(when.getFullYear(), when.getMonth(), when.getDate());
+    var d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var days = Math.floor((d1 - d0) / dayMs);
+    if (days <= 0) return 'Last changed today';
+    if (days === 1) return 'Last changed 1 day ago';
+    return 'Last changed ' + days + ' days ago';
+  }
+
+  function readPasswordChangedAt(email) {
+    if (!email) return '';
+    try {
+      return sessionStorage.getItem(passwordChangedStorageKey(email)) || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function writePasswordChangedAt(email, iso) {
+    if (!email || !iso) return;
+    try {
+      sessionStorage.setItem(passwordChangedStorageKey(email), String(iso));
+    } catch (e) {}
+  }
+
+  function applyPasswordLastChanged(email, isoOverride) {
+    if (!passwordLastChangedEl) return;
+    var iso = isoOverride || readPasswordChangedAt(email);
+    passwordLastChangedEl.textContent = passwordLastChangedLabel(iso);
   }
 
   function renderActivity(activities) {
@@ -89,6 +130,7 @@
     if (ecNameEl) ecNameEl.textContent = emergencyFullName(ec);
     if (ecEmailEl) ecEmailEl.textContent = ec && ec.email ? esc(ec.email) : '—';
     if (ecPhoneEl) ecPhoneEl.textContent = ec && ec.phone ? esc(ec.phone) : '—';
+    applyPasswordLastChanged(p.email || '');
     try {
       if (p.firstName) {
         sessionStorage.setItem('hbc_customer_first_name', String(p.firstName).trim());
@@ -289,6 +331,7 @@
       if (newPassword && newPassword.trim()) {
         body.password = newPassword;
       }
+      var emailBeforeUpdate = state.profile && state.profile.email ? state.profile.email : body.email;
       fetch('/api/customer', {
         method: 'PATCH',
         credentials: 'same-origin',
@@ -311,6 +354,12 @@
             state.profile.email = body.email;
             state.profile.phone = body.phone;
             applyProfile(state.profile);
+          }
+          if (body.password) {
+            var changedAt = new Date().toISOString();
+            writePasswordChangedAt(emailBeforeUpdate, changedAt);
+            writePasswordChangedAt(body.email, changedAt);
+            applyPasswordLastChanged(body.email, changedAt);
           }
           closeModal(editModal);
         })
