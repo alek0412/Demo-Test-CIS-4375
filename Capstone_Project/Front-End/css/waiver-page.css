@@ -350,6 +350,12 @@
 .waiver-form-area .form-row.single {
   grid-template-columns: 1fr;
 }
+.waiver-form-area .form-row.waiver-half-row > div {
+  width: 100%;
+  max-width: calc((100% - 1.25rem) / 2);
+  margin-left: auto;
+  margin-right: auto;
+}
 
 .waiver-form-area label {
   display: block;
@@ -714,6 +720,9 @@
 @media (max-width: 900px) {
   .waiver-form-area .form-row {
     grid-template-columns: 1fr;
+  }
+  .waiver-form-area .form-row.waiver-half-row > div {
+    max-width: 100%;
   }
 }
 
