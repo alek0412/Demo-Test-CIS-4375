@@ -13,6 +13,8 @@
 
   var WAIVER_MSG =
     'You must sign the waiver to make an account to reserve!';
+  var RESERVATION_THANK_YOU_MSG =
+    'Thank you for reserving. If you need to cancel, call 346-229-4921.';
   var scheduleDate = new Date();
   scheduleDate.setHours(12, 0, 0, 0);
 
@@ -414,6 +416,7 @@
             msg.textContent = (out.text || '').trim() || 'Reservation submitted.';
             msg.className = 'pub-res-modal-msg pub-res-modal-msg--ok';
             refreshScheduleFromApi();
+            window.alert(RESERVATION_THANK_YOU_MSG);
           } else {
             msg.textContent = (out.text || '').trim() || 'Could not create reservation.';
             msg.className = 'pub-res-modal-msg pub-res-modal-msg--err';
