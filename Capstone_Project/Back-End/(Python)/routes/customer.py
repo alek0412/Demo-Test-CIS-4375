@@ -212,12 +212,13 @@ def customer_remove():
     delete_reservations=sql_functions.execute_query(sql_connection,"delete from reservation where customer_id =%s",(customer_id,))
     if type(delete_reservations)==int:
         return make_response("Unable to delete from reservations",503)
+    # Clear FK link first so waiver rows can be removed safely.
+    clear_customer_waiver=sql_functions.execute_query(sql_connection,"update customer set waiver_id=NULL where customer_id=%s",(customer_id,))
+    if type(clear_customer_waiver)==int:
+        return make_response("Unable to clear customer waiver link",503)
     delete_waiver=sql_functions.execute_query(sql_connection,"delete from waiver where customer_id = %s",(customer_id,))
     if type(delete_waiver)==int:
         return make_response("Unable to delete from waiver",503)
-    delete_emergency=sql_functions.execute_query(sql_connection,"delete from emergency_contact where customer_id=%s",(customer_id,))
-    if type(delete_emergency)==int:
-        return make_response("Unable to delete emergency contact",503)
     delete_customer=sql_functions.execute_query(sql_connection,"delete from customer where customer_id=%s",(customer_id,))
     if type(delete_customer)==int:
         return make_response("Unable to delete customer",503)
