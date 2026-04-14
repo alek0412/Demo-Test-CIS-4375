@@ -16,10 +16,18 @@ flask_server.register_blueprint(employee_blueprint)
 flask_server.register_blueprint(court_blueprint)
 flask_server.register_blueprint(reservation_blueprint)
 flask_server.debug=True
+
+def get_server_status():
+    return "Running"    
+
+@flask_server.route('/status', methods=['GET'])
+def check_status():
+    current_status = get_server_status()
+    return {"server_status": current_status}
+
 if __name__ =="__main__":
     waitress.serve(flask_server,port=3001)
     
 
-def get_server_status():
-    return "Running"    
+
     
