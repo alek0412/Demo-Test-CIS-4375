@@ -195,19 +195,23 @@
                 </select>
               </div>
             </div>
-            <div class="form-row">
+            <div class="form-row single">
               <div>
                 <label for="zip-code">ZIP code</label>
                 <input type="text" id="zip-code" name="zip_code" required inputmode="numeric" autocomplete="postal-code" maxlength="10">
-              </div>
-              <div>
-                <label for="password">Create password</label>
-                <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" aria-describedby="password-hint">
               </div>
             </div>
             <div class="form-row single">
               <div>
                 <p id="password-hint" class="pref-optional-intro waiver-password-hint">At least 8 characters. You’ll use this to log in to book courts.</p>
+              </div>
+            </div>
+            <div class="form-row waiver-password-row">
+              <div>
+                <label for="password">Create password</label>
+                <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" aria-describedby="password-hint">
+              </div>
+              <div>
                 <label for="password-confirm">Confirm password</label>
                 <input type="password" id="password-confirm" name="password_confirm" required minlength="8" autocomplete="new-password">
               </div>

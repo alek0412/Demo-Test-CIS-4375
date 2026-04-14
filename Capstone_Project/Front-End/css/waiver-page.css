@@ -707,6 +707,9 @@
 .waiver-password-hint {
   margin: 0 0 0.5rem;
 }
+.waiver-form-area .waiver-password-row {
+  margin-top: -0.35rem;
+}
 
 @media (max-width: 900px) {
   .waiver-form-area .form-row {
