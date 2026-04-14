@@ -102,7 +102,7 @@ def add_reservation():
         start_time_conversion = datetime.datetime.strptime(start_time, "%H:%M")
         end_time_conversion = datetime.datetime.strptime(end_time, "%H:%M")
         today_d = datetime.datetime.now(tz=central_time)
-        req_d = datetime.datetime.strptime(f"{reservation_date} {start_time}", "%Y-%m-%d %H:%M")
+        req_d = datetime.datetime.strptime(f"{reservation_date} {start_time}", "%Y-%m-%d %H:%M").replace(tzinfo=central_time)
         total_seconds = int((req_d - today_d).total_seconds())
         if total_seconds<=0 or total_seconds>(14*24*60*60):
             return make_response("Unable to reserve in past or reserve for more than 14 days.", 400)
