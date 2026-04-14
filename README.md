@@ -5,8 +5,8 @@
 ## SpiderWeave Consulting (Team 16)'s Member:
 - Ken C. Vuong - Project Manager
 - Nam Vu - Architect / Assistant Project Manager
-- Alek A. Espinosa -  Frontend / Lead Developer
 - Dylan John Hayward -  Architect / Business Analyst
+- Alek A. Espinosa -  Frontend / Lead Developer
 - Ivan Oleh Pochynyuk - Backend / API Lead
 - Joshua Sajan - Documentation Lead
 
