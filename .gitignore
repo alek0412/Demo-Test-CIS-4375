@@ -18,3 +18,5 @@ Capstone_Project/Front-End/uploads/
 
 # Python cache files
 *.pyc
+
+*_passwords.txt
