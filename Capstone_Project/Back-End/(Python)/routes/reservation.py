@@ -2,7 +2,7 @@ from flask import jsonify, request, make_response, Blueprint, session
 from ssh_connection import secure_connection
 import sql_functions
 import datetime
-
+import pytz
 reservation_blueprint = Blueprint("reservation", __name__, template_folder="templates")
 times = {
     "weekday": {
@@ -15,7 +15,7 @@ times = {
     },
 }
 valid_end_times = ["00", "15", "30", "45"]
-
+central_time=pytz.timezone("US/Central")
 
 def _time_to_base_dt(val):
     """Normalize MySQL TIME (often timedelta), datetime, or 'HH:MM' string for comparisons."""
@@ -57,10 +57,10 @@ def add_reservation():
         reservation_conversion = datetime.datetime.strptime(reservation_date, "%Y-%m-%d")
         start_time_conversion = datetime.datetime.strptime(start_time, "%H:%M")
         end_time_conversion = datetime.datetime.strptime(end_time, "%H:%M")
-        today_d = datetime.datetime.now().date()
+        today_d = datetime.datetime.now(tz=central_time).date()
         req_d = reservation_conversion.date()
-        advance_days = (req_d - today_d).days
-        if advance_days < 0 or advance_days > 14:
+        total_seconds = int((req_d - today_d).total_seconds())
+        if total_seconds<=0 or total_seconds>(14*24*60*60):
             return make_response("Unable to reserve in past or reserve for more than 14 days.", 400)
         reservation_day_type = reservation_conversion.weekday()
         day_type = "weekday" if reservation_day_type in range(5) else "weekend"
