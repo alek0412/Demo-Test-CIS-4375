@@ -17,6 +17,50 @@ times = {
 valid_end_times = ["00", "15", "30", "45"]
 central_time=pytz.timezone("US/Central")
 
+def _date_to_py_date(val):
+    if val is None:
+        raise ValueError("missing date")
+    if isinstance(val, datetime.datetime):
+        return val.date()
+    if isinstance(val, datetime.date):
+        return val
+    s = str(val).strip()
+    return datetime.datetime.strptime(s[:10], "%Y-%m-%d").date()
+
+
+def _reservation_end_datetime_central(reservation_date, end_time_raw):
+    """End instant of the reservation in US/Central (aware datetime)."""
+    d = _date_to_py_date(reservation_date)
+    end_base = _time_to_base_dt(end_time_raw)
+    naive = datetime.datetime.combine(d, end_base.time())
+    return central_time.localize(naive, is_dst=None)
+
+
+def _customer_has_blocking_reservation(customer_id):
+    """
+    True if the customer has a pending (1) or confirmed (2) reservation that has not ended yet.
+    Past bookings must not block new requests (status rows stay 1/2 until staff changes them).
+    """
+    rows = sql_functions.execute_read(
+        secure_connection,
+        "select reservation_date, reservation_end_time from reservation where customer_id=%s and reservation_status in (1,2)",
+        (customer_id,),
+    )
+    if type(rows) == int:
+        return None
+    now_ct = datetime.datetime.now(tz=central_time)
+    for row in rows:
+        try:
+            end_ct = _reservation_end_datetime_central(
+                row["reservation_date"], row["reservation_end_time"]
+            )
+        except (ValueError, KeyError, TypeError):
+            continue
+        if now_ct < end_ct:
+            return True
+    return False
+
+
 def _time_to_base_dt(val):
     """Normalize MySQL TIME (often timedelta), datetime, or 'HH:MM' string for comparisons."""
     if val is None:
@@ -96,16 +140,11 @@ def add_reservation():
         if start_time_conversion < court_booking_end and end_time_conversion > court_booking_start:
             return make_response("Court is already booked", 400)
 
-    # One active court reservation at a time — gate on real rows, not a stale waiver flag.
-    active_count = sql_functions.execute_read(
-        secure_connection,
-        "select count(*) as c from reservation where customer_id=%s and reservation_status in (1,2)",
-        (customer,),
-    )
-    if type(active_count) == int:
+    # One active court reservation at a time — only until that slot ends (past 1/2 rows do not block).
+    blocking = _customer_has_blocking_reservation(customer)
+    if blocking is None:
         return make_response("Server is unable to verify reservations", 503)
-    n_active = int(active_count[0]["c"]) if active_count else 999
-    if n_active > 0:
+    if blocking:
         return make_response(
             "You already have a pending or confirmed reservation. Wait until staff removes it or it is completed.",
             400,

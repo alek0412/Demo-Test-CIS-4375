@@ -50,15 +50,14 @@ function timeOverlaps(aStart, aEnd, bStart, bEnd) {
   return aStart < bEnd && aEnd > bStart;
 }
 
-/** After canceling a row, set waiver to 2 only if customer has no other reservation in (1,2). */
+/** After canceling a row, clear waiver hold only if customer has no other not-yet-ended (1,2) reservation. */
 async function restoreBookingEligibilityIfNoActiveReservations(conn, customerId) {
   if (customerId == null) return;
-  const [cntRows] = await conn.execute(
-    'SELECT COUNT(*) AS c FROM reservation WHERE customer_id = ? AND reservation_status IN (1, 2)',
+  const [rows] = await conn.execute(
+    'SELECT reservation_date, reservation_end_time, reservation_status FROM reservation WHERE customer_id = ? AND reservation_status IN (1, 2)',
     [customerId]
   );
-  const n = Number(cntRows[0] && cntRows[0].c);
-  if (n === 0) {
+  if (!customerHasBlockingReservation(rows || [])) {
     await conn.execute('UPDATE waiver SET waiver_status = 1 WHERE customer_id = ?', [customerId]);
   }
 }
@@ -89,6 +88,47 @@ function formatTime(val) {
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
   }
   return String(val);
+}
+
+/** Wall-clock "now" in America/Chicago as `YYYY-MM-DD HH:MM:SS` for lexicographic compare with reservation end. */
+function comparisonNowCentral() {
+  const d = new Date();
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+  const parts = formatter.formatToParts(d);
+  const get = (type) => {
+    const p = parts.find((x) => x.type === type);
+    return p ? p.value : '00';
+  };
+  return `${get('year')}-${get('month')}-${get('day')} ${get('hour')}:${get('minute')}:${get('second')}`;
+}
+
+function reservationEndComparable(dateVal, endTimeVal) {
+  const ymd = formatDate(dateVal);
+  const t = formatTime(endTimeVal);
+  const hm = t.length >= 5 ? t.slice(0, 5) : '00:00';
+  return `${ymd} ${hm}:00`;
+}
+
+/** Pending (1) or confirmed (2) rows that have not reached end time in US/Central yet. */
+function customerHasBlockingReservation(rows) {
+  const nowStr = comparisonNowCentral();
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    const st = Number(r.reservation_status);
+    if (st !== 1 && st !== 2) continue;
+    const endStr = reservationEndComparable(r.reservation_date, r.reservation_end_time);
+    if (nowStr < endStr) return true;
+  }
+  return false;
 }
 
 function sendJson(res, status, obj) {
@@ -376,11 +416,10 @@ module.exports = async function handleAdminScheduleReservations(req, res, ctx) {
       }
 
       const [activeRows] = await conn.execute(
-        'SELECT COUNT(*) AS c FROM reservation WHERE customer_id = ? AND reservation_status IN (1, 2)',
+        'SELECT reservation_date, reservation_end_time, reservation_status FROM reservation WHERE customer_id = ? AND reservation_status IN (1, 2)',
         [customer]
       );
-      const nActive = Number(activeRows[0] && activeRows[0].c);
-      if (nActive > 0) {
+      if (customerHasBlockingReservation(activeRows || [])) {
         await conn.rollback();
         sendJson(res, 400, {
           success: false,
