@@ -5620,15 +5620,34 @@ body[data-theme="dark"] .res-btn-primary:focus-visible {
 }
 
 .admin-dashboard-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 1.15rem 1.2rem 1.25rem;
+  border-radius: 14px;
+  border: 1px solid rgba(59, 130, 246, 0.28);
+  background:
+    radial-gradient(120% 140% at 100% -15%, rgba(34, 197, 94, 0.22), transparent 58%),
+    radial-gradient(90% 130% at -8% 110%, rgba(59, 130, 246, 0.18), transparent 62%),
+    linear-gradient(145deg, rgba(30, 41, 59, 0.92) 0%, rgba(15, 23, 42, 0.86) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 28px rgba(2, 6, 23, 0.35);
   margin-bottom: 1.75rem;
 }
 
 .admin-dashboard-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.28rem 0.58rem;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: rgba(16, 185, 129, 0.16);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: #d1fae5;
   margin: 0 0 0.5rem;
 }
 
@@ -5638,21 +5657,49 @@ body[data-theme="dark"] .res-btn-primary:focus-visible {
 
 .admin-dashboard-title {
   margin: 0 0 0.5rem;
-  font-size: clamp(1.65rem, 4vw, 2.15rem);
+  font-size: clamp(1.8rem, 4vw, 2.3rem);
   line-height: 1.15;
+  color: #f8fafc;
+  text-wrap: balance;
 }
 
 .admin-dashboard-lede {
   margin: 0;
-  max-width: 42rem;
-  color: #94a3b8;
-  font-size: 1rem;
-  line-height: 1.55;
+  max-width: 48rem;
+  color: #dbeafe;
+  font-size: 1.02rem;
+  line-height: 1.62;
+  text-wrap: pretty;
 }
 
 body[data-theme='light'] .admin-dashboard-lede,
 body[data-theme='light'] .admin-dashboard-kicker {
   color: #64748b;
+}
+
+body[data-theme='light'] .admin-dashboard-hero {
+  border-color: rgba(59, 130, 246, 0.25);
+  background:
+    radial-gradient(110% 120% at 100% -10%, rgba(34, 197, 94, 0.16), transparent 58%),
+    radial-gradient(90% 120% at -8% 110%, rgba(59, 130, 246, 0.15), transparent 62%),
+    linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 26px rgba(15, 23, 42, 0.08);
+}
+
+body[data-theme='light'] .admin-dashboard-kicker {
+  border-color: rgba(34, 197, 94, 0.34);
+  background: rgba(34, 197, 94, 0.12);
+  color: #166534;
+}
+
+body[data-theme='light'] .admin-dashboard-title {
+  color: #0f172a;
+}
+
+body[data-theme='light'] .admin-dashboard-lede {
+  color: #334155;
 }
 
 .admin-dashboard-stat-grid {
