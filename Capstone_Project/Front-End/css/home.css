@@ -1165,6 +1165,36 @@
   .gh-home .features--faq .features-lead {
     font-size: 1rem;
   }
+  /* Keep Upcoming Events card styling consistent on mobile. */
+  .gh-home .features--upcoming-events h2 {
+    margin-bottom: 0.6rem;
+    line-height: 1.15;
+  }
+  .gh-home .features--upcoming-events .features-lead {
+    max-width: 40rem;
+    margin: 0 auto 1.5rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+  .gh-home .ghp-events-shell {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 24px;
+    margin: 0 auto;
+    padding: 4px;
+  }
+  .gh-home .ghp-events-shell-inner {
+    border-radius: 20px;
+    padding: 1.1rem 0.55rem 1rem;
+  }
+  .gh-home .ghp-events-shell-inner .event-cards {
+    width: 100%;
+    max-width: 100%;
+    gap: 1rem;
+  }
+  .gh-home .ghp-events-shell-inner .event-carousel__viewport {
+    border-radius: 14px;
+  }
   .gh-home #section-events,
   .gh-home #section-faq {
     scroll-margin-top: 4.25rem;
